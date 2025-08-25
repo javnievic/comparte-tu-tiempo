@@ -1,0 +1,28 @@
+name: Conventional Commits Lint
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, reopened, edited, review_requested, synchronize]
+  push:
+    branches:
+      - main
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install commitlint
+        run: npm install -g @commitlint/{cli,config-conventional}
+
+      - name: Lint new commits
+        run: |
+          COMMITS=$(git log ${{ github.event.before }}..${{ github.sha }} --no-merges --pretty=format:"%s")
+          echo "$COMMITS" | xargs -L1 npx commitlint --config @commitlint/config-conventional

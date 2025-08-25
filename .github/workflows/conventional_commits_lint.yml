@@ -24,5 +24,10 @@ jobs:
 
       - name: Lint new commits
         run: |
-          COMMITS=$(git log ${{ github.event.before }}..${{ github.sha }} --no-merges --pretty=format:"%s")
+          if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+            # First push, only validate HEAD
+            COMMITS=$(git log -1 HEAD --no-merges --pretty=format:"%s")
+          else
+            COMMITS=$(git log ${{ github.event.before }}..${{ github.sha }} --no-merges --pretty=format:"%s")
+          fi
           echo "$COMMITS" | xargs -L1 npx commitlint --config @commitlint/config-conventional

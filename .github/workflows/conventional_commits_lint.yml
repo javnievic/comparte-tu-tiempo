@@ -11,17 +11,9 @@ jobs:
   commitlint:
     runs-on: ubuntu-latest
     steps:
+      # Step 1: Checkout the repository
       - uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-
-      - name: Install commitlint
-        run: npm install -g @commitlint/{cli,config-conventional}
-
-      - name: Lint HEAD commit
-        run: |
-          COMMITS=$(git log -1 HEAD --no-merges --pretty=format:"%s")
-          echo "$COMMITS" | xargs -L1 npx commitlint --config @commitlint/config-conventional
+      # Step 2: Run the Webiny Conventional Commits action
+      - name: Lint commits
+        uses: webiny/action-conventional-commits@v1.0.3

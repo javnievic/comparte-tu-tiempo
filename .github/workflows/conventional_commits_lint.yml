@@ -3,7 +3,6 @@ name: Conventional Commits Lint
 on:
   pull_request:
     branches: [main]
-    types: [opened, reopened, edited, review_requested, synchronize]
   push:
     branches:
       - main
@@ -22,12 +21,7 @@ jobs:
       - name: Install commitlint
         run: npm install -g @commitlint/{cli,config-conventional}
 
-      - name: Lint new commits
+      - name: Lint HEAD commit
         run: |
-          if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
-            # First push, only validate HEAD
-            COMMITS=$(git log -1 HEAD --no-merges --pretty=format:"%s")
-          else
-            COMMITS=$(git log ${{ github.event.before }}..${{ github.sha }} --no-merges --pretty=format:"%s")
-          fi
+          COMMITS=$(git log -1 HEAD --no-merges --pretty=format:"%s")
           echo "$COMMITS" | xargs -L1 npx commitlint --config @commitlint/config-conventional

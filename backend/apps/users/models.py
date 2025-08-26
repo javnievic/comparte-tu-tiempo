@@ -10,8 +10,8 @@ class User(AbstractUser):
     Extends Django's AbstractUser to support JWT authentication
     and additional user information.
     """
-
-    # Email is already included in AbstractUser; enforce uniqueness
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
     email = models.EmailField(unique=True)
 
     # Additional fields
@@ -22,6 +22,10 @@ class User(AbstractUser):
                                     validators=[phone_validator])
 
     location = models.CharField(max_length=100, blank=True, null=True)
+    description = models.TextField(
+        blank=True, null=True, max_length=500,
+        help_text="Escribe algo sobre ti (máx. 500 caracteres)"
+    )
 
     class Meta:
         db_table = "users"

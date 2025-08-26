@@ -1,5 +1,5 @@
-from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 from .validators import phone_validator
 
 
@@ -22,10 +22,6 @@ class User(AbstractUser):
                                     validators=[phone_validator])
 
     location = models.CharField(max_length=100, blank=True, null=True)
-
-    # Use email as login field
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']  # still required by AbstractUser
 
     class Meta:
         db_table = "users"

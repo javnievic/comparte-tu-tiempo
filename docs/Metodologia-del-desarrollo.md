@@ -75,3 +75,22 @@ Las **issues** se utilizarán para planificar y organizar tareas, mejoras y bugs
 
 Toda la documentación se centraliza en la carpeta `docs/` en la raíz del repositorio.
 
+- La documentación se mantiene en español.  
+- Cada sección debe tener un archivo `.md` independiente.  
+- Se pueden enlazar los documentos desde el README o la wiki de GitHub para navegación rápida.
+
+---
+
+## 5. Buenas Prácticas Adicionales
+
+- Mantener el código limpio y comentado.  
+- Escribir pruebas automáticas cuando sea posible.  
+- Realizar commits frecuentes y pequeños para facilitar seguimiento.  
+- Revisar regularmente el estado de las issues y actualizar su progreso.  
+- Mantener consistencia en nombres de archivos, variables y funciones siguiendo convenciones de inglés.  
+
+---
+
+**Objetivo:**  
+Garantizar claridad, trazabilidad y organización en el desarrollo del proyecto, manteniendo un historial de cambios limpio y documentación accesible para evaluadores y colaboradores.
+

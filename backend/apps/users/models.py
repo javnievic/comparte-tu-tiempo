@@ -17,7 +17,7 @@ class User(AbstractUser):
 
     # Additional fields
     profile_picture = models.ImageField(
-        upload_to='profiles/default.png', blank=True, null=True
+        upload_to='profiles', blank=True, null=True
     )
     phone_number = models.CharField(max_length=15, blank=True, null=True,
                                     validators=[phone_validator])
@@ -27,6 +27,10 @@ class User(AbstractUser):
         blank=True, null=True, max_length=500,
         help_text="Escribe algo sobre ti (máx. 500 caracteres)"
     )
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
     class Meta:
         db_table = "users"
         verbose_name = "User"

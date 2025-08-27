@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ThemeProvider } from "@mui/material/styles";
-import { Box, TextField, Button, Typography, Avatar, IconButton } from "@mui/material";
+import { Box, TextField, Button, Typography, Avatar, IconButton, Divider } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
 import { registerUser } from "../services/authService";
 import theme from "../styles/theme";
@@ -39,7 +39,6 @@ export default function Register() {
       Object.keys(formData).forEach((key) => {
         data.append(key, formData[key]);
       });
-
       const response = await registerUser(data); 
       console.log("Registro exitoso", response);
     } catch (error) {
@@ -55,7 +54,7 @@ export default function Register() {
           mx: "auto",
           p: 3,
           border: "1px solid",
-          borderColor: "text.primary",
+          borderColor: "border.dark",
           borderRadius: 2,
           display: "flex",
           flexDirection: "column",
@@ -63,6 +62,8 @@ export default function Register() {
         }}
       >
         <Typography variant="h3" align="center">Registro</Typography>
+
+        <Divider sx={{ borderColor: "border.default"}} />
 
         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
           <Avatar 
@@ -86,16 +87,16 @@ export default function Register() {
 
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <Box sx={{ display: "flex", gap: 2 }}>
-            <TextField label="Nombre" name="first_name" value={formData.first_name} onChange={handleChange} fullWidth />
-            <TextField label="Apellidos" name="last_name" value={formData.last_name} onChange={handleChange} fullWidth />
+            <TextField label="Nombre *" name="first_name" value={formData.first_name} onChange={handleChange} fullWidth />
+            <TextField label="Apellidos *" name="last_name" value={formData.last_name} onChange={handleChange} fullWidth />
           </Box>
 
           <TextField label="Sobre tí" name="description" value={formData.description} onChange={handleChange} multiline rows={3} fullWidth />
-          <TextField label="Email" name="email" value={formData.email} onChange={handleChange} type="email" fullWidth />
+          <TextField label="Email *" name="email" value={formData.email} onChange={handleChange} type="email" fullWidth />
           <TextField label="Teléfono" name="phone_number" value={formData.phone_number} onChange={handleChange} fullWidth />
           <TextField label="Ubicación" name="location" value={formData.location} onChange={handleChange} fullWidth />
-          <TextField label="Contraseña" name="password" value={formData.password} onChange={handleChange} type="password" fullWidth />
-          <TextField label="Repite la contraseña" name="confirm_password" value={formData.confirm_password} onChange={handleChange} type="password" fullWidth />
+          <TextField label="Contraseña *" name="password" value={formData.password} onChange={handleChange} type="password" fullWidth />
+          <TextField label="Repite la contraseña *" name="confirm_password" value={formData.confirm_password} onChange={handleChange} type="password" fullWidth />
 
           <Button type="submit" variant="contained" color="primary">
             Crear cuenta

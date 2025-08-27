@@ -20,6 +20,10 @@ const theme = createTheme({
     text: {
       primary: "#1C1C1C",
     },
+    border: {
+      default: "#D9D9D9", // Default borders
+      dark: "#B3B3B3",    // Darker borders
+    },
   },
   typography: {
     fontFamily: "'Titillium Web', sans-serif",
@@ -35,6 +39,7 @@ const theme = createTheme({
   shape: {
     borderRadius: 8,
   },
+  //spacing: 4,
 });
 
 export default theme;

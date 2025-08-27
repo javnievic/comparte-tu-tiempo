@@ -23,7 +23,6 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: "'Titillium Web', sans-serif",
-    allVariants: { color: "#1C1C1C" },
     h1: { fontSize: "64px", fontWeight: 600 }, // main titles / cover pages
     h2: { fontSize: "48px", fontWeight: 600 }, // highlighted subtitles
     h3: { fontSize: "36px", fontWeight: 600 }, // intermediate headers

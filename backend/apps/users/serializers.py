@@ -20,7 +20,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             "id",
-            "username",
             "email",
             "password",
             "first_name",

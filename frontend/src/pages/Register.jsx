@@ -17,9 +17,54 @@ export default function Register() {
     description: "",
     profile_picture: null
   });
+  const [errors, setErrors] = useState({});
+  const validateRegisterField = (name, value, formData) => {
+    let error = "";
+
+    if (name === "first_name" || name === "last_name") {
+        if (!value.trim()) error = "Este campo es obligatorio";
+        else if (!/^[a-zA-Z\s]+$/.test(value)) error = "Solo letras y espacios";
+    }
+
+    if (name === "email") {
+        if (!value.trim()) error = "Este campo es obligatorio";
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) error = "Email inválido";
+    }
+
+    if (name === "password") {
+        if (!value.trim()) error = "Este campo es obligatorio";
+        else if (value.length < 8) error = "Mínimo 8 caracteres";
+        else if (!/[A-Z]/.test(value) || !/[a-z]/.test(value) || !/[0-9]/.test(value))
+        error = "Debe contener mayúscula, minúscula y número";
+    }
+
+    if (name === "confirm_password") {
+        if (!value.trim()) error = "Este campo es obligatorio";
+        else if (value !== formData.password) error = "Las contraseñas no coinciden";
+    }
+
+    if (name === "phone_number") {
+        if (value && !/^\d{9,15}$/.test(value)) error = "Número inválido (9-15 dígitos)";
+    }
+
+    if (name === "location") {
+        if (value.length > 100) error = "Máximo 100 caracteres";
+    }
+
+    if (name === "description") {
+        if (value.length > 500) error = "Máximo 500 caracteres";
+    }
+
+    return error;
+    };
+
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    const error = validateRegisterField(name, value, { ...formData, [name]: value });
+    setErrors({ ...errors, [name]: error });
   };
 
   const handleFileChange = (e) => {
@@ -29,7 +74,28 @@ export default function Register() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
+    const newErrors = {};
+    ["first_name", "last_name", "email", "password", "confirm_password"].forEach((field) => {
+    if (!formData[field].trim()) {
+        newErrors[field] = "Este campo es obligatorio";
+    }
+    });
+
+    Object.keys(formData).forEach((field) => {
+        const error = validateRegisterField(field, formData[field], formData);
+        if (error) newErrors[field] = error;
+    });
+
+    if (formData.password !== formData.confirm_password) {
+    newErrors.confirm_password = "Las contraseñas no coinciden";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+    setErrors(newErrors);
+    return; // Stop submission if there are errors
+    }
+
     if (formData.password !== formData.confirm_password) {
       alert("Las contraseñas no coinciden");
       return;
@@ -87,16 +153,16 @@ export default function Register() {
 
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <Box sx={{ display: "flex", gap: 2 }}>
-            <TextField label="Nombre *" name="first_name" value={formData.first_name} onChange={handleChange} fullWidth />
-            <TextField label="Apellidos *" name="last_name" value={formData.last_name} onChange={handleChange} fullWidth />
+            <TextField label="Nombre *" name="first_name" value={formData.first_name} onChange={handleChange} fullWidth error={!!errors.first_name} helperText={errors.first_name} />
+            <TextField label="Apellidos *" name="last_name" value={formData.last_name} onChange={handleChange} fullWidth error={!!errors.last_name} helperText={errors.last_name} />
           </Box>
 
-          <TextField label="Sobre tí" name="description" value={formData.description} onChange={handleChange} multiline rows={3} fullWidth />
-          <TextField label="Email *" name="email" value={formData.email} onChange={handleChange} type="email" fullWidth />
-          <TextField label="Teléfono" name="phone_number" value={formData.phone_number} onChange={handleChange} fullWidth />
-          <TextField label="Ubicación" name="location" value={formData.location} onChange={handleChange} fullWidth />
-          <TextField label="Contraseña *" name="password" value={formData.password} onChange={handleChange} type="password" fullWidth />
-          <TextField label="Repite la contraseña *" name="confirm_password" value={formData.confirm_password} onChange={handleChange} type="password" fullWidth />
+          <TextField label="Sobre ti" name="description" value={formData.description} onChange={handleChange} multiline rows={3} fullWidth error={!!errors.description} helperText={errors.description} />
+          <TextField label="Email *" name="email" value={formData.email} onChange={handleChange} type="email" fullWidth error={!!errors.email} helperText={errors.email} />
+          <TextField label="Teléfono" name="phone_number" value={formData.phone_number} onChange={handleChange} fullWidth error={!!errors.phone_number} helperText={errors.phone_number} />
+          <TextField label="Ubicación" name="location" value={formData.location} onChange={handleChange} fullWidth error={!!errors.location} helperText={errors.location} />
+          <TextField label="Contraseña *" name="password" value={formData.password} onChange={handleChange} type="password" fullWidth error={!!errors.password} helperText={errors.password} />
+          <TextField label="Repite la contraseña *" name="confirm_password" value={formData.confirm_password} onChange={handleChange} type="password" fullWidth error={!!errors.confirm_password} helperText={errors.confirm_password} />
 
           <Button type="submit" variant="contained" color="primary">
             Crear cuenta

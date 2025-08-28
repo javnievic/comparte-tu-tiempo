@@ -1,5 +1,5 @@
 import { Box, Typography, AppBar, Toolbar } from "@mui/material";
-import CustomButton from "./customButton";
+import CustomButton from "./CustomButton";
 import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {

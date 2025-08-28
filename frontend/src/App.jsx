@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import {Box} from "@mui/material";
 import Register from "./pages/Register";
-import Navbar from "./components/navbar";
+import Navbar from "./components/Navbar";
 
 export default function App() {
   return (

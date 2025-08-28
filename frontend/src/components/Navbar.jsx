@@ -1,7 +1,10 @@
 import { Box, Typography, AppBar, Toolbar } from "@mui/material";
 import CustomButton from "./customButton";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
+  const navigate = useNavigate();
+
   return (
     <AppBar
       position="static"
@@ -9,7 +12,7 @@ export default function Navbar() {
       sx={{
         backgroundColor: "transparent", // keep it transparent
         borderBottom: theme => `1px solid ${theme.palette.border.default}`, // grey bottom border
-        paddingX: { xs: 2, md: 12 }, // responsive horizontal padding
+        paddingX: { xs: 2, md: 12.5 }, // responsive horizontal padding
         paddingY: 0.5,
       }}
     >
@@ -23,15 +26,17 @@ export default function Navbar() {
       >
         {/* Logo Section */}
         <Box
-          component="img"
-          src="https://placehold.co/68x68"
-          alt="Logo"
-          sx={{
+        component="img"
+        src="https://placehold.co/68x68"
+        alt="Logo"
+        sx={{
             width: 68,
             height: 68,
-
-          }}
+            cursor: "pointer", // show pointer on hover
+        }}
+        onClick={() => navigate("/")} // navigate to home page
         />
+
 
         {/* Right Side Buttons */}
         <Box
@@ -47,7 +52,7 @@ export default function Navbar() {
           </Typography>
 
           {/* Register Button using CustomButton */}
-          <CustomButton type="submit" variantstyle="outline" variant="contained">
+          <CustomButton onClick={() => navigate("/register")} variantstyle="outline" variant="contained">
             Registrarse
           </CustomButton>
         </Box>

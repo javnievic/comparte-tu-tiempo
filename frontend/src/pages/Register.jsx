@@ -5,6 +5,7 @@ import { PhotoCamera } from "@mui/icons-material";
 import { registerUser } from "../services/authService";
 import theme from "../styles/theme";
 import ErrorMessage from "../components/ErrorMessage";
+import CustomButton from "../components/customButton";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -181,9 +182,9 @@ export default function Register() {
           <TextField label="Contraseña *" name="password" value={formData.password} onChange={handleChange} type="password" fullWidth error={!!errors.password} helperText={errors.password} />
           <TextField label="Repite la contraseña *" name="confirm_password" value={formData.confirm_password} onChange={handleChange} type="password" fullWidth error={!!errors.confirm_password} helperText={errors.confirm_password} />
           
-          <Button type="submit" variant="contained" color="primary">
+          <CustomButton type="submit" variantstyle="primary" variant="contained">
             Crear cuenta
-          </Button>
+          </CustomButton>
         </form>
         {formError && <ErrorMessage message={formError} duration={5000} />}
       </Box>

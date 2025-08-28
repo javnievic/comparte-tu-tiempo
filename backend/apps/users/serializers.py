@@ -32,6 +32,13 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "date_joined"]
 
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError(
+                "Ya existe un usuario con este email."
+            )
+        return value
+
     def create(self, validated_data):
         # Hash password before saving
         validated_data["password"] = make_password(validated_data["password"])

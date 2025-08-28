@@ -4,6 +4,7 @@ import { Box, TextField, Button, Typography, Avatar, IconButton, Divider } from 
 import { PhotoCamera } from "@mui/icons-material";
 import { registerUser } from "../services/authService";
 import theme from "../styles/theme";
+import ErrorMessage from "../components/ErrorMessage";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -18,7 +19,9 @@ export default function Register() {
     profile_picture: null
   });
   const [errors, setErrors] = useState({});
+  const [formError, setFormError] = useState(""); 
   const validateRegisterField = (name, value, formData) => {
+    setErrors({});
     let error = "";
 
     if (name === "first_name" || name === "last_name") {
@@ -74,7 +77,8 @@ export default function Register() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
+    setFormError("");
     const newErrors = {};
     ["first_name", "last_name", "email", "password", "confirm_password"].forEach((field) => {
     if (!formData[field].trim()) {
@@ -108,7 +112,12 @@ export default function Register() {
       const response = await registerUser(data); 
       console.log("Registro exitoso", response);
     } catch (error) {
-      console.error("Error en el registro", error);
+      if (error.response && error.response.data) {
+        const backendErrors = error.response.data;
+        if (backendErrors.email) {
+          setFormError(backendErrors.email[0]);
+        }
+      }
     }
   };
 
@@ -163,11 +172,12 @@ export default function Register() {
           <TextField label="Ubicación" name="location" value={formData.location} onChange={handleChange} fullWidth error={!!errors.location} helperText={errors.location} />
           <TextField label="Contraseña *" name="password" value={formData.password} onChange={handleChange} type="password" fullWidth error={!!errors.password} helperText={errors.password} />
           <TextField label="Repite la contraseña *" name="confirm_password" value={formData.confirm_password} onChange={handleChange} type="password" fullWidth error={!!errors.confirm_password} helperText={errors.confirm_password} />
-
+          
           <Button type="submit" variant="contained" color="primary">
             Crear cuenta
           </Button>
         </form>
+        {formError && <ErrorMessage message={formError} duration={5000} />}
       </Box>
     </ThemeProvider>
   );

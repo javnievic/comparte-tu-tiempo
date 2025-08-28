@@ -13,7 +13,10 @@ class User(AbstractUser):
     username = None  # Remove username field
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, error_messages={
+        "unique": "Ya existe un usuario registrado con este email.",
+        "invalid": "Introduce un email válido.",
+    })
 
     # Additional fields
     profile_picture = models.ImageField(

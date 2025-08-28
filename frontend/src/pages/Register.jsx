@@ -107,9 +107,14 @@ export default function Register() {
     try {
       const data = new FormData();
       Object.keys(formData).forEach((key) => {
-        data.append(key, formData[key]);
+        if (key === "profile_picture") {
+          if (formData.profile_picture) data.append(key, formData.profile_picture);
+        } else {
+          data.append(key, formData[key]);
+        }
       });
-      const response = await registerUser(data); 
+
+      const response = await registerUser(data);
       console.log("Registro exitoso", response);
     } catch (error) {
       if (error.response && error.response.data) {
@@ -117,9 +122,12 @@ export default function Register() {
         if (backendErrors.email) {
           setFormError(backendErrors.email[0]);
         }
+      } else {
+        setFormError("Ocurrió un error de conexión");
       }
     }
   };
+
 
   return (
     <ThemeProvider theme={theme}>

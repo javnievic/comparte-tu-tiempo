@@ -5,7 +5,7 @@ import { PhotoCamera } from "@mui/icons-material";
 import { registerUser } from "../services/authService";
 import theme from "../styles/theme";
 import ErrorMessage from "../components/ErrorMessage";
-import CustomButton from "../components/customButton";
+import CustomButton from "../components/CustomButton";
 
 export default function Register() {
   const [formData, setFormData] = useState({

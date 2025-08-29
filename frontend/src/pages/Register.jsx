@@ -136,8 +136,6 @@ export default function Register() {
       <FormContainer
         title="Registro"
         handleSubmit={handleSubmit}
-        formError={formError}
-        showAvatar={true}
       >
 
         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>

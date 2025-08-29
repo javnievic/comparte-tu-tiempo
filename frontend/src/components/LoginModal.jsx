@@ -106,7 +106,6 @@ export default function LoginModal({ open, onClose }) {
         <FormContainer
           title="Iniciar sesión"
           handleSubmit={handleSubmit}
-          formError={formError}
         >
           <TextField
             label="Email"
@@ -132,6 +131,7 @@ export default function LoginModal({ open, onClose }) {
             Iniciar sesión
           </CustomButton>
         </FormContainer>
+        {formError && <ErrorMessage message={formError} duration={3000} />}
       </Box>
     </Modal>
     

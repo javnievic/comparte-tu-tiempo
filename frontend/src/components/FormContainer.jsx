@@ -5,7 +5,6 @@ import ErrorMessage from "./ErrorMessage";
 export default function FormContainer({
   title,
   handleSubmit,
-  formError,
   children, // extra fields
 }) {
   return (
@@ -30,7 +29,6 @@ export default function FormContainer({
         {children}
       </form>
 
-      {formError && <ErrorMessage color="error">{formError}</ErrorMessage>}
     </Box>
   );
 }

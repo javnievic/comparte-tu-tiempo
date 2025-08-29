@@ -6,6 +6,7 @@ import { registerUser } from "../services/authService";
 import theme from "../styles/theme";
 import ErrorMessage from "../components/ErrorMessage";
 import CustomButton from "../components/CustomButton";
+import FormContainer from "../components/FormContainer";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -132,22 +133,12 @@ export default function Register() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box
-        sx={{
-          maxWidth: 600,
-          mx: "auto",
-          p: 3,
-          border: "1px solid",
-          borderColor: "border.dark",
-          borderRadius: 2,
-          display: "flex",
-          flexDirection: "column",
-          gap: 3,
-        }}
+      <FormContainer
+        title="Registro"
+        handleSubmit={handleSubmit}
+        formError={formError}
+        showAvatar={true}
       >
-        <Typography variant="h3" align="center">Registro</Typography>
-
-        <Divider sx={{ borderColor: "border.default"}} />
 
         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
           <Avatar 
@@ -169,7 +160,7 @@ export default function Register() {
           <Typography>Sube una foto para tu perfil</Typography>
         </Box>
 
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+
           <Box sx={{ display: "flex", gap: 2 }}>
             <TextField label="Nombre *" name="first_name" value={formData.first_name} onChange={handleChange} fullWidth error={!!errors.first_name} helperText={errors.first_name} />
             <TextField label="Apellidos *" name="last_name" value={formData.last_name} onChange={handleChange} fullWidth error={!!errors.last_name} helperText={errors.last_name} />
@@ -185,9 +176,9 @@ export default function Register() {
           <CustomButton type="submit" variantstyle="primary" variant="contained">
             Crear cuenta
           </CustomButton>
-        </form>
-        {formError && <ErrorMessage message={formError} duration={5000} />}
-      </Box>
+
+        {formError && <ErrorMessage message={formError} duration={3000} />}
+      </FormContainer>
     </ThemeProvider>
   );
 }

@@ -10,6 +10,7 @@ export default function LoginModal({ open, onClose }) {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const validateLoginField = (name, value) => {
     let error = "";
@@ -36,6 +37,7 @@ export default function LoginModal({ open, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormError("");
+    setLoading(true);
 
     // Validate all fiels
     const newErrors = {};
@@ -46,11 +48,14 @@ export default function LoginModal({ open, onClose }) {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      setLoading(false);
       return; // Stop submission
+      
     }
 
     try {
       const response = await loginUser(formData);
+      
       console.log("Successful login", response);
 
       onClose();
@@ -77,8 +82,10 @@ export default function LoginModal({ open, onClose }) {
     } else {
       setFormError("Error de conexión con el servidor");
     }
+  } finally {
+    setLoading(false);
   }
-  };
+};
 
   return (
       <Modal open={open} onClose={onClose} aria-labelledby="login-modal">
@@ -128,7 +135,7 @@ export default function LoginModal({ open, onClose }) {
             helperText={errors.password}
           />
           <CustomButton type="submit" variantstyle="primary" variant="contained">
-            Iniciar sesión
+            {loading ? "Iniciando sesión..." : "Iniciar sesión"}
           </CustomButton>
         </FormContainer>
         {formError && <ErrorMessage message={formError} duration={3000} />}

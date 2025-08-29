@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import { Box, TextField, Button, Typography, Avatar, IconButton, Divider } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 import { registerUser } from "../services/authService";
 import theme from "../styles/theme";
 import ErrorMessage from "../components/ErrorMessage";
@@ -9,6 +10,7 @@ import CustomButton from "../components/CustomButton";
 import FormContainer from "../components/FormContainer";
 
 export default function Register() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -22,6 +24,9 @@ export default function Register() {
   });
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState(""); 
+  const [loading, setLoading] = useState(false);
+  
+
   const validateRegisterField = (name, value, formData) => {
     setErrors({});
     let error = "";
@@ -81,6 +86,7 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormError("");
+    setLoading(true);
     const newErrors = {};
     ["first_name", "last_name", "email", "password", "confirm_password"].forEach((field) => {
     if (!formData[field].trim()) {
@@ -99,6 +105,7 @@ export default function Register() {
 
     if (Object.keys(newErrors).length > 0) {
     setErrors(newErrors);
+    setLoading(false);
     return; // Stop submission if there are errors
     }
 
@@ -118,6 +125,7 @@ export default function Register() {
 
       const response = await registerUser(data);
       console.log("Registro exitoso", response);
+      navigate("/");
     } catch (error) {
       if (error.response && error.response.data) {
         const backendErrors = error.response.data;
@@ -127,6 +135,8 @@ export default function Register() {
       } else {
         setFormError("Ocurrió un error de conexión");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -172,7 +182,7 @@ export default function Register() {
           <TextField label="Repite la contraseña *" name="confirm_password" value={formData.confirm_password} onChange={handleChange} type="password" fullWidth error={!!errors.confirm_password} helperText={errors.confirm_password} />
           
           <CustomButton type="submit" variantstyle="primary" variant="contained">
-            Crear cuenta
+            {loading ? "Creando cuenta..." : "Crear cuenta"}
           </CustomButton>
 
         {formError && <ErrorMessage message={formError} duration={3000} />}

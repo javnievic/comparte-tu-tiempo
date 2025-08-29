@@ -2,23 +2,41 @@ import { Box, Typography, AppBar, Toolbar } from "@mui/material";
 import CustomButton from "./CustomButton";
 import { useNavigate } from "react-router-dom";
 import LoginModal from "./LoginModal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { logoutUser } from "../services/authService";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const [openLogin, setOpenLogin] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   const handleOpenLogin = () => setOpenLogin(true);
-  const handleCloseLogin = () => setOpenLogin(false);
+  const handleCloseLogin = () => {
+    setOpenLogin(false);
+    // Update user information
+    const user = JSON.parse(localStorage.getItem("user"));
+    setCurrentUser(user);
+  };
+
+  // Load user from localStorage on mount
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    setCurrentUser(user);
+  }, []);
+
+  const handleLogout = () => {
+    logoutUser();
+    setCurrentUser(null);
+  };
 
   return (
     <AppBar
       position="static"
-      elevation={0} // remove shadow
+      elevation={0}
       sx={{
-        backgroundColor: "transparent", // keep it transparent
-        borderBottom: theme => `1px solid ${theme.palette.border.default}`, // grey bottom border
-        paddingX: { xs: 2, md: 12.5 }, // responsive horizontal padding
+        backgroundColor: "transparent",
+        borderBottom: theme => `1px solid ${theme.palette.border.default}`,
+        paddingX: { xs: 2, md: 12.5 },
         paddingY: 0.5,
       }}
     >
@@ -32,41 +50,41 @@ export default function Navbar() {
       >
         {/* Logo Section */}
         <Box
-        component="img"
-        src="https://placehold.co/68x68"
-        alt="Logo"
-        sx={{
-            width: 68,
-            height: 68,
-            cursor: "pointer", // show pointer on hover
-        }}
-        onClick={() => navigate("/")} // navigate to home page
+          component="img"
+          src="https://placehold.co/68x68"
+          alt="Logo"
+          sx={{ width: 68, height: 68, cursor: "pointer" }}
+          onClick={() => navigate("/")}
         />
 
-
-        {/* Right Side Buttons */}
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1.5,
-          }}
-        >
-          {/* Login Text */}
-            <Typography
-              variant="h5"
-              sx={{ color: "text.primary", fontWeight: 600, cursor: "pointer" }}
-              onClick={handleOpenLogin}
-            >
-              Inicia sesión
-            </Typography>
-
-          {/* Register Button using CustomButton */}
-          <CustomButton onClick={() => navigate("/register")} variantstyle="outline" variant="contained">
-            Registrarse
-          </CustomButton>
+        {/* Right Side */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+          {currentUser ? (
+            <>
+              <Typography variant="h5" sx={{ color: "text.primary", fontWeight: 600 }}>
+                Hola, {currentUser.first_name}
+              </Typography>
+              <CustomButton onClick={handleLogout} variantstyle="outline" variant="contained">
+                Cerrar sesión
+              </CustomButton>
+            </>
+          ) : (
+            <>
+              <Typography
+                variant="h5"
+                sx={{ color: "text.primary", fontWeight: 600, cursor: "pointer" }}
+                onClick={handleOpenLogin}
+              >
+                Inicia sesión
+              </Typography>
+              <CustomButton onClick={() => navigate("/register")} variantstyle="outline" variant="contained">
+                Registrarse
+              </CustomButton>
+            </>
+          )}
         </Box>
       </Toolbar>
+
       <LoginModal open={openLogin} onClose={handleCloseLogin} />
     </AppBar>
   );

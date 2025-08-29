@@ -3,7 +3,7 @@ import { Modal, Box, IconButton, TextField } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import FormContainer from "./FormContainer";
 import CustomButton from "./CustomButton";
-import { registerUser } from "../services/authService";
+import { loginUser } from "../services/authService";
 
 export default function LoginModal({ open, onClose }) {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -15,35 +15,24 @@ export default function LoginModal({ open, onClose }) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    let newErrors = {};
+  try {
+    const response = await loginUser(formData); 
+    console.log("Successful login", response);
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
-    try {
-      
-      const response = await registerUser(data);
-      console.log("Registro exitoso", response);
-
-      if (!response.ok) {
-        const data = await response.json();
-        setFormError(data.detail || "Error al iniciar sesión");
-        return;
-      }
-
-      const data = await response.json();
-      console.log("Successful login", data);
-      onClose();
-      
-    } catch (error) {
+    
+    onClose();
+  } catch (error) {
+    if (error.response) {
+      setFormError(error.response.data.detail || "Error al iniciar sesión");
+    } else {
       setFormError("Error de conexión con el servidor");
     }
-  };
+  }
+};
+
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="login-modal">

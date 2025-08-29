@@ -3,6 +3,28 @@ from django.contrib.auth.hashers import make_password
 from .models import User
 
 
+class UserSerializer(serializers.ModelSerializer):
+    """
+    Serializer genérico para representar al usuario en responses.
+    No expone la contraseña.
+    """
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "email",
+            "first_name",
+            "last_name",
+            "profile_picture",
+            "phone_number",
+            "location",
+            "description",
+            "date_joined",
+        ]
+        read_only_fields = ["id", "date_joined", "email"]
+
+
 class UserRegisterSerializer(serializers.ModelSerializer):
     """
     Serializer for user registration.
@@ -43,3 +65,20 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         # Hash password before saving
         validated_data["password"] = make_password(validated_data["password"])
         return super().create(validated_data)
+
+
+class UserLoginSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(write_only=True, required=True)
+
+    def validate(self, data):
+        email = data.get("email")
+        password = data.get("password")
+
+        if not email or not password:
+            raise serializers.ValidationError(
+                "Correo y contraseña obligatorios."
+            )
+
+        # We don't perform authentication here; it's handled in the view
+        return data

@@ -2,31 +2,19 @@ import { Box, Typography, AppBar, Toolbar } from "@mui/material";
 import CustomButton from "./CustomButton";
 import { useNavigate } from "react-router-dom";
 import LoginModal from "./LoginModal";
-import { useState, useEffect } from "react";
-import { logoutUser } from "../services/authService";
+import { useState, useContext } from "react";
+import { UserContext } from "../contexts/UserContext";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const [openLogin, setOpenLogin] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+  const { currentUser, logout } = useContext(UserContext);
 
   const handleOpenLogin = () => setOpenLogin(true);
-  const handleCloseLogin = () => {
-    setOpenLogin(false);
-    // Update user information
-    const user = JSON.parse(localStorage.getItem("user"));
-    setCurrentUser(user);
-  };
-
-  // Load user from localStorage on mount
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    setCurrentUser(user);
-  }, []);
+  const handleCloseLogin = () => setOpenLogin(false);
 
   const handleLogout = () => {
-    logoutUser();
-    setCurrentUser(null);
+    logout();
   };
 
   return (

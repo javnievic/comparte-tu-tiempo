@@ -1,16 +1,19 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Modal, Box, IconButton, TextField } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import FormContainer from "./FormContainer";
 import CustomButton from "./CustomButton";
+
 import { loginUser } from "../services/authService";
 import ErrorMessage from "./ErrorMessage";
+import { UserContext } from "../contexts/UserContext";
 
 export default function LoginModal({ open, onClose }) {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
+  const { setCurrentUser } = useContext(UserContext);
 
   const validateLoginField = (name, value) => {
     let error = "";
@@ -55,7 +58,8 @@ export default function LoginModal({ open, onClose }) {
 
     try {
       const response = await loginUser(formData);
-      
+      setCurrentUser(JSON.parse(localStorage.getItem("user")));
+
       console.log("Successful login", response);
 
       onClose();

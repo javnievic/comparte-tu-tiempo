@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { ThemeProvider } from "@mui/material/styles";
-import { Box, TextField, Button, Typography, Avatar, IconButton, Divider } from "@mui/material";
+import { Box, TextField, Typography, Avatar, IconButton, Divider } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { registerUser } from "../services/authService";
+import { useContext } from "react";
 import theme from "../styles/theme";
 import ErrorMessage from "../components/ErrorMessage";
 import CustomButton from "../components/CustomButton";
 import FormContainer from "../components/FormContainer";
+import { UserContext } from "../contexts/UserContext";
+import { registerUser } from "../services/authService";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -25,7 +27,7 @@ export default function Register() {
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState(""); 
   const [loading, setLoading] = useState(false);
-  
+  const { setCurrentUser } = useContext(UserContext);
 
   const validateRegisterField = (name, value, formData) => {
     setErrors({});
@@ -124,7 +126,9 @@ export default function Register() {
       });
 
       const response = await registerUser(data);
+      setCurrentUser(JSON.parse(localStorage.getItem("user")));
       console.log("Registro exitoso", response);
+      
       navigate("/");
     } catch (error) {
       if (error.response && error.response.data) {

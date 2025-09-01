@@ -1,0 +1,29 @@
+import React, {useState, useEffect } from "react";
+import { logoutUser } from "../services/authService"; // Import functions from authService
+import { UserContext } from "./UserContext"; 
+
+// User provider component to wrap your app and provide the user state
+export const UserProvider = ({ children }) => {
+  const [currentUser, setCurrentUser] = useState(null);
+
+  // Load user from localStorage on mount
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      setCurrentUser(user);
+    }
+  }, []);
+
+  // Handle logout
+  const logout = () => {
+    logoutUser();
+    setCurrentUser(null);
+  };
+
+
+  return (
+    <UserContext.Provider value={{ currentUser, setCurrentUser, logout }}>
+      {children}
+    </UserContext.Provider>
+  );
+};

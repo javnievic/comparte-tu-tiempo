@@ -1,13 +1,18 @@
 import { useState } from "react";
 import { ThemeProvider } from "@mui/material/styles";
-import { Box, TextField, Button, Typography, Avatar, IconButton, Divider } from "@mui/material";
+import { Box, TextField, Typography, Avatar, IconButton, Divider } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
-import { registerUser } from "../services/authService";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
 import theme from "../styles/theme";
 import ErrorMessage from "../components/ErrorMessage";
 import CustomButton from "../components/CustomButton";
+import FormContainer from "../components/FormContainer";
+import { UserContext } from "../contexts/UserContext";
+import { registerUser } from "../services/authService";
 
 export default function Register() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -21,6 +26,9 @@ export default function Register() {
   });
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState(""); 
+  const [loading, setLoading] = useState(false);
+  const { setCurrentUser } = useContext(UserContext);
+
   const validateRegisterField = (name, value, formData) => {
     setErrors({});
     let error = "";
@@ -80,6 +88,7 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormError("");
+    setLoading(true);
     const newErrors = {};
     ["first_name", "last_name", "email", "password", "confirm_password"].forEach((field) => {
     if (!formData[field].trim()) {
@@ -98,6 +107,7 @@ export default function Register() {
 
     if (Object.keys(newErrors).length > 0) {
     setErrors(newErrors);
+    setLoading(false);
     return; // Stop submission if there are errors
     }
 
@@ -116,7 +126,10 @@ export default function Register() {
       });
 
       const response = await registerUser(data);
+      setCurrentUser(JSON.parse(localStorage.getItem("user")));
       console.log("Registro exitoso", response);
+      
+      navigate("/");
     } catch (error) {
       if (error.response && error.response.data) {
         const backendErrors = error.response.data;
@@ -126,28 +139,18 @@ export default function Register() {
       } else {
         setFormError("Ocurrió un error de conexión");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
 
   return (
     <ThemeProvider theme={theme}>
-      <Box
-        sx={{
-          maxWidth: 600,
-          mx: "auto",
-          p: 3,
-          border: "1px solid",
-          borderColor: "border.dark",
-          borderRadius: 2,
-          display: "flex",
-          flexDirection: "column",
-          gap: 3,
-        }}
+      <FormContainer
+        title="Registro"
+        handleSubmit={handleSubmit}
       >
-        <Typography variant="h3" align="center">Registro</Typography>
-
-        <Divider sx={{ borderColor: "border.default"}} />
 
         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
           <Avatar 
@@ -169,7 +172,7 @@ export default function Register() {
           <Typography>Sube una foto para tu perfil</Typography>
         </Box>
 
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+
           <Box sx={{ display: "flex", gap: 2 }}>
             <TextField label="Nombre *" name="first_name" value={formData.first_name} onChange={handleChange} fullWidth error={!!errors.first_name} helperText={errors.first_name} />
             <TextField label="Apellidos *" name="last_name" value={formData.last_name} onChange={handleChange} fullWidth error={!!errors.last_name} helperText={errors.last_name} />
@@ -183,11 +186,11 @@ export default function Register() {
           <TextField label="Repite la contraseña *" name="confirm_password" value={formData.confirm_password} onChange={handleChange} type="password" fullWidth error={!!errors.confirm_password} helperText={errors.confirm_password} />
           
           <CustomButton type="submit" variantstyle="primary" variant="contained">
-            Crear cuenta
+            {loading ? "Creando cuenta..." : "Crear cuenta"}
           </CustomButton>
-        </form>
-        {formError && <ErrorMessage message={formError} duration={5000} />}
-      </Box>
+
+        {formError && <ErrorMessage message={formError} duration={3000} />}
+      </FormContainer>
     </ThemeProvider>
   );
 }

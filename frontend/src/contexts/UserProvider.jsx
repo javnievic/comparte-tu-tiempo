@@ -1,8 +1,6 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, {useState, useEffect } from "react";
 import { logoutUser } from "../services/authService"; // Import functions from authService
-
-// Create the user context
-export const UserContext = createContext();
+import { UserContext } from "./UserContext"; 
 
 // User provider component to wrap your app and provide the user state
 export const UserProvider = ({ children }) => {

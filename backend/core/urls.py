@@ -16,9 +16,22 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.http import JsonResponse
+
+
+def api_home(request):
+    data = {
+        "message": "Bienvenido a la API de ComparteTuTiempo",
+        "endpoints": {
+            "usuarios": "api/usuarios/",
+            "ofertas": "api/offers/",
+        }
+    }
+    return JsonResponse(data)
 
 
 urlpatterns = [
+    path("", api_home),
     path('admin/', admin.site.urls),
     path('api/', include('apps.users.urls')),
     path('api/', include('apps.offers.urls')),

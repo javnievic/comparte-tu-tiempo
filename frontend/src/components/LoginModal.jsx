@@ -3,17 +3,19 @@ import { Modal, Box, IconButton, TextField } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import FormContainer from "./FormContainer";
 import CustomButton from "./CustomButton";
-
+import { UIContext } from "../contexts/UIContext";
 import { loginUser } from "../services/authService";
 import ErrorMessage from "./ErrorMessage";
 import { UserContext } from "../contexts/UserContext";
 
-export default function LoginModal({ open, onClose }) {
+export default function LoginModal() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
   const { setCurrentUser } = useContext(UserContext);
+  const { openLogin, closeLoginModal } = useContext(UIContext);
+  
 
   const validateLoginField = (name, value) => {
     let error = "";
@@ -62,7 +64,7 @@ export default function LoginModal({ open, onClose }) {
 
       console.log("Successful login", response);
 
-      onClose();
+      closeLoginModal();
     } catch (error) {
     if (error.response && error.response.data) {
       const backendErrors = error.response.data;
@@ -92,7 +94,7 @@ export default function LoginModal({ open, onClose }) {
 };
 
   return (
-      <Modal open={open} onClose={onClose} aria-labelledby="login-modal">
+      <Modal open={openLogin} onClose={closeLoginModal} aria-labelledby="login-modal">
         <Box
           sx={{
             position: "absolute",
@@ -108,7 +110,7 @@ export default function LoginModal({ open, onClose }) {
         }}
       >
         <IconButton
-          onClick={onClose}
+          onClick={closeLoginModal}
           sx={{ position: "absolute", top: 8, right: 8 }}
         >
           <CloseIcon />

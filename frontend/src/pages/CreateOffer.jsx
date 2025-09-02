@@ -10,21 +10,21 @@ import CustomButton from "../components/CustomButton";
 import FormContainer from "../components/FormContainer";
 import ErrorMessage from "../components/ErrorMessage";
 import { createOffer } from "../services/offerService";
+import { UIContext } from "../contexts/UIContext";
 
 
 export default function CreateOffer() {
   const navigate = useNavigate();
   const { currentUser } = useContext(UserContext); // Get logged-in user
+  const { openLoginModal } = useContext(UIContext);
 
   useEffect(() => {
     if (!currentUser) {
-      setFormError("Debes iniciar sesión para crear una oferta.");
-      const timer = setTimeout(() => {
-        navigate("/register"); // Redirige al registro
-      }, 1000);
-      return () => clearTimeout(timer);
+      navigate("/");
+      openLoginModal();
+      
     }
-  }, [currentUser, navigate]);
+  }, [currentUser, navigate, openLoginModal]);
 
   // State for the form data
   const [formData, setFormData] = useState({

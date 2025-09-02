@@ -17,8 +17,6 @@ class AbstractService(models.Model):
                                 verbose_name="Ubicación")
     publish_date = models.DateField(auto_now_add=True,
                                     verbose_name="Fecha de publicación")
-    status = models.CharField(max_length=50, default="Disponible",
-                              verbose_name="Estado")
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

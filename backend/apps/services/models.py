@@ -9,7 +9,10 @@ class AbstractService(models.Model):
     """
     title = models.CharField(max_length=100, verbose_name="Título")
     description = models.TextField(max_length=500, verbose_name="Descripción")
-    duration = models.CharField(max_length=50, verbose_name="Duración")
+    duration = models.DurationField(
+        verbose_name="Duración",
+        help_text="Duración del servicio en horas y minutos"
+    )
     is_online = models.BooleanField(default=False,
                                     verbose_name="Servicio online")
     is_active = models.BooleanField(default=True, verbose_name="Activo")

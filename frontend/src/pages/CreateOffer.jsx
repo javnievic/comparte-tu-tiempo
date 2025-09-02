@@ -17,7 +17,9 @@ export default function CreateOffer() {
   const navigate = useNavigate();
   const { currentUser } = useContext(UserContext); // Get logged-in user
   const { openLoginModal } = useContext(UIContext);
-
+  const [durationHours, setDurationHours] = useState(0);
+  const [durationMinutes, setDurationMinutes] = useState(0);
+  
   useEffect(() => {
     if (!currentUser) {
       navigate("/");
@@ -70,7 +72,7 @@ export default function CreateOffer() {
 
     // Validate required fields
     const newErrors = {};
-    ["title", "description", "duration"].forEach((field) => {
+    ["title", "description"].forEach((field) => {
       const error = validateField(field, formData[field]);
       if (error) newErrors[field] = error;
     });
@@ -88,8 +90,11 @@ export default function CreateOffer() {
         else data.append(key, formData[key]);
       });
 
+      const durationString = `${durationHours.toString().padStart(2,"0")}:${durationMinutes.toString().padStart(2,"0")}:00`;
+      data.append("duration", durationString);
+
       await createOffer(data);
-      navigate("/offers"); // Redirect to offers list
+      navigate("/"); // Redirect to offers list
     } catch (error) {
       setFormError("Error al crear la oferta. Revisa tus datos."); 
     } finally {
@@ -120,15 +125,40 @@ export default function CreateOffer() {
           error={!!errors.description}
           helperText={errors.description}
         />
-        <TextField
-          label="Duración *"
-          name="duration"
-          value={formData.duration}
-          onChange={handleChange}
-          fullWidth
-          error={!!errors.duration}
-          helperText={errors.duration}
-        />
+        <Box sx={{ display: "flex", gap: 2, mt: 2, mb: 2 }}>
+            <TextField
+            label="Horas"
+            type="number"
+            value={durationHours}
+              onChange={(e) => {
+                let val = parseInt(e.target.value) || 0;
+                if (val < 0) val = 0;
+                if (val > 23) val = 23; // máximo 23 horas
+                setDurationHours(val);
+            }}
+            slotProps={{
+                input: {
+                min: 0
+                }
+            }}
+            />
+            <TextField
+            label="Minutos"
+            type="number"
+            value={durationMinutes}
+            onChange={(e) => {
+                let val = parseInt(e.target.value) || 0;
+                if (val < 0) val = 0;
+                if (val > 59) val = 59;
+                setDurationMinutes(val);
+            }}
+            slotProps={{
+                input: { min: 0, max: 59 }
+            }}
+            />
+
+
+        </Box>
         <TextField
           label="Ubicación"
           name="location"

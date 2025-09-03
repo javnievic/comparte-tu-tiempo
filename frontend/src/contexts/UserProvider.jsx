@@ -4,7 +4,9 @@ import { UserContext } from "./UserContext";
 
 // User provider component to wrap your app and provide the user state
 export const UserProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(() => {
+  return JSON.parse(localStorage.getItem("user")) || null;
+});
 
   // Load user from localStorage on mount
   useEffect(() => {

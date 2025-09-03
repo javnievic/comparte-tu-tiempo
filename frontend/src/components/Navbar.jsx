@@ -2,16 +2,14 @@ import { Box, Typography, AppBar, Toolbar } from "@mui/material";
 import CustomButton from "./CustomButton";
 import { useNavigate } from "react-router-dom";
 import LoginModal from "./LoginModal";
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
+import { UIContext } from "../contexts/UIContext";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const [openLogin, setOpenLogin] = useState(false);
   const { currentUser, logout } = useContext(UserContext);
-
-  const handleOpenLogin = () => setOpenLogin(true);
-  const handleCloseLogin = () => setOpenLogin(false);
+  const { openLoginModal } = useContext(UIContext);
 
   const handleLogout = () => {
     logout();
@@ -61,7 +59,7 @@ export default function Navbar() {
               <Typography
                 variant="h5"
                 sx={{ color: "text.primary", fontWeight: 600, cursor: "pointer" }}
-                onClick={handleOpenLogin}
+                onClick={openLoginModal}
               >
                 Inicia sesión
               </Typography>
@@ -72,8 +70,6 @@ export default function Navbar() {
           )}
         </Box>
       </Toolbar>
-
-      <LoginModal open={openLogin} onClose={handleCloseLogin} />
     </AppBar>
   );
 }

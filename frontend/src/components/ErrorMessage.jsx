@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { Alert } from "@mui/material";
 
-export default function ErrorMessage({ message, position = "top", duration = 3000}) {
+export default function ErrorMessage({ message, position = "top", duration = 3000 }) {
   const [visible, setVisible] = useState(!!message);
-  console.log(visible);
   useEffect(() => {
     if (message) {
       setVisible(true);

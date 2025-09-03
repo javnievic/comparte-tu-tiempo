@@ -142,31 +142,56 @@ export default function CreateOffer() {
           error={!!errors.description}
           helperText={errors.description}
         />
-        <Box sx={{ mt: 3, mb: 3, width: "100%" }}>
-        <Typography gutterBottom>Duración estimada (mínimo 15 minutos)</Typography>
+    <Box
+    sx={{
+        mt: 3,
+        mb: 3,
+        p: 2,
+        border: "1px solid #ccc",
+        borderRadius: 2,
+        textAlign: "center",
+        "&:hover": { borderColor: theme.palette.text.primary },
+    }}
+    >
+    <Typography variant="subtitle1" gutterBottom>
+        Duración estimada (mínimo 15 minutos)
+    </Typography>
 
-        <Box sx={{ width: "100%", maxWidth: 520, mx: "auto" }}>
-            <Slider 
-            value={durationMinutesTotal}
-            min={15}
-            max={240}
-            step={15}
-            marks={[
-                { value: 15, label: "00:15" },
-                { value: 60, label: "01:00" },
-                { value: 120, label: "02:00" },
-                { value: 180, label: "03:00" },
-                { value: 240, label: "04:00" },
-            ]}
-            valueLabelDisplay="auto"
-            valueLabelFormat={(val) => formatDuration(val)}
-            onChange={(e, newValue) => setDurationMinutesTotal(newValue)}
-            />
-        </Box>
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
-            <Typography>{formatDuration(durationMinutesTotal)} horas</Typography>
-        </Box>
-        </Box>
+    <Box sx={{ width: "100%", maxWidth: 520, mx: "auto", px: 2 }}>
+        <Slider
+        value={durationMinutesTotal}
+        min={15}
+        max={240}
+        step={15}
+        marks={[
+            { value: 15, label: "00:15" },
+            { value: 60, label: "01:00" },
+            { value: 120, label: "02:00" },
+            { value: 180, label: "03:00" },
+            { value: 240, label: "04:00" },
+        ]}
+        valueLabelDisplay="auto"
+        valueLabelFormat={(val) => formatDuration(val)}
+        onChange={(e, newValue) => setDurationMinutesTotal(newValue)}
+        sx={{
+            color: theme.palette.primary.main,
+            "& .MuiSlider-thumb": {
+            backgroundColor: "#fff",
+            border: "2px solid",
+            borderColor: theme.palette.primary.main,
+            },
+            "& .MuiSlider-markLabel": {
+            fontSize: "0.75rem",
+            },
+        }}
+        />
+    </Box>
+
+    <Typography variant="body1" sx={{ mt: 1, fontWeight: 500 }}>
+        {formatDuration(durationMinutesTotal)} horas
+    </Typography>
+    </Box>
+
 
         <TextField
           label="Ubicación"

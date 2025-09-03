@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import {Box} from "@mui/material";
+import { Box } from "@mui/material";
 import Register from "./pages/Register";
 import Navbar from "./components/Navbar";
 import { UserProvider } from "./contexts/UserProvider";
@@ -9,7 +9,6 @@ import { UIProvider } from "./contexts/UIProvider";
 import LoginModal from "./components/LoginModal";
 
 export default function App() {
-  
   return (
     <Router>
       <UserProvider>

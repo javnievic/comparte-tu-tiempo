@@ -15,7 +15,7 @@ export default function LoginModal() {
   const [loading, setLoading] = useState(false);
   const { setCurrentUser } = useContext(UserContext);
   const { openLogin, closeLoginModal } = useContext(UIContext);
-  
+
 
   const validateLoginField = (name, value) => {
     let error = "";
@@ -55,7 +55,7 @@ export default function LoginModal() {
       setErrors(newErrors);
       setLoading(false);
       return; // Stop submission
-      
+
     }
 
     try {
@@ -66,39 +66,39 @@ export default function LoginModal() {
 
       closeLoginModal();
     } catch (error) {
-    if (error.response && error.response.data) {
-      const backendErrors = error.response.data;
+      if (error.response && error.response.data) {
+        const backendErrors = error.response.data;
 
-      // 1. Field errors
-      if (backendErrors.email) {
-        setErrors((prev) => ({ ...prev, email: backendErrors.email[0] }));
-      }
-      if (backendErrors.password) {
-        setErrors((prev) => ({ ...prev, password: backendErrors.password[0] }));
-      }
+        // 1. Field errors
+        if (backendErrors.email) {
+          setErrors((prev) => ({ ...prev, email: backendErrors.email[0] }));
+        }
+        if (backendErrors.password) {
+          setErrors((prev) => ({ ...prev, password: backendErrors.password[0] }));
+        }
 
-      // 2. General errors
-      if (backendErrors.non_field_errors) {
-        setFormError(backendErrors.non_field_errors[0]);
-      } else if (backendErrors.error) {
-        setFormError(backendErrors.error);
-      } else if (backendErrors.detail) {
-        setFormError(backendErrors.detail);
+        // 2. General errors
+        if (backendErrors.non_field_errors) {
+          setFormError(backendErrors.non_field_errors[0]);
+        } else if (backendErrors.error) {
+          setFormError(backendErrors.error);
+        } else if (backendErrors.detail) {
+          setFormError(backendErrors.detail);
+        }
+      } else {
+        setFormError("Error de conexión con el servidor");
       }
-    } else {
-      setFormError("Error de conexión con el servidor");
+    } finally {
+      setLoading(false);
     }
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
-      <Modal open={openLogin} onClose={closeLoginModal} aria-labelledby="login-modal">
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
+    <Modal open={openLogin} onClose={closeLoginModal} aria-labelledby="login-modal">
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
           bgcolor: "background.paper",
@@ -147,6 +147,6 @@ export default function LoginModal() {
         {formError && <ErrorMessage message={formError} duration={3000} />}
       </Box>
     </Modal>
-    
+
   );
 }

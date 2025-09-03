@@ -17,12 +17,12 @@ export default function CreateOffer() {
   const { currentUser } = useContext(UserContext); // Get logged-in user
   const { openLoginModal } = useContext(UIContext);
   const fileInputRef = useRef(null);
-  
+
   useEffect(() => {
     if (!currentUser) {
       navigate("/");
       openLoginModal();
-      
+
     }
   }, [currentUser, navigate, openLoginModal]);
 
@@ -106,14 +106,14 @@ export default function CreateOffer() {
 
       const h = Math.floor(durationMinutesTotal / 60);
       const m = durationMinutesTotal % 60;
-      const durationString = `${h.toString().padStart(2,"0")}:${m.toString().padStart(2,"0")}:00`;
+      const durationString = `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:00`;
       data.append("duration", durationString);
 
 
       await createOffer(data);
       navigate("/"); // Redirect to offers list
     } catch (error) {
-      setFormError("Error al crear la oferta. Revisa tus datos."); 
+      setFormError("Error al crear la oferta. Revisa tus datos.");
     } finally {
       setLoading(false);
     }
@@ -142,55 +142,55 @@ export default function CreateOffer() {
           error={!!errors.description}
           helperText={errors.description}
         />
-    <Box
-    sx={{
-        mt: 3,
-        mb: 3,
-        p: 2,
-        border: "1px solid #ccc",
-        borderRadius: 2,
-        textAlign: "center",
-        "&:hover": { borderColor: theme.palette.text.primary },
-    }}
-    >
-    <Typography variant="subtitle1" gutterBottom>
-        Duración estimada (mínimo 15 minutos)
-    </Typography>
+        <Box
+          sx={{
+            mt: 3,
+            mb: 3,
+            p: 2,
+            border: "1px solid #ccc",
+            borderRadius: 2,
+            textAlign: "center",
+            "&:hover": { borderColor: theme.palette.text.primary },
+          }}
+        >
+          <Typography variant="subtitle1" gutterBottom>
+            Duración estimada (mínimo 15 minutos)
+          </Typography>
 
-    <Box sx={{ width: "100%", maxWidth: 520, mx: "auto", px: 2 }}>
-        <Slider
-        value={durationMinutesTotal}
-        min={15}
-        max={240}
-        step={15}
-        marks={[
-            { value: 15, label: "00:15" },
-            { value: 60, label: "01:00" },
-            { value: 120, label: "02:00" },
-            { value: 180, label: "03:00" },
-            { value: 240, label: "04:00" },
-        ]}
-        valueLabelDisplay="auto"
-        valueLabelFormat={(val) => formatDuration(val)}
-        onChange={(e, newValue) => setDurationMinutesTotal(newValue)}
-        sx={{
-            color: theme.palette.primary.main,
-            "& .MuiSlider-thumb": {
-            backgroundColor: "#fff",
-            border: "2px solid",
-            borderColor: theme.palette.primary.main,
-            },
-            "& .MuiSlider-markLabel": {
-            fontSize: "0.75rem",
-            },
-        }}
-        />
-    </Box>
+          <Box sx={{ width: "100%", maxWidth: 520, mx: "auto", px: 2 }}>
+            <Slider
+              value={durationMinutesTotal}
+              min={15}
+              max={240}
+              step={15}
+              marks={[
+                { value: 15, label: "00:15" },
+                { value: 60, label: "01:00" },
+                { value: 120, label: "02:00" },
+                { value: 180, label: "03:00" },
+                { value: 240, label: "04:00" },
+              ]}
+              valueLabelDisplay="auto"
+              valueLabelFormat={(val) => formatDuration(val)}
+              onChange={(e, newValue) => setDurationMinutesTotal(newValue)}
+              sx={{
+                color: theme.palette.primary.main,
+                "& .MuiSlider-thumb": {
+                  backgroundColor: "#fff",
+                  border: "2px solid",
+                  borderColor: theme.palette.primary.main,
+                },
+                "& .MuiSlider-markLabel": {
+                  fontSize: "0.75rem",
+                },
+              }}
+            />
+          </Box>
 
-    <Typography variant="body1" sx={{ mt: 1, fontWeight: 500 }}>
-        {formatDuration(durationMinutesTotal)} horas
-    </Typography>
-    </Box>
+          <Typography variant="body1" sx={{ mt: 1, fontWeight: 500 }}>
+            {formatDuration(durationMinutesTotal)} horas
+          </Typography>
+        </Box>
 
 
         <TextField
@@ -201,8 +201,8 @@ export default function CreateOffer() {
           fullWidth
         />
 
-    <Box
-        sx={{
+        <Box
+          sx={{
             mt: 2,
             mb: 2,
             p: 2,
@@ -211,60 +211,60 @@ export default function CreateOffer() {
             textAlign: "center",
             cursor: "pointer",
             "&:hover": { borderColor: theme.palette.primary.main },
-        }}
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={(e) => {
+          }}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
             e.preventDefault();
             const file = e.dataTransfer.files[0];
             if (file) setFormData({ ...formData, image: file });
-        }}
-        onClick={() => document.getElementById("image-input").click()}
-    >
-        {formData.image ? (
-                <Box sx={{ position: "relative", display: "inline-block" }}>
-                    <Avatar
-                        src={URL.createObjectURL(formData.image)}
-                        variant="rounded"
-                        sx={{ width: 150, height: 150 }}
-                    />
-                    <IconButton
-                        size="small"
-                        sx={{
-                            position: "absolute",
-                            top: 8,
-                            right: 8,
-                            width: 24,
-                            height: 24,
-                            borderRadius: "50%",
-                            backgroundColor: "rgba(255,255,255,0.8)",
-                            "&:hover": { backgroundColor: "rgba(255,255,255,1)" },
-                            padding: 0,
-                            minWidth: 0,
-                        }}
-                        onClick={handleRemoveImage}
-                    >
-                        ✕
-                    </IconButton>
-                </Box>
-        ) : (
+          }}
+          onClick={() => document.getElementById("image-input").click()}
+        >
+          {formData.image ? (
+            <Box sx={{ position: "relative", display: "inline-block" }}>
+              <Avatar
+                src={URL.createObjectURL(formData.image)}
+                variant="rounded"
+                sx={{ width: 150, height: 150 }}
+              />
+              <IconButton
+                size="small"
+                sx={{
+                  position: "absolute",
+                  top: 8,
+                  right: 8,
+                  width: 24,
+                  height: 24,
+                  borderRadius: "50%",
+                  backgroundColor: "rgba(255,255,255,0.8)",
+                  "&:hover": { backgroundColor: "rgba(255,255,255,1)" },
+                  padding: 0,
+                  minWidth: 0,
+                }}
+                onClick={handleRemoveImage}
+              >
+                ✕
+              </IconButton>
+            </Box>
+          ) : (
             <>
-            <Typography variant="subtitle1" gutterBottom>
+              <Typography variant="subtitle1" gutterBottom>
                 Sube una imagen de tu oferta
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
                 Arrastra la imagen aquí o haz clic para seleccionar
-            </Typography>
+              </Typography>
             </>
-        )}
-        <input
+          )}
+          <input
             id="image-input"
             type="file"
             accept="image/*"
             style={{ display: "none" }}
             ref={fileInputRef}
             onChange={handleFileChange}
-        />
-    </Box>
+          />
+        </Box>
 
         <CustomButton type="submit" variantstyle="primary" variant="contained">
           {loading ? "Creando oferta..." : "Crear oferta"}

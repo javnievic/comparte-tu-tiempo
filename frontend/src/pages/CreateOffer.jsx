@@ -168,25 +168,72 @@ export default function CreateOffer() {
           fullWidth
         />
 
-        <Box sx={{ display: "flex", alignItems: "center", mt: 2, mb: 2 }}>
-          <Avatar
-            src={formData.image ? URL.createObjectURL(formData.image) : "https://placehold.co/80x80"}
-            sx={{ width: 80, height: 80 }}
-          />
-          <label htmlFor="upload-photo">
-            <input
-              accept="image/*"
-              id="upload-photo"
-              type="file"
-              style={{ display: "none" }}
-              onChange={handleFileChange}
-            />
-            <IconButton color="primary" component="span">
-              <PhotoCamera />
-            </IconButton>
-          </label>
-          <Typography sx={{ ml: 2 }}>Sube una imagen para tu oferta</Typography>
-        </Box>
+    <Box
+        sx={{
+            mt: 2,
+            mb: 2,
+            p: 2,
+            border: "2px dashed #ccc",
+            borderRadius: 2,
+            textAlign: "center",
+            cursor: "pointer",
+            "&:hover": { borderColor: theme.palette.primary.main },
+        }}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file) setFormData({ ...formData, image: file });
+        }}
+        onClick={() => document.getElementById("image-input").click()}
+    >
+        {formData.image ? (
+                <Box sx={{ position: "relative", display: "inline-block" }}>
+                    <Avatar
+                        src={URL.createObjectURL(formData.image)}
+                        variant="rounded"
+                        sx={{ width: 150, height: 150 }}
+                    />
+                    <IconButton
+                        size="small"
+                        sx={{
+                            position: "absolute",
+                            top: 8,
+                            right: 8,
+                            width: 24,
+                            height: 24,
+                            borderRadius: "50%",
+                            backgroundColor: "rgba(255,255,255,0.8)",
+                            "&:hover": { backgroundColor: "rgba(255,255,255,1)" },
+                            padding: 0,
+                            minWidth: 0,
+                        }}
+                        onClick={(e) => {
+                        e.stopPropagation();
+                        setFormData({ ...formData, image: null });
+                        }}
+                    >
+                        ✕
+                    </IconButton>
+                </Box>
+        ) : (
+            <>
+            <Typography variant="subtitle1" gutterBottom>
+                Sube una imagen de tu oferta
+            </Typography>
+            <Typography variant="body2" color="textSecondary">
+                Arrastra la imagen aquí o haz clic para seleccionar
+            </Typography>
+            </>
+        )}
+        <input
+            id="image-input"
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+        />
+    </Box>
 
         <CustomButton type="submit" variantstyle="primary" variant="contained">
           {loading ? "Creando oferta..." : "Crear oferta"}

@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { ThemeProvider } from "@mui/material/styles";
-import { Box, TextField, Typography, IconButton, Avatar } from "@mui/material";
+import { Box, TextField, Typography, IconButton, Avatar, Slider } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
 import theme from "../styles/theme";
 import CustomButton from "../components/CustomButton";
@@ -17,8 +17,6 @@ export default function CreateOffer() {
   const navigate = useNavigate();
   const { currentUser } = useContext(UserContext); // Get logged-in user
   const { openLoginModal } = useContext(UIContext);
-  const [durationHours, setDurationHours] = useState(0);
-  const [durationMinutes, setDurationMinutes] = useState(0);
   
   useEffect(() => {
     if (!currentUser) {
@@ -40,6 +38,14 @@ export default function CreateOffer() {
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [durationMinutesTotal, setDurationMinutesTotal] = useState(15); // mínimo 15
+
+  const formatDuration = (minutes) => {
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;
+  };
 
   // Validate a single field
   const validateField = (name, value) => {
@@ -90,8 +96,11 @@ export default function CreateOffer() {
         else data.append(key, formData[key]);
       });
 
-      const durationString = `${durationHours.toString().padStart(2,"0")}:${durationMinutes.toString().padStart(2,"0")}:00`;
+      const h = Math.floor(durationMinutesTotal / 60);
+      const m = durationMinutesTotal % 60;
+      const durationString = `${h.toString().padStart(2,"0")}:${m.toString().padStart(2,"0")}:00`;
       data.append("duration", durationString);
+
 
       await createOffer(data);
       navigate("/"); // Redirect to offers list
@@ -125,40 +134,32 @@ export default function CreateOffer() {
           error={!!errors.description}
           helperText={errors.description}
         />
-        <Box sx={{ display: "flex", gap: 2, mt: 2, mb: 2 }}>
-            <TextField
-            label="Horas"
-            type="number"
-            value={durationHours}
-              onChange={(e) => {
-                let val = parseInt(e.target.value) || 0;
-                if (val < 0) val = 0;
-                if (val > 23) val = 23; // máximo 23 horas
-                setDurationHours(val);
-            }}
-            slotProps={{
-                input: {
-                min: 0
-                }
-            }}
-            />
-            <TextField
-            label="Minutos"
-            type="number"
-            value={durationMinutes}
-            onChange={(e) => {
-                let val = parseInt(e.target.value) || 0;
-                if (val < 0) val = 0;
-                if (val > 59) val = 59;
-                setDurationMinutes(val);
-            }}
-            slotProps={{
-                input: { min: 0, max: 59 }
-            }}
-            />
+        <Box sx={{ mt: 3, mb: 3, width: "100%" }}>
+        <Typography gutterBottom>Duración estimada (mínimo 15 minutos)</Typography>
 
-
+        <Box sx={{ width: "100%", maxWidth: 520, mx: "auto" }}>
+            <Slider 
+            value={durationMinutesTotal}
+            min={15}
+            max={240}
+            step={15}
+            marks={[
+                { value: 15, label: "00:15" },
+                { value: 60, label: "01:00" },
+                { value: 120, label: "02:00" },
+                { value: 180, label: "03:00" },
+                { value: 240, label: "04:00" },
+            ]}
+            valueLabelDisplay="auto"
+            valueLabelFormat={(val) => formatDuration(val)}
+            onChange={(e, newValue) => setDurationMinutesTotal(newValue)}
+            />
         </Box>
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
+            <Typography>{formatDuration(durationMinutesTotal)} horas</Typography>
+        </Box>
+        </Box>
+
         <TextField
           label="Ubicación"
           name="location"

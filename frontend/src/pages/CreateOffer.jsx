@@ -1,10 +1,9 @@
 // src/pages/CreateOffer.jsx
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { ThemeProvider } from "@mui/material/styles";
 import { Box, TextField, Typography, IconButton, Avatar, Slider } from "@mui/material";
-import { PhotoCamera } from "@mui/icons-material";
 import theme from "../styles/theme";
 import CustomButton from "../components/CustomButton";
 import FormContainer from "../components/FormContainer";
@@ -17,6 +16,7 @@ export default function CreateOffer() {
   const navigate = useNavigate();
   const { currentUser } = useContext(UserContext); // Get logged-in user
   const { openLoginModal } = useContext(UIContext);
+  const fileInputRef = useRef(null);
   
   useEffect(() => {
     if (!currentUser) {
@@ -67,6 +67,14 @@ export default function CreateOffer() {
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setFormData({ ...formData, image: e.target.files[0] });
+    }
+  };
+
+  const handleRemoveImage = (e) => {
+    e.stopPropagation();
+    setFormData({ ...formData, image: null });
+    if (fileInputRef.current) {
+      fileInputRef.current.value = null; // Reset file input
     }
   };
 
@@ -208,10 +216,7 @@ export default function CreateOffer() {
                             padding: 0,
                             minWidth: 0,
                         }}
-                        onClick={(e) => {
-                        e.stopPropagation();
-                        setFormData({ ...formData, image: null });
-                        }}
+                        onClick={handleRemoveImage}
                     >
                         ✕
                     </IconButton>
@@ -231,6 +236,7 @@ export default function CreateOffer() {
             type="file"
             accept="image/*"
             style={{ display: "none" }}
+            ref={fileInputRef}
             onChange={handleFileChange}
         />
     </Box>

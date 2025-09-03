@@ -6,6 +6,7 @@ class OfferSerializer(serializers.ModelSerializer):
     """
     Serializer for the Offer model.
     """
+    image = serializers.ImageField(required=False, allow_null=True)
 
     class Meta:
         model = Offer

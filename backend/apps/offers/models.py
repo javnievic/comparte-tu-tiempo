@@ -10,7 +10,8 @@ class Offer(AbstractService):
         upload_to='offers',  # Folder where offer images will be stored
         blank=True,
         null=True,
-        verbose_name="Imagen"
+        verbose_name="Imagen",
+        default="offers/default.webp"
     )
 
     class Meta:

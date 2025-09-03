@@ -9,7 +9,7 @@ export const createOffer = async (offerData) => {
   const response = await axios.post(API_URL, offerData, {
     headers: {
       "Authorization": `Bearer ${getAccessToken()}`,
-      "Content-Type": "multipart/form-data",
+      "Accept": "application/json",
     },
   });
   return response.data;

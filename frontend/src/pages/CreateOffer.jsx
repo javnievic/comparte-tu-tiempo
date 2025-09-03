@@ -100,8 +100,11 @@ export default function CreateOffer() {
     try {
       const data = new FormData();
       Object.keys(formData).forEach((key) => {
-        if (key === "image" && formData.image) data.append(key, formData.image);
-        else data.append(key, formData[key]);
+        if (key === "image") {
+          if (formData.image) data.append("image", formData.image); // only if there are files
+        } else {
+          data.append(key, formData[key]);
+        }
       });
 
       const h = Math.floor(durationMinutesTotal / 60);
@@ -113,7 +116,16 @@ export default function CreateOffer() {
       await createOffer(data);
       navigate("/"); // Redirect to offers list
     } catch (error) {
-      setFormError("Error al crear la oferta. Revisa tus datos.");
+      if (error.response && error.response.data) {
+        const backendErrors = error.response.data;
+        const messages = Object.values(backendErrors)
+          .map((val) => (Array.isArray(val) ? val.join(", ") : val))
+          .join(" | ");
+
+        setFormError(messages);
+      } else {
+        setFormError("Error de conexión con el servidor");
+      }
     } finally {
       setLoading(false);
     }

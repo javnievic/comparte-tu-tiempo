@@ -1,7 +1,6 @@
 import { Box, Typography, AppBar, Toolbar } from "@mui/material";
 import CustomButton from "./CustomButton";
 import { useNavigate } from "react-router-dom";
-import LoginModal from "./LoginModal";
 import { useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
 import { UIContext } from "../contexts/UIContext";

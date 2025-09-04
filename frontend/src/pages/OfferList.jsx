@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import CustomButton from "../components/CustomButton";
+import { Rating } from "@mui/material";
 
 export default function OfferList() {
     const navigate = useNavigate();
@@ -61,17 +62,17 @@ export default function OfferList() {
                 Crear oferta
             </CustomButton>
 
-            <Grid container spacing={3}>
+            <Grid container spacing={2.5}>
                 {offers.map((offer) => (
                     <Grid item xs={12} sm={6} md={4} key={offer.id}>
                         <Card
                             sx={{
-                                borderRadius: 3,
+                                width: 295,   
+                                height: 384,  
                                 overflow: "hidden",
                                 boxShadow: "0px 2px 8px rgba(0,0,0,0.1)",
                                 display: "flex",
                                 flexDirection: "column",
-                                height: "100%",
                             }}
                         >
                             {/* Imagen */}
@@ -84,8 +85,9 @@ export default function OfferList() {
                                 alt={offer.title}
                                 sx={{
                                     width: "100%",
-                                    height: 200,
+                                    height: 257,
                                     objectFit: "cover",
+                                    borderRadius: "0px 0px 20px 20px",
                                 }}
                             />
 
@@ -95,11 +97,7 @@ export default function OfferList() {
                                     sx={{
                                         display: "flex",
                                         alignItems: "center",
-                                        gap: 1.5,
-                                        mb: 1.5,
-                                        boxShadow: "0px 0px 4px rgba(0,0,0,0.25)",
-                                        borderRadius: 2,
-                                        p: 1,
+                                   
                                     }}
                                 >
                                     <Avatar
@@ -119,24 +117,20 @@ export default function OfferList() {
                                     {offer.title}
                                 </Typography>
 
-                                {/* Duración + Rating */}
+                                {/* Rating and Duration */}
                                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                    <Typography variant="body2">
-                                        {offer.duration || "Sin duración"}
-                                    </Typography>
+                                    <Typography variant="body2">{offer.duration || "Sin duración"}</Typography>
                                     <Typography variant="body2">·</Typography>
-                                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                                        <Box
-                                            sx={{
-                                                width: 10,
-                                                height: 16,
-                                                backgroundColor: "#FFC633",
-                                            }}
-                                        />
-                                        <Typography variant="body2">
-                                            {offer.rating ? `${offer.rating}/5` : "Sin rating"}
-                                        </Typography>
-                                    </Box>
+                                    <Rating
+                                        name={`rating-${offer.id}`}
+                                        value={offer.rating || 0}
+                                        readOnly
+                                        precision={0.5} // For half stars if you want
+                                        size="small"
+                                    />
+                                    <Typography variant="body2">
+                                        {offer.rating ? `${offer.rating}/5` : "Sin rating"}
+                                    </Typography>
                                 </Box>
 
                                 {/* Online / Local */}

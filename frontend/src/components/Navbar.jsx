@@ -46,6 +46,28 @@ export default function Navbar() {
         <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
           {currentUser ? (
             <>
+              <Box
+                onClick={() => navigate("/create-offer")}
+                sx={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 2,
+                  backgroundColor: "primary.main",
+                  color: "white",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  fontSize: 28,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "0.2s",
+                  "&:hover": {
+                    backgroundColor: "primary.dark",
+                  },
+                }}
+              >
+                +
+              </Box>
               <Typography variant="h5" sx={{ color: "text.primary", fontWeight: 600 }}>
                 Hola, {currentUser.first_name}
               </Typography>

@@ -11,18 +11,11 @@ import {
     CircularProgress,
     Divider,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import CustomButton from "../components/CustomButton";
 import { Rating } from "@mui/material";
 import { formatDuration } from "../utils/time";
 
 export default function OfferList() {
-    const navigate = useNavigate();
 
-    // Handle redirect to offer creation page
-    const handleCreateOffer = () => {
-        navigate("/create-offer");
-    };
     const [offers, setOffers] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -55,14 +48,7 @@ export default function OfferList() {
                 Ofertas
             </Typography>
 
-            {/* Provisional button to create an offer */}
-            <CustomButton
-                variant="contained"
-                color="primary"
-                onClick={handleCreateOffer}
-            >
-                Crear oferta
-            </CustomButton>
+
             <Box sx={{ display: "flex", gap: 2.5 }}>
                 <Box
                     sx={{
@@ -116,19 +102,24 @@ export default function OfferList() {
                             >
                                 {/* Image */}
                                 <Box
-                                    component="img"
-                                    src={
-                                        offer.image ||
-                                        "https://placehold.co/295x257?text=Sin+Imagen"
-                                    }
-                                    alt={offer.title}
                                     sx={{
                                         width: "100%",
-                                        height: 257,
-                                        objectFit: "cover",
+                                        height: 257, // fixed height
+                                        overflow: "hidden",
                                         borderRadius: "0px 0px 20px 20px",
                                     }}
-                                />
+                                >
+                                    <Box
+                                        component="img"
+                                        src={offer.image || "https://placehold.co/295x257?text=Sin+Imagen"}
+                                        alt={offer.title}
+                                        sx={{
+                                            width: "100%",
+                                            height: "100%",
+                                            objectFit: "cover", // forces the image to fill the container
+                                        }}
+                                    />
+                                </Box>
 
                                 <CardContent sx={{ flexGrow: 1 }}>
                                     {/* User */}

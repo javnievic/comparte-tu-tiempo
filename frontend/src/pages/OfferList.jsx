@@ -10,6 +10,7 @@ import {
     Grid,
     CircularProgress,
     Divider,
+    Tooltip,
 } from "@mui/material";
 import { Rating } from "@mui/material";
 import { formatDuration } from "../utils/time";
@@ -140,12 +141,22 @@ export default function OfferList() {
                                     </Box>
 
                                     {/* Title */}
-                                    <Typography
-                                        variant="h6"
-                                        sx={{ fontWeight: 600, mb: 1 }}
-                                    >
-                                        {offer.title}
-                                    </Typography>
+                                    <Tooltip title={offer.title} arrow placement="bottom-start">
+                                        <Typography
+                                            variant="h6"
+                                            sx={{
+                                                fontWeight: 600,
+                                                mb: 1,
+                                                overflow: "hidden",
+                                                textOverflow: "ellipsis",
+                                                whiteSpace: "nowrap",
+                                                display: "block", // ensures ellipsis works
+                                                maxWidth: "100%", // adapts to the card width
+                                            }}
+                                        >
+                                            {offer.title}
+                                        </Typography>
+                                    </Tooltip>
 
                                     {/* Rating and Duration */}
                                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

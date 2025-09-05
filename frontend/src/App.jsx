@@ -10,7 +10,7 @@ import LoginModal from "./components/LoginModal";
 import LayoutGuide from "./components/LayoutGuide";
 
 export default function App() {
-  const showguide = true; // Set to true to show the layout guide
+  const showguide = false; // Set to true to show the layout guide
   return (
 
     <Router>

@@ -113,7 +113,7 @@ export default function OfferDetail() {
                         Enviar tiempo
                     </CustomButton>
                 </Box>
-                
+
                 {/* User data */}
                 <Box
                     sx={{
@@ -144,20 +144,25 @@ export default function OfferDetail() {
                     </Box>
 
                     {/* Estadísticas */}
-                    <Box sx={{ display: "flex", flexDirection: "column", gap: 2, flexGrow: 1 }}>
+                    <Box sx={{ display: "flex", flexDirection: "column", gap: 2, flexGrow: 1, justifyContent: "center", }}>
                         <Typography variant="body1">
                             {offer.user?.rating || 0}/5
                         </Typography>
                         <Divider />
                         <Box>
-                            <Typography variant="body1">23</Typography>
-                            <Typography variant="body2">horas ofrecidas</Typography>
+                            <Typography variant="body1">
+                                {offer.user?.time_sent ? formatDuration(offer.user.time_sent) : "0h"}
+                            </Typography>
+                            <Typography variant="body2">tiempo ofrecido</Typography>
                         </Box>
                         <Divider />
                         <Box>
-                            <Typography variant="body1">25</Typography>
-                            <Typography variant="body2">horas recibidas</Typography>
+                            <Typography variant="body1">
+                                {offer.user?.time_received ? formatDuration(offer.user.time_received) : "0h"}
+                            </Typography>
+                            <Typography variant="body2">tiempo recibido</Typography>
                         </Box>
+
                     </Box>
                 </Box>
             </Box>

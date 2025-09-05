@@ -21,8 +21,11 @@ class UserSerializer(serializers.ModelSerializer):
             "location",
             "description",
             "date_joined",
+            "time_sent",
+            "time_received",
         ]
-        read_only_fields = ["id", "date_joined", "email"]
+        read_only_fields = ["id", "date_joined", "email", "time_sent",
+                            "time_received"]
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):

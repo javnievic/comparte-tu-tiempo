@@ -8,6 +8,7 @@ import OfferList from "./pages/OfferList";
 import { UIProvider } from "./contexts/UIProvider";
 import LoginModal from "./components/LoginModal";
 import LayoutGuide from "./components/LayoutGuide";
+import OfferDetail from "./pages/OfferDetail";
 
 export default function App() {
   const showguide = false; // Set to true to show the layout guide
@@ -30,6 +31,7 @@ export default function App() {
               <Route path="/" element={<OfferList />} />
               <Route path="/register" element={<Register />} />
               <Route path="/create-offer" element={<CreateOffer />} />
+              <Route path="/offers/:id" element={<OfferDetail />} />
             </Routes>
           </Box>
           <LoginModal />

@@ -14,11 +14,13 @@ import {
 } from "@mui/material";
 import { Rating } from "@mui/material";
 import { formatDuration } from "../utils/time";
+import CustomButton from "../components/CustomButton";
 
 export default function OfferList() {
 
     const [offers, setOffers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [visibleCount, setVisibleCount] = useState(9);
 
     useEffect(() => {
         const fetchOffers = async () => {
@@ -87,102 +89,110 @@ export default function OfferList() {
                         Categorías
                     </Typography>
                 </Box>
-
-                <Grid container spacing={2.5}>
-                    {offers.map((offer) => (
-                        <Grid item xs={12} sm={6} md={4} key={offer.id}>
-                            <Card
-                                sx={{
-                                    width: 295,
-                                    height: 384,
-                                    overflow: "hidden",
-                                    boxShadow: "0px 2px 8px rgba(0,0,0,0.1)",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                }}
-                            >
-                                {/* Image */}
-                                <Box
+                <Box sx={{ flexGrow: 1 }}>
+                    <Grid container spacing={2.5}>
+                        {offers.slice(0, visibleCount).map((offer) => (
+                            <Grid item xs={12} sm={6} md={4} key={offer.id}>
+                                <Card
                                     sx={{
-                                        width: "100%",
-                                        height: 257, // fixed height
+                                        width: 295,
+                                        height: 384,
                                         overflow: "hidden",
-                                        borderRadius: "0px 0px 20px 20px",
+                                        boxShadow: "0px 2px 8px rgba(0,0,0,0.1)",
+                                        display: "flex",
+                                        flexDirection: "column",
                                     }}
                                 >
+                                    {/* Image */}
                                     <Box
-                                        component="img"
-                                        src={offer.image || "https://placehold.co/295x257?text=Sin+Imagen"}
-                                        alt={offer.title}
                                         sx={{
                                             width: "100%",
-                                            height: "100%",
-                                            objectFit: "cover", // forces the image to fill the container
-                                        }}
-                                    />
-                                </Box>
-
-                                <CardContent sx={{ flexGrow: 1 }}>
-                                    {/* User */}
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            alignItems: "center",
-
+                                            height: 257, // fixed height
+                                            overflow: "hidden",
+                                            borderRadius: "0px 0px 20px 20px",
                                         }}
                                     >
-                                        <Avatar
-                                            src={offer.user?.avatar || "https://placehold.co/28x28"}
-                                            sx={{ width: 28, height: 28 }}
+                                        <Box
+                                            component="img"
+                                            src={offer.image || "https://placehold.co/295x257?text=Sin+Imagen"}
+                                            alt={offer.title}
+                                            sx={{
+                                                width: "100%",
+                                                height: "100%",
+                                                objectFit: "cover", // forces the image to fill the container
+                                            }}
                                         />
-                                        <Typography variant="body2">
-                                            {offer.user?.first_name || "Usuario desconocido"}
-                                        </Typography>
                                     </Box>
 
-                                    {/* Title */}
-                                    <Tooltip title={offer.title} arrow placement="bottom-start">
-                                        <Typography
-                                            variant="h6"
+                                    <CardContent sx={{ flexGrow: 1 }}>
+                                        {/* User */}
+                                        <Box
                                             sx={{
-                                                fontWeight: 600,
-                                                mb: 1,
-                                                overflow: "hidden",
-                                                textOverflow: "ellipsis",
-                                                whiteSpace: "nowrap",
-                                                display: "block", // ensures ellipsis works
-                                                maxWidth: "100%", // adapts to the card width
+                                                display: "flex",
+                                                alignItems: "center",
+
                                             }}
                                         >
-                                            {offer.title}
-                                        </Typography>
-                                    </Tooltip>
+                                            <Avatar
+                                                src={offer.user?.avatar || "https://placehold.co/28x28"}
+                                                sx={{ width: 28, height: 28 }}
+                                            />
+                                            <Typography variant="body2">
+                                                {offer.user?.first_name || "Usuario desconocido"}
+                                            </Typography>
+                                        </Box>
 
-                                    {/* Rating and Duration */}
-                                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                        <Typography variant="body2">{formatDuration(offer.duration) || "Sin duración"}</Typography>
-                                        <Typography variant="body2">·</Typography>
-                                        <Rating
-                                            name={`rating-${offer.id}`}
-                                            value={offer.rating || 0}
-                                            readOnly
-                                            precision={0.5} // For half
-                                            size="small"
-                                        />
-                                        <Typography variant="body2">
-                                            {offer.rating ? `${offer.rating}/5` : "Sin rating"}
-                                        </Typography>
-                                    </Box>
+                                        {/* Title */}
+                                        <Tooltip title={offer.title} arrow placement="bottom-start">
+                                            <Typography
+                                                variant="h6"
+                                                sx={{
+                                                    fontWeight: 600,
+                                                    mb: 1,
+                                                    overflow: "hidden",
+                                                    textOverflow: "ellipsis",
+                                                    whiteSpace: "nowrap",
+                                                    display: "block", // ensures ellipsis works
+                                                    maxWidth: "100%", // adapts to the card width
+                                                }}
+                                            >
+                                                {offer.title}
+                                            </Typography>
+                                        </Tooltip>
 
-                                    {/* Online / Local */}
-                                    <Typography variant="body2" sx={{ mt: 1 }}>
-                                        {offer.is_online ? "Online" : offer.location || "Presencial"}
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    ))}
-                </Grid>
+                                        {/* Rating and Duration */}
+                                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                            <Typography variant="body2">{formatDuration(offer.duration) || "Sin duración"}</Typography>
+                                            <Typography variant="body2">·</Typography>
+                                            <Rating
+                                                name={`rating-${offer.id}`}
+                                                value={offer.rating || 0}
+                                                readOnly
+                                                precision={0.5} // For half
+                                                size="small"
+                                            />
+                                            <Typography variant="body2">
+                                                {offer.rating ? `${offer.rating}/5` : "Sin rating"}
+                                            </Typography>
+                                        </Box>
+
+                                        {/* Online / Local */}
+                                        <Typography variant="body2" sx={{ mt: 1 }}>
+                                            {offer.is_online ? "Online" : offer.location || "Presencial"}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+                    {visibleCount < offers.length && (
+                        <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+                            <CustomButton variant="contained" onClick={() => setVisibleCount(prev => prev + 9)}>
+                                Cargar más
+                            </CustomButton>
+                        </Box>
+                    )}
+                </Box>
             </Box>
         </Box>
     );

@@ -14,3 +14,12 @@ export const createOffer = async (offerData) => {
   });
   return response.data;
 };
+
+export const getAllOffers = async () => {
+  const response = await axios.get(API_URL, {
+    headers: {
+      "Accept": "application/json",
+    },
+  });
+  return response.data;
+};

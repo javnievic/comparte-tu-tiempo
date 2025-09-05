@@ -2,7 +2,6 @@
 import { useState, useContext, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
-import { ThemeProvider } from "@mui/material/styles";
 import { Box, TextField, Typography, IconButton, Avatar, Slider } from "@mui/material";
 import theme from "../styles/theme";
 import CustomButton from "../components/CustomButton";
@@ -132,7 +131,6 @@ export default function CreateOffer() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
       <FormContainer title="Crear Oferta" handleSubmit={handleSubmit}>
         <TextField
           label="Título *"
@@ -284,6 +282,5 @@ export default function CreateOffer() {
 
         {formError && <ErrorMessage message={formError} duration={3000} />}
       </FormContainer>
-    </ThemeProvider>
   );
 }

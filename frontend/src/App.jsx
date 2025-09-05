@@ -7,8 +7,10 @@ import CreateOffer from "./pages/CreateOffer";
 import OfferList from "./pages/OfferList";
 import { UIProvider } from "./contexts/UIProvider";
 import LoginModal from "./components/LoginModal";
+import LayoutGuide from "./components/LayoutGuide";
 
 export default function App() {
+  const showguide = true; // Set to true to show the layout guide
   return (
 
     <Router>
@@ -16,6 +18,7 @@ export default function App() {
         <UIProvider>
           <Navbar />
           <Box sx={{ height: 96 }} />
+          <LayoutGuide show={showguide} />
           <Box
             sx={{
               px: "100px", // lateral margins

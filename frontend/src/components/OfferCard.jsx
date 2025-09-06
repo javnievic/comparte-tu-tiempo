@@ -1,10 +1,25 @@
 // src/components/OfferCard.jsx
-import { Card, CardContent, Box, Avatar, Typography, Tooltip, Rating } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Box,
+  Avatar,
+  Typography,
+  Tooltip,
+  Rating,
+  IconButton,
+  Menu,
+  MenuItem
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { MoreVert } from "@mui/icons-material";
 import { formatDuration } from "../utils/time";
 
-export default function OfferCard({ offer, onClick }) {
+export default function OfferCard({ offer, onClick, isOwner = false }) {
     const navigate = useNavigate();
+    const [anchorEl, setAnchorEl] = useState(null);
+
 
     const handleClick = () => {
         if (onClick) {
@@ -12,6 +27,28 @@ export default function OfferCard({ offer, onClick }) {
         } else {
             navigate(`/offers/${offer.id}`);
         }
+    };
+
+    const open = Boolean(anchorEl);
+
+    const handleMenuOpen = (event) => {
+        event.stopPropagation(); 
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleEdit = () => {
+        handleMenuClose();
+        navigate(`/offers/${offer.id}/edit`);
+    };
+
+    const handleDelete = () => {
+        handleMenuClose();
+        //TODO: Call api
+        console.log("Eliminar oferta", offer.id);
     };
 
     return (
@@ -24,10 +61,27 @@ export default function OfferCard({ offer, onClick }) {
                 boxShadow: "0px 2px 8px rgba(0,0,0,0.1)",
                 display: "flex",
                 flexDirection: "column",
-                cursor: "pointer"
+                cursor: "pointer",
+                position: "relative"
             }}
             onClick={handleClick}
         >
+            {isOwner && (
+                <Box sx={{ position: "absolute", top: 8, right: 8, zIndex: 2 }}>
+                                                <IconButton size="small" onClick={handleMenuOpen}>
+                                <MoreVert />
+                            </IconButton>
+                            <Menu
+                                anchorEl={anchorEl}
+                                open={open}
+                                onClose={handleMenuClose}
+                                onClick={(e) => e.stopPropagation()} // evitar navegación
+                            >
+                                <MenuItem onClick={handleEdit}>Editar</MenuItem>
+                                <MenuItem onClick={handleDelete}>Eliminar</MenuItem>
+                            </Menu>
+                </Box>
+            )}
             {/* Image */}
             <Box
                 sx={{

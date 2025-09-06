@@ -200,7 +200,7 @@ export default function UserProfile() {
                                 <Grid container spacing={2.5}>
                                     {offers.slice(0, visibleCount).map((offer) => (
                                         <Grid size={{ xs: 12, sm: 10, md: 6, lg: 4 }} key={offer.id}>
-                                            <OfferCard offer={offer} />
+                                            <OfferCard offer={offer} isOwner={isOwner} />
                                         </Grid>
                                     ))}
                                 </Grid>

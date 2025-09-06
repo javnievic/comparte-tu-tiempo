@@ -12,7 +12,6 @@ export const getUserById = async (id) => {
     const response = await axios.get(`${API_URL}${id}/`, {
       headers: {
         Accept: "application/json",
-        Authorization: getAccessToken() ? `Bearer ${getAccessToken()}` : undefined,
       },
     });
     return response.data;

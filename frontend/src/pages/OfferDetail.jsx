@@ -79,7 +79,7 @@ export default function OfferDetail() {
                         display: "flex",
                         flexDirection: "column",
                         gap: 2.5,
-                        minWidth: 0, // importante: permite que los hijos se encojan
+                        minWidth: 0,
                     }}
                 >
                     {/* Main data */}

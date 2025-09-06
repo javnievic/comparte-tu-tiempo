@@ -3,13 +3,25 @@ import { Box, Typography, Avatar, Divider } from "@mui/material";
 import CustomButton from "./CustomButton";
 import { useNavigate } from "react-router-dom";
 import { formatDuration } from "../utils/time";
+import { UserContext } from "../contexts/UserContext";
+import { UIContext } from "../contexts/UIContext";
+import { useContext } from "react";
 
 export default function UserCard({ user }) {
     const navigate = useNavigate();
+    const { currentUser } = useContext(UserContext);
+    const { openLoginModal } = useContext(UIContext);
 
     const goToProfile = () => {
         if (!user?.id) return;
         navigate(`/users/${user.id}`);
+    };
+        const handleMessageClick = () => {
+        if (!currentUser) {
+            openLoginModal();
+        } else {
+            navigate(`/chat/${user.id}`); 
+        }
     };
 
     return (
@@ -28,18 +40,20 @@ export default function UserCard({ user }) {
             }}
         >
             {/* Avatar and message */}
-            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, width: "200px" }}>
-                <Avatar
-                   src={user.profile_picture}
-                    sx={{ width: 80, height: 80, cursor: "pointer" }} onClick={goToProfile}
-                />
-                <Typography variant="body1" sx={{ cursor: "pointer" }} onClick={goToProfile}>
+          
+                <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, width: "200px" }}>
+                    <Avatar
+                        src={user.profile_picture}
+                        sx={{ width: 80, height: 80, cursor: "pointer" }} onClick={goToProfile}
+                    />
+                    <Typography variant="body1" sx={{ cursor: "pointer" }} onClick={goToProfile}>
                     {user?.first_name || "Usuario desconocido"}
                 </Typography>
-                <CustomButton variantstyle="outline" variant="contained" sx={{ width: "fit-content" }}>
+                <CustomButton variantstyle="outline" variant="contained" sx={{ width: "fit-content" }} onClick={handleMessageClick}>
                     Mensaje
                 </CustomButton>
             </Box>
+            
 
             {/* Statistics */}
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2, flexGrow: 1, justifyContent: "center", position: "sticky", }}>

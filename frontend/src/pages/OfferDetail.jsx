@@ -1,5 +1,5 @@
 // src/pages/OfferDetail.jsx
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Typography, CircularProgress } from "@mui/material";
 import CustomButton from "../components/CustomButton";
@@ -7,12 +7,17 @@ import { formatDuration } from "../utils/time";
 import { MapPin } from 'lucide-react';
 import { getOfferById } from "../services/offerService";
 import UserCard from "../components/UserCard";
+import { UserContext } from "../contexts/UserContext";
+import { UIContext } from "../contexts/UIContext"; 
 
 
 export default function OfferDetail() {
     const { id } = useParams();
     const [offer, setOffer] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { currentUser } = useContext(UserContext);
+    const { openLoginModal } = useContext(UIContext);
+
 
     useEffect(() => {
         const fetchOffer = async () => {
@@ -39,6 +44,16 @@ export default function OfferDetail() {
     if (!offer) {
         return <Typography>Oferta no encontrada</Typography>;
     }
+
+    const handleSendTime = () => {
+        if (!currentUser) {
+            openLoginModal();
+            return;
+        }
+        console.log("Enviar tiempo a:", offer.user?.id);
+    };
+
+
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
@@ -107,6 +122,7 @@ export default function OfferDetail() {
                             variant="contained"
                             variantstyle="primary"
                             sx={{ width: "fit-content" }}
+                            onClick={handleSendTime}
                         >
                             Enviar tiempo
                         </CustomButton>

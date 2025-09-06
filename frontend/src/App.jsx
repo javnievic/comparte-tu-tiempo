@@ -34,7 +34,7 @@ export default function App() {
               <Route path="/offers/:id" element={<OfferDetail />} />
             </Routes>
           </Box>
-          <Box sx={{ height: 960 }} />
+          <Box sx={{ height: 96 }} />
           {/*<footer>
             <Box sx={{ height: 96 }} />
           </footer>*/}

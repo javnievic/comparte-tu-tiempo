@@ -143,7 +143,7 @@ export default function OfferDetail() {
                             </CustomButton>
                         </Box>
 
-                        {/* Estadísticas */}
+                        {/* Statistics */}
                         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, flexGrow: 1, justifyContent: "center", position: "sticky", }}>
                             <Typography variant="body1">
                                 {offer.user?.rating || 0}/5

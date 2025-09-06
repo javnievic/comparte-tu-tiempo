@@ -5,11 +5,14 @@ import { Box, Typography, Avatar, Divider, CircularProgress } from "@mui/materia
 import { getUserById } from "../services/userService";
 import CustomButton from "../components/CustomButton";
 import { MapPin, Mail, Phone } from "lucide-react";
+import { useContext } from "react";
+import { UserContext } from "../contexts/UserContext";
 
 export default function UserProfile() {
     const { id } = useParams();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { currentUser } = useContext(UserContext);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -27,6 +30,8 @@ export default function UserProfile() {
 
     if (loading) return <CircularProgress sx={{ display: "block", mx: "auto", mt: 5 }} />;
     if (!user) return <Typography sx={{ textAlign: "center", mt: 5 }}>Usuario no encontrado</Typography>;
+
+    const isOwner = currentUser && currentUser.id === user.id;
 
     return (
         <Box sx={{ display: "flex", gap: 2.5 }}>
@@ -57,13 +62,33 @@ export default function UserProfile() {
                     {user.first_name} {user.last_name}
                 </Typography>
 
-                {/* Botón de mensaje */}
-                <CustomButton
-                    variant="contained"
-                    variantstyle="outline"
-                >
-                    Mensaje
-                </CustomButton>
+                {/* Conditional buttons */}
+                {currentUser && (
+                    isOwner ? (
+                        <CustomButton
+                            variant="contained"
+                            variantstyle="outline"
+                        >
+                            Editar perfil
+                        </CustomButton>
+                    ) : (
+                        <Box sx={{ display: "flex", gap: 1 }}>
+                            <CustomButton
+                                variant="contained"
+                                variantstyle="primary"
+                            >
+                                Enviar tiempo
+                            </CustomButton>
+                            <CustomButton
+                                variant="contained"
+                                variantstyle="outline"
+                            >
+                                Mensaje
+                            </CustomButton>
+
+                        </Box>
+                    )
+                )}
 
                 <Divider sx={{ width: "100%", borderColor: "rgba(0,0,0,0.1)" }} />
 

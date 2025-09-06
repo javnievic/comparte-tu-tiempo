@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .validators import phone_validator
+from datetime import timedelta
 
 
 class User(AbstractUser):
@@ -29,6 +30,17 @@ class User(AbstractUser):
     description = models.TextField(
         blank=True, null=True, max_length=500,
         help_text="Escribe algo sobre ti (máx. 500 caracteres)"
+    )
+
+    time_sent = models.DurationField(
+        default=timedelta(0),
+        verbose_name="Tiempo enviado",
+        help_text="Tiempo total ofrecido a otros usuarios"
+    )
+    time_received = models.DurationField(
+        default=timedelta(0),
+        verbose_name="Tiempo recibido",
+        help_text="Tiempo total recibido de otros usuarios"
     )
 
     USERNAME_FIELD = 'email'

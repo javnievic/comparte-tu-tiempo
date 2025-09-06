@@ -15,12 +15,14 @@ import {
 import { Rating } from "@mui/material";
 import { formatDuration } from "../utils/time";
 import CustomButton from "../components/CustomButton";
+import { useNavigate } from "react-router-dom";
 
 export default function OfferList() {
 
     const [offers, setOffers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [visibleCount, setVisibleCount] = useState(9);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchOffers = async () => {
@@ -101,7 +103,9 @@ export default function OfferList() {
                                         boxShadow: "0px 2px 8px rgba(0,0,0,0.1)",
                                         display: "flex",
                                         flexDirection: "column",
+                                        cursor: "pointer"
                                     }}
+                                    onClick={() => navigate(`/offers/${offer.id}`)}
                                 >
                                     {/* Image */}
                                     <Box
@@ -186,7 +190,7 @@ export default function OfferList() {
                         ))}
                     </Grid>
                     {visibleCount < offers.length && (
-                        <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+                        <Box sx={{ display: "flex", justifyContent: "center", mt: 3}}>
                             <CustomButton variant="contained" onClick={() => setVisibleCount(prev => prev + 9)}>
                                 Cargar más
                             </CustomButton>

@@ -7,5 +7,5 @@ export function formatDuration(duration) {
   if (hours && minutes) return `${hours}h ${minutes}min`;
   if (hours) return `${hours}h`;
   if (minutes) return `${minutes}min`;
-  return "Sin duración";
+  return "0h";
 }

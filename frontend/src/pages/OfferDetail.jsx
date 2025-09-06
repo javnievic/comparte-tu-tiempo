@@ -1,0 +1,182 @@
+// src/pages/OfferDetail.jsx
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { Box, Typography, Avatar, CircularProgress, Divider } from "@mui/material";
+import CustomButton from "../components/CustomButton";
+import { formatDuration } from "../utils/time";
+import { MapPin } from 'lucide-react';
+
+const API_URL = "http://localhost:8000/api/offers/";
+
+export default function OfferDetail() {
+    const { id } = useParams();
+    const [offer, setOffer] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchOffer = async () => {
+            try {
+                const response = await axios.get(`${API_URL}${id}`, {
+                    headers: { Accept: "application/json" },
+                });
+                setOffer(response.data);
+            } catch (error) {
+                console.error("Error al obtener la oferta:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchOffer();
+    }, [id]);
+
+    if (loading) {
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    if (!offer) {
+        return <Typography>Oferta no encontrada</Typography>;
+    }
+
+    return (
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+            <Box sx={{ display: "flex", gap: 2.5 }}>
+                {/* Offer image */}
+                <Box>
+                    <img
+                        src={offer.image || "https://placehold.co/610x532"}
+                        alt={offer.title}
+                        style={{
+                            width: 610,
+                            height: 532,
+                            borderRadius: 20,
+                            objectFit: "cover",
+                        }}
+                    />
+                </Box>
+
+                {/* Offer information */}
+                <Box
+                    sx={{
+                        flex: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 2.5,
+                        minWidth: 0, // importante: permite que los hijos se encojan
+                    }}
+                >
+                    {/* Main data */}
+                    <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                        <Typography
+                            variant="h3"
+                            sx={{
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                                minWidth: 0,
+                            }}
+                        >
+                            {offer.title}
+                        </Typography>
+
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            <Typography variant="body1">{offer.rating || 0}/</Typography>
+                            <Typography variant="body1" sx={{ color: "rgba(0,0,0,0.6)" }}>5</Typography>
+                        </Box>
+
+                        <Typography variant="h3">{formatDuration(offer.duration) || "Sin duración"}</Typography>
+
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            <MapPin size={32} />
+                            <Typography
+                                variant="h4"
+                                sx={{
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                    whiteSpace: "nowrap",
+                                    minWidth: 0,
+                                }}
+                            >
+                                {offer.is_online ? "Online" : offer.location || "Presencial"}
+                            </Typography>
+                        </Box>
+
+                        <CustomButton
+                            variant="contained"
+                            variantstyle="primary"
+                            sx={{ width: "fit-content" }}
+                        >
+                            Enviar tiempo
+                        </CustomButton>
+                    </Box>
+
+                    {/* User data */}
+                    <Box
+                        sx={{
+                            display: "flex",
+                            gap: 5,
+                            p: 2.5,
+                            background: "white",
+                            boxShadow: "0px 0px 4px rgba(0,0,0,0.25)",
+                            borderRadius: 2,
+                            mt: 2,
+                            width: "400px",
+                            flexShrink: 0,
+                            overflow: "hidden",
+                        }}
+                    >
+                        {/* Avatar and message */}
+                        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, width: "200px" }}>
+                            <Avatar
+                                src={offer.user?.avatar || "https://placehold.co/80x80"}
+                                sx={{ width: 80, height: 80 }}
+                            />
+                            <Typography variant="body1">
+                                {offer.user?.first_name || "Usuario desconocido"}
+                            </Typography>
+                            <CustomButton variantstyle="outline" variant="contained" sx={{ width: "fit-content" }}>
+                                Mensaje
+                            </CustomButton>
+                        </Box>
+
+                        {/* Statistics */}
+                        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, flexGrow: 1, justifyContent: "center", position: "sticky", }}>
+                            <Typography variant="body1">
+                                {offer.user?.rating || 0}/5
+                            </Typography>
+                            <Divider />
+                            <Box>
+                                <Typography variant="body1">
+                                    {offer.user?.time_sent ? formatDuration(offer.user.time_sent) : "0h"}
+                                </Typography>
+                                <Typography variant="body2">tiempo ofrecido</Typography>
+                            </Box>
+                            <Divider />
+                            <Box>
+                                <Typography variant="body1">
+                                    {offer.user?.time_received ? formatDuration(offer.user.time_received) : "0h"}
+                                </Typography>
+                                <Typography variant="body2">tiempo recibido</Typography>
+                            </Box>
+
+                        </Box>
+                    </Box>
+                </Box>
+            </Box>
+            <Box
+            sx={{ maxWidth: 610, alignSelf: "flex-start", }}
+            >
+                <Typography variant="h5" sx={{ mb: 1 }}>
+                    Detalles del servicio
+                </Typography>
+                <Typography variant="body1" sx={{ whiteSpace: "pre-line" }}>
+                    {offer.description || "Sin descripción"}
+                </Typography>
+            </Box>
+        </Box>
+    );
+}

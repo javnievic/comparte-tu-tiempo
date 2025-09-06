@@ -13,10 +13,11 @@ import {
 import Grid from "@mui/material/Grid";
 import { MapPin, Mail, Phone } from "lucide-react";
 import { getUserById } from "../services/userService";
-import { getAllOffers } from "../services/offerService"; // endpoint para ofertas del usuario
+import { getOffersByUser } from "../services/offerService"; // endpoint para ofertas del usuario
 import CustomButton from "../components/CustomButton";
 import { UserContext } from "../contexts/UserContext";
 import OfferCard from "../components/OfferCard";
+
 
 export default function UserProfile() {
     const { id } = useParams();
@@ -48,7 +49,7 @@ export default function UserProfile() {
         if (tabValue === 1) { // Only fetch offers when the tab is selected
             const fetchOffers = async () => {
                 try {
-                    const data = await getAllOffers();
+                    const data = await getOffersByUser(id);
                     setOffers(data);
                 } catch (error) {
                     console.error(error);

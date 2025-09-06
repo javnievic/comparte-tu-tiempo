@@ -23,3 +23,12 @@ export const getAllOffers = async () => {
   });
   return response.data;
 };
+
+export const getOfferById = async (id) => {
+  const response = await axios.get(`${API_URL}${id}`, {
+    headers: {
+      "Accept": "application/json",
+    },
+  });
+  return response.data;
+};

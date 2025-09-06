@@ -1,13 +1,12 @@
 // src/pages/OfferDetail.jsx
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import { Box, Typography, Avatar, CircularProgress, Divider } from "@mui/material";
 import CustomButton from "../components/CustomButton";
 import { formatDuration } from "../utils/time";
 import { MapPin } from 'lucide-react';
+import { getOfferById } from "../services/offerService";
 
-const API_URL = "http://localhost:8000/api/offers/";
 
 export default function OfferDetail() {
     const { id } = useParams();
@@ -17,10 +16,8 @@ export default function OfferDetail() {
     useEffect(() => {
         const fetchOffer = async () => {
             try {
-                const response = await axios.get(`${API_URL}${id}`, {
-                    headers: { Accept: "application/json" },
-                });
-                setOffer(response.data);
+                const data = await getOfferById(id);
+                setOffer(data);
             } catch (error) {
                 console.error("Error al obtener la oferta:", error);
             } finally {

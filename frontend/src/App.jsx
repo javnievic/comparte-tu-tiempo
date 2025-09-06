@@ -34,6 +34,10 @@ export default function App() {
               <Route path="/offers/:id" element={<OfferDetail />} />
             </Routes>
           </Box>
+          <Box sx={{ height: 960 }} />
+          {/*<footer>
+            <Box sx={{ height: 96 }} />
+          </footer>*/}
           <LoginModal />
         </UIProvider>
       </UserProvider>

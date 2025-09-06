@@ -21,7 +21,8 @@ class User(AbstractUser):
 
     # Additional fields
     profile_picture = models.ImageField(
-        upload_to='profiles', blank=True, null=True
+        upload_to='profiles', blank=True, null=True,
+        default="profiles/default_user.webp"
     )
     phone_number = models.CharField(max_length=15, blank=True, null=True,
                                     validators=[phone_validator])

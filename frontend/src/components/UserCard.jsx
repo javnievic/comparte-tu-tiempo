@@ -30,7 +30,7 @@ export default function UserCard({ user }) {
             {/* Avatar and message */}
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, width: "200px" }}>
                 <Avatar
-                    src={user?.avatar || "https://placehold.co/80x80"}
+                   src={user.profile_picture}
                     sx={{ width: 80, height: 80, cursor: "pointer" }} onClick={goToProfile}
                 />
                 <Typography variant="body1" sx={{ cursor: "pointer" }} onClick={goToProfile}>

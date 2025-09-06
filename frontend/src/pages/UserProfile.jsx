@@ -1,38 +1,124 @@
 // src/pages/UserProfile.jsx
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Typography, Avatar, CircularProgress } from "@mui/material";
-import { getUserById } from "../services/userService"; // crea este servicio
+import { Box, Typography, Avatar, Divider, CircularProgress } from "@mui/material";
+import { getUserById } from "../services/userService";
+import CustomButton from "../components/CustomButton";
+import { MapPin, Mail, Phone } from "lucide-react";
 
 export default function UserProfile() {
-  const { id } = useParams();
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+    const { id } = useParams();
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const data = await getUserById(id);
-        setUser(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUser();
-  }, [id]);
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const data = await getUserById(id);
+                setUser(data);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUser();
+    }, [id]);
 
-  if (loading) return <CircularProgress />;
-  if (!user) return <Typography>Usuario no encontrado</Typography>;
+    if (loading) return <CircularProgress sx={{ display: "block", mx: "auto", mt: 5 }} />;
+    if (!user) return <Typography sx={{ textAlign: "center", mt: 5 }}>Usuario no encontrado</Typography>;
 
-  return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 2, maxWidth: 600, mx: "auto" }}>
-      <Avatar src={user.avatar} sx={{ width: 120, height: 120 }} />
-      <Typography variant="h4">{user.first_name}</Typography>
-      <Typography variant="body1">Rating: {user.rating || 0}/5</Typography>
-      <Typography variant="body2">Tiempo ofrecido: {user.time_sent || 0}h</Typography>
-      <Typography variant="body2">Tiempo recibido: {user.time_received || 0}h</Typography>
-    </Box>
-  );
+    return (
+        <Box sx={{ display: "flex", gap: 2.5, mt: 4, px: 0 }}>
+            {/* Perfil usuario */}
+            <Box
+                sx={{
+                    width: 400,
+                    p: 3,
+                    backgroundColor: "white",
+                    borderRadius: 2,
+                    outline: "1px solid rgba(0,0,0,0.1)",
+                    outlineOffset: "-1px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 3,
+                }}
+            >
+                {/* Avatar */}
+                <Avatar
+                    src={user.profile_picture}
+                    sx={{ width: 200, height: 200 }}
+                />
+
+                {/* Nombre */}
+                <Typography variant="h4" sx={{ fontWeight: 600, textAlign: "center" }}>
+                    {user.first_name} {user.last_name}
+                </Typography>
+
+                {/* Botón de mensaje */}
+                <CustomButton
+                    variant="contained"
+                    variantstyle="outline"
+                >
+                    Mensaje
+                </CustomButton>
+
+                <Divider sx={{ width: "100%", borderColor: "rgba(0,0,0,0.1)" }} />
+
+                {/* Estadísticas de horas */}
+                <Box sx={{ display: "flex", justifyContent: "center", gap: 6 }}>
+                    <Box sx={{ textAlign: "center" }}>
+                        <Typography>{user.time_sent?.hours || 0}</Typography>
+                        <Typography variant="body2">horas ofrecidas</Typography>
+                    </Box>
+                    <Box sx={{ textAlign: "center" }}>
+                        <Typography>{user.time_received?.hours || 0}</Typography>
+                        <Typography variant="body2">horas recibidas</Typography>
+                    </Box>
+                </Box>
+
+                <Divider sx={{ width: "100%", borderColor: "rgba(0,0,0,0.1)" }} />
+
+                {/* Información de contacto */}
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2, width: "100%" }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                        <MapPin size={24} />
+                        <Typography>{user.location || "Ubicación no disponible"}</Typography>
+                    </Box>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+
+                        <Mail size={24} />
+                        <Typography>{user.email}</Typography>
+                    </Box>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                        <Phone size={24} />
+                        <Typography>{user.phone_number || "Teléfono no disponible"}</Typography>
+                    </Box>
+                </Box>
+            </Box>
+
+            {/* Componente de descripción (placeholder, similar a filtros) */}
+            <Box
+                sx={{
+                    width: 295,
+                    flexShrink: 0,
+                    border: "1px solid",
+                    borderColor: "border.dark",
+                    p: 3,
+                    height: "fit-content",
+                    borderRadius: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 3,
+                }}
+            >
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+                    <Typography variant="h4">Sobre mí</Typography>
+                </Box>
+                <Divider />
+                <Typography variant="body2">{user.description || "El usuario no ha añadido descripción"}</Typography>
+            </Box>
+        </Box>
+    );
 }

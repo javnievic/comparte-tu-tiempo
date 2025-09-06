@@ -1,11 +1,12 @@
 // src/pages/OfferDetail.jsx
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Typography, Avatar, CircularProgress, Divider } from "@mui/material";
+import { Box, Typography, CircularProgress } from "@mui/material";
 import CustomButton from "../components/CustomButton";
 import { formatDuration } from "../utils/time";
 import { MapPin } from 'lucide-react';
 import { getOfferById } from "../services/offerService";
+import UserCard from "../components/UserCard";
 
 
 export default function OfferDetail() {
@@ -112,56 +113,7 @@ export default function OfferDetail() {
                     </Box>
 
                     {/* User data */}
-                    <Box
-                        sx={{
-                            display: "flex",
-                            gap: 5,
-                            p: 2.5,
-                            background: "white",
-                            boxShadow: "0px 0px 4px rgba(0,0,0,0.25)",
-                            borderRadius: 2,
-                            mt: 2,
-                            width: "400px",
-                            flexShrink: 0,
-                            overflow: "hidden",
-                        }}
-                    >
-                        {/* Avatar and message */}
-                        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, width: "200px" }}>
-                            <Avatar
-                                src={offer.user?.avatar || "https://placehold.co/80x80"}
-                                sx={{ width: 80, height: 80 }}
-                            />
-                            <Typography variant="body1">
-                                {offer.user?.first_name || "Usuario desconocido"}
-                            </Typography>
-                            <CustomButton variantstyle="outline" variant="contained" sx={{ width: "fit-content" }}>
-                                Mensaje
-                            </CustomButton>
-                        </Box>
-
-                        {/* Statistics */}
-                        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, flexGrow: 1, justifyContent: "center", position: "sticky", }}>
-                            <Typography variant="body1">
-                                {offer.user?.rating || 0}/5
-                            </Typography>
-                            <Divider />
-                            <Box>
-                                <Typography variant="body1">
-                                    {offer.user?.time_sent ? formatDuration(offer.user.time_sent) : "0h"}
-                                </Typography>
-                                <Typography variant="body2">tiempo ofrecido</Typography>
-                            </Box>
-                            <Divider />
-                            <Box>
-                                <Typography variant="body1">
-                                    {offer.user?.time_received ? formatDuration(offer.user.time_received) : "0h"}
-                                </Typography>
-                                <Typography variant="body2">tiempo recibido</Typography>
-                            </Box>
-
-                        </Box>
-                    </Box>
+                    <UserCard user={offer.user} />
                 </Box>
             </Box>
             <Box

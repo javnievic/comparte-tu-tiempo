@@ -29,20 +29,21 @@ export default function UserProfile() {
     if (!user) return <Typography sx={{ textAlign: "center", mt: 5 }}>Usuario no encontrado</Typography>;
 
     return (
-        <Box sx={{ display: "flex", gap: 2.5, mt: 4, px: 0 }}>
-            {/* Perfil usuario */}
+        <Box sx={{ display: "flex", gap: 2.5 }}>
+            {/* User profile */}
             <Box
                 sx={{
                     width: 400,
                     p: 3,
                     backgroundColor: "white",
                     borderRadius: 2,
-                    outline: "1px solid rgba(0,0,0,0.1)",
-                    outlineOffset: "-1px",
+                    border: "1px solid",
+                    borderColor: "border.dark",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
                     gap: 3,
+                    flexShrink: 0,
                 }}
             >
                 {/* Avatar */}
@@ -81,7 +82,7 @@ export default function UserProfile() {
                 <Divider sx={{ width: "100%", borderColor: "rgba(0,0,0,0.1)" }} />
 
                 {/* Información de contacto */}
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 2, width: "100%" }}>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2, width: "100%", alignItems: "center" }}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                         <MapPin size={24} />
                         <Typography>{user.location || "Ubicación no disponible"}</Typography>
@@ -98,11 +99,11 @@ export default function UserProfile() {
                 </Box>
             </Box>
 
-            {/* Componente de descripción (placeholder, similar a filtros) */}
+            {/*  Description */}
+            {/* Componente de descripción (rellena el espacio sobrante) */}
             <Box
                 sx={{
-                    width: 295,
-                    flexShrink: 0,
+                    flex: 1,
                     border: "1px solid",
                     borderColor: "border.dark",
                     p: 3,
@@ -111,14 +112,18 @@ export default function UserProfile() {
                     display: "flex",
                     flexDirection: "column",
                     gap: 3,
+                    minWidth: 0,
                 }}
             >
                 <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
                     <Typography variant="h4">Sobre mí</Typography>
                 </Box>
                 <Divider />
-                <Typography variant="body2">{user.description || "El usuario no ha añadido descripción"}</Typography>
+                <Typography variant="body1" sx={{ wordBreak: "break-word" }}>
+                    {user.description || "El usuario no ha añadido descripción"}
+                </Typography>
             </Box>
+
         </Box>
     );
 }

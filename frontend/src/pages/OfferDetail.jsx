@@ -1,26 +1,29 @@
 // src/pages/OfferDetail.jsx
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
-import { Box, Typography, Avatar, CircularProgress, Divider } from "@mui/material";
+import { Box, Typography, CircularProgress } from "@mui/material";
 import CustomButton from "../components/CustomButton";
 import { formatDuration } from "../utils/time";
 import { MapPin } from 'lucide-react';
+import { getOfferById } from "../services/offerService";
+import UserCard from "../components/UserCard";
+import { UserContext } from "../contexts/UserContext";
+import { UIContext } from "../contexts/UIContext"; 
 
-const API_URL = "http://localhost:8000/api/offers/";
 
 export default function OfferDetail() {
     const { id } = useParams();
     const [offer, setOffer] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { currentUser } = useContext(UserContext);
+    const { openLoginModal } = useContext(UIContext);
+
 
     useEffect(() => {
         const fetchOffer = async () => {
             try {
-                const response = await axios.get(`${API_URL}${id}`, {
-                    headers: { Accept: "application/json" },
-                });
-                setOffer(response.data);
+                const data = await getOfferById(id);
+                setOffer(data);
             } catch (error) {
                 console.error("Error al obtener la oferta:", error);
             } finally {
@@ -41,6 +44,16 @@ export default function OfferDetail() {
     if (!offer) {
         return <Typography>Oferta no encontrada</Typography>;
     }
+
+    const handleSendTime = () => {
+        if (!currentUser) {
+            openLoginModal();
+            return;
+        }
+        console.log("Enviar tiempo a:", offer.user?.id);
+    };
+
+
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
@@ -66,7 +79,7 @@ export default function OfferDetail() {
                         display: "flex",
                         flexDirection: "column",
                         gap: 2.5,
-                        minWidth: 0, // importante: permite que los hijos se encojan
+                        minWidth: 0,
                     }}
                 >
                     {/* Main data */}
@@ -109,62 +122,14 @@ export default function OfferDetail() {
                             variant="contained"
                             variantstyle="primary"
                             sx={{ width: "fit-content" }}
+                            onClick={handleSendTime}
                         >
                             Enviar tiempo
                         </CustomButton>
                     </Box>
 
                     {/* User data */}
-                    <Box
-                        sx={{
-                            display: "flex",
-                            gap: 5,
-                            p: 2.5,
-                            background: "white",
-                            boxShadow: "0px 0px 4px rgba(0,0,0,0.25)",
-                            borderRadius: 2,
-                            mt: 2,
-                            width: "400px",
-                            flexShrink: 0,
-                            overflow: "hidden",
-                        }}
-                    >
-                        {/* Avatar and message */}
-                        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, width: "200px" }}>
-                            <Avatar
-                                src={offer.user?.avatar || "https://placehold.co/80x80"}
-                                sx={{ width: 80, height: 80 }}
-                            />
-                            <Typography variant="body1">
-                                {offer.user?.first_name || "Usuario desconocido"}
-                            </Typography>
-                            <CustomButton variantstyle="outline" variant="contained" sx={{ width: "fit-content" }}>
-                                Mensaje
-                            </CustomButton>
-                        </Box>
-
-                        {/* Statistics */}
-                        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, flexGrow: 1, justifyContent: "center", position: "sticky", }}>
-                            <Typography variant="body1">
-                                {offer.user?.rating || 0}/5
-                            </Typography>
-                            <Divider />
-                            <Box>
-                                <Typography variant="body1">
-                                    {offer.user?.time_sent ? formatDuration(offer.user.time_sent) : "0h"}
-                                </Typography>
-                                <Typography variant="body2">tiempo ofrecido</Typography>
-                            </Box>
-                            <Divider />
-                            <Box>
-                                <Typography variant="body1">
-                                    {offer.user?.time_received ? formatDuration(offer.user.time_received) : "0h"}
-                                </Typography>
-                                <Typography variant="body2">tiempo recibido</Typography>
-                            </Box>
-
-                        </Box>
-                    </Box>
+                    <UserCard user={offer.user} />
                 </Box>
             </Box>
             <Box

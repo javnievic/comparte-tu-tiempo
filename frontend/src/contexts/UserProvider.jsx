@@ -22,7 +22,6 @@ export const UserProvider = ({ children }) => {
     setCurrentUser(null);
   };
 
-
   return (
     <UserContext.Provider value={{ currentUser, setCurrentUser, logout }}>
       {children}

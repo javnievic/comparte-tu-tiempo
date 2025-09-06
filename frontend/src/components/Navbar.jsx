@@ -16,23 +16,25 @@ export default function Navbar() {
 
   return (
     <AppBar
-      position="static"
-      elevation={0}
-      sx={{
-        backgroundColor: "transparent",
-        borderBottom: theme => `1px solid ${theme.palette.border.default}`,
-        paddingX: { xs: 2, md: 12.5 },
-        paddingY: 0.5,
-      }}
-    >
-      <Toolbar
-        disableGutters
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+  position="static"
+  elevation={0}
+  sx={{
+    backgroundColor: "transparent",
+    borderBottom: theme => `1px solid ${theme.palette.border.default}`,
+  }}
+>
+  <Toolbar
+    disableGutters
+    sx={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      width: "100%",
+      maxWidth: "1440px",   // igual que tu Box de contenido
+      mx: "auto",           // centra horizontalmente
+      px: "100px",          // márgenes laterales iguales que tu layout
+    }}
+  >
         {/* Logo Section */}
         <Box
           component="img"

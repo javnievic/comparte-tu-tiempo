@@ -14,6 +14,13 @@ class OfferViewSet(viewsets.ModelViewSet):
     serializer_class = OfferSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+    def get_queryset(self):
+        queryset = Offer.objects.all().order_by("-publish_date")
+        user_id = self.request.query_params.get("user")
+        if user_id:
+            queryset = queryset.filter(user_id=user_id)
+        return queryset
+
     def create(self, request, *args, **kwargs):
 
         serializer = self.get_serializer(data=request.data)

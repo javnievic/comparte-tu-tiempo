@@ -134,15 +134,27 @@ export default function OfferList() {
                                             sx={{
                                                 display: "flex",
                                                 alignItems: "center",
-
+                                                gap: 1,
+                                                mb: 1,
                                             }}
                                         >
                                             <Avatar
-                                                src={offer.user?.avatar || "https://placehold.co/28x28"}
-                                                sx={{ width: 28, height: 28 }}
+                                                src={offer.user?.profile_picture || "https://placehold.co/28x28"}
+                                                sx={{ width: 28, height: 28, cursor: "pointer" }}
+                                                onClick={(e) => {
+                                                    e.stopPropagation(); 
+                                                    if (offer.user?.id) navigate(`/users/${offer.user.id}`);
+                                                }}
                                             />
-                                            <Typography variant="body2">
-                                                {offer.user?.first_name || "Usuario desconocido"}
+                                            <Typography
+                                                variant="body2"
+                                                sx={{ cursor: "pointer" }}
+                                                onClick={(e) => {
+                                                    e.stopPropagation(); 
+                                                    if (offer.user?.id) navigate(`/users/${offer.user.id}`);
+                                                }}
+                                            >
+                                                {(offer.user?.first_name && offer.user?.last_name) || "Usuario desconocido"}
                                             </Typography>
                                         </Box>
 
@@ -190,7 +202,7 @@ export default function OfferList() {
                         ))}
                     </Grid>
                     {visibleCount < offers.length && (
-                        <Box sx={{ display: "flex", justifyContent: "center", mt: 3}}>
+                        <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
                             <CustomButton variant="contained" onClick={() => setVisibleCount(prev => prev + 9)}>
                                 Cargar más
                             </CustomButton>

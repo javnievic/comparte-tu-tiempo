@@ -1,12 +1,12 @@
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 
 const API_URL = "http://localhost:8000/api";
 
 export const registerUser = async (userData) => {
-  const response = await axios.post(`${API_URL}/users/`, userData);
+  const response = await axiosInstance.post(`${API_URL}/users/`, userData);
 
     if (response.status === 201) {
-      const loginResponse = await axios.post(`${API_URL}/login/`, {
+      const loginResponse = await axiosInstance.post(`${API_URL}/login/`, {
         email: userData.get("email") || userData.email,
         password: userData.get("password") || userData.password
       });
@@ -20,7 +20,7 @@ export const registerUser = async (userData) => {
 };
 
 export const loginUser = async (credentials) => {
-  const response = await axios.post(`${API_URL}/login/`, credentials);
+  const response = await axiosInstance.post(`${API_URL}/login/`, credentials);
 
   if (response.status === 200) {
     localStorage.setItem("access_token", response.data.access);

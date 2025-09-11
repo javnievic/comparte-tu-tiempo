@@ -1,5 +1,5 @@
 ---
-name: Feature
+name: HU
 about: Proponer una nueva historia de usuario
 title: "[HU-XX]"
 labels: ["feature"]

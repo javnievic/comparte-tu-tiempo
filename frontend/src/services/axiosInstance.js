@@ -37,7 +37,7 @@ instance.interceptors.response.use(
 
     // If token is expired, try to refresh it once
     if (error.response?.status === 401 && !originalRequest._retry  &&
-      originalRequest.headers["Auth"]) {
+      originalRequest.headers["Authorization"]) {
       originalRequest._retry = true;
       try {
         const newToken = await refreshAccessToken();

@@ -11,26 +11,29 @@ import ErrorMessage from "../components/ErrorMessage";
 import { UserContext } from "../contexts/UserContext";
 import { updateUser } from "../services/userService";
 import { UIContext } from "../contexts/UIContext";
+import { useForm } from "../hooks/useForm";
 import { validateUserField } from "../utils/validation";
 
 export default function EditProfile() {
   const { currentUser, setCurrentUser } = useContext(UserContext);
   const { openLoginModal } = useContext(UIContext);
   const navigate = useNavigate();
-
-  const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-    phone_number: "",
-    location: "",
-    description: "",
-    profile_picture: null,
-  });
-
-  const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
+
+    const { formData, setFormData, errors, setErrors, handleChange, handleFileChange } =
+    useForm(
+      {
+        first_name: "",
+        last_name: "",
+        email: "",
+        phone_number: "",
+        location: "",
+        description: "",
+        profile_picture: null,
+      },
+      validateUserField
+    );
 
   // Prefill with user data
   useEffect(() => {
@@ -45,7 +48,7 @@ export default function EditProfile() {
         profile_picture: null,
       });
     }
-  }, [currentUser]);
+  }, [currentUser, setFormData]);
 
   // Redirect if no user
   useEffect(() => {
@@ -55,19 +58,6 @@ export default function EditProfile() {
     }
   }, [currentUser, navigate, openLoginModal]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-
-    const error = validateUserField(name, value, { ...formData, [name]: value });
-    setErrors({ ...errors, [name]: error });
-  };
-
-  const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setFormData({ ...formData, profile_picture: e.target.files[0] });
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();

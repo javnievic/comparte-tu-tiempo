@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ThemeProvider } from "@mui/material/styles";
-import { Box, TextField, Typography, Avatar, IconButton, Divider } from "@mui/material";
+import { Box, TextField, Typography, Avatar, IconButton } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
@@ -11,10 +11,16 @@ import FormContainer from "../components/FormContainer";
 import { UserContext } from "../contexts/UserContext";
 import { registerUser } from "../services/authService";
 import { validateUserField } from "../utils/validation"
+import { useForm } from "../hooks/useForm";
 
 export default function Register() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+
+  const [formError, setFormError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { setCurrentUser } = useContext(UserContext);
+  
+  const { formData, errors, handleChange, handleFileChange, setErrors } = useForm({
     first_name: "",
     last_name: "",
     email: "",
@@ -23,68 +29,8 @@ export default function Register() {
     phone_number: "",
     location: "",
     description: "",
-    profile_picture: null
-  });
-  const [errors, setErrors] = useState({});
-  const [formError, setFormError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { setCurrentUser } = useContext(UserContext);
-
-  const validateRegisterField = (name, value, formData) => {
-    setErrors({});
-    let error = "";
-
-    if (name === "first_name" || name === "last_name") {
-      if (!value.trim()) error = "Este campo es obligatorio";
-      else if (!/^[a-zA-Z\s]+$/.test(value)) error = "Solo letras y espacios";
-    }
-
-    if (name === "email") {
-      if (!value.trim()) error = "Este campo es obligatorio";
-      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) error = "Email inválido";
-    }
-
-    if (name === "password") {
-      if (!value.trim()) error = "Este campo es obligatorio";
-      else if (value.length < 8) error = "Mínimo 8 caracteres";
-      else if (!/[A-Z]/.test(value) || !/[a-z]/.test(value) || !/[0-9]/.test(value))
-        error = "Debe contener mayúscula, minúscula y número";
-    }
-
-    if (name === "confirm_password") {
-      if (!value.trim()) error = "Este campo es obligatorio";
-      else if (value !== formData.password) error = "Las contraseñas no coinciden";
-    }
-
-    if (name === "phone_number") {
-      if (value && !/^\d{9,15}$/.test(value)) error = "Número inválido (9-15 dígitos)";
-    }
-
-    if (name === "location") {
-      if (value.length > 100) error = "Máximo 100 caracteres";
-    }
-
-    if (name === "description") {
-      if (value.length > 500) error = "Máximo 500 caracteres";
-    }
-
-    return error;
-  };
-
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-
-    const error = validateUserField(name, value, { ...formData, [name]: value });
-    setErrors({ ...errors, [name]: error });
-  };
-
-  const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setFormData({ ...formData, profile_picture: e.target.files[0] });
-    }
-  };
+    profile_picture: null,
+  }, validateUserField);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -98,7 +44,7 @@ export default function Register() {
     });
 
     Object.keys(formData).forEach((field) => {
-      const error = validateRegisterField(field, formData[field], formData);
+      const error = validateUserField(field, formData[field], formData);
       if (error) newErrors[field] = error;
     });
 

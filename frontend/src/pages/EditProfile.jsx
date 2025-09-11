@@ -7,12 +7,17 @@ import { useNavigate } from "react-router-dom";
 import theme from "../styles/theme";
 import CustomButton from "../components/CustomButton";
 import FormContainer from "../components/FormContainer";
+import ErrorMessage from "../components/ErrorMessage";
 import { UserContext } from "../contexts/UserContext";
 import { updateUser } from "../services/userService";
 import { UIContext } from "../contexts/UIContext";
+import { validateUserField } from "../utils/validation";
 
 export default function EditProfile() {
   const { currentUser, setCurrentUser } = useContext(UserContext);
+  const { openLoginModal } = useContext(UIContext);
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -22,9 +27,10 @@ export default function EditProfile() {
     description: "",
     profile_picture: null,
   });
+
+  const [errors, setErrors] = useState({});
+  const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const { openLoginModal } = useContext(UIContext);
 
   // Prefill with user data
   useEffect(() => {
@@ -41,6 +47,7 @@ export default function EditProfile() {
     }
   }, [currentUser]);
 
+  // Redirect if no user
   useEffect(() => {
     if (!currentUser) {
       navigate("/");
@@ -49,7 +56,11 @@ export default function EditProfile() {
   }, [currentUser, navigate, openLoginModal]);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    const error = validateUserField(name, value, { ...formData, [name]: value });
+    setErrors({ ...errors, [name]: error });
   };
 
   const handleFileChange = (e) => {
@@ -60,17 +71,44 @@ export default function EditProfile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormError("");
     setLoading(true);
+
+    // Frontend validation
+    const newErrors = {};
+    Object.keys(formData).forEach((field) => {
+      const error = validateUserField(field, formData[field], formData);
+      if (error) newErrors[field] = error;
+    });
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setLoading(false);
+      return;
+    }
+
     try {
       const data = new FormData();
       Object.keys(formData).forEach((key) => {
         if (formData[key]) data.append(key, formData[key]);
       });
+
       const updatedUser = await updateUser(currentUser.id, data);
+
       setCurrentUser(updatedUser);
       navigate(`/users/${currentUser.id}`);
     } catch (error) {
       console.error("Error actualizando perfil", error);
+      if (error.response && error.response.data) {
+        const backendErrors = error.response.data;
+        if (backendErrors.email) {
+          setFormError(backendErrors.email[0]);
+        } else {
+          setFormError("Ocurrió un error al actualizar el perfil");
+        }
+      } else {
+        setFormError("Error de conexión con el servidor");
+      }
     } finally {
       setLoading(false);
     }
@@ -110,6 +148,8 @@ export default function EditProfile() {
             value={formData.first_name}
             onChange={handleChange}
             fullWidth
+            error={!!errors.first_name}
+            helperText={errors.first_name}
           />
           <TextField
             label="Apellidos"
@@ -117,6 +157,8 @@ export default function EditProfile() {
             value={formData.last_name}
             onChange={handleChange}
             fullWidth
+            error={!!errors.last_name}
+            helperText={errors.last_name}
           />
         </Box>
 
@@ -128,6 +170,8 @@ export default function EditProfile() {
           multiline
           rows={3}
           fullWidth
+          error={!!errors.description}
+          helperText={errors.description}
         />
         <TextField
           label="Email"
@@ -136,6 +180,8 @@ export default function EditProfile() {
           onChange={handleChange}
           type="email"
           fullWidth
+          error={!!errors.email}
+          helperText={errors.email}
         />
         <TextField
           label="Teléfono"
@@ -143,6 +189,8 @@ export default function EditProfile() {
           value={formData.phone_number}
           onChange={handleChange}
           fullWidth
+          error={!!errors.phone_number}
+          helperText={errors.phone_number}
         />
         <TextField
           label="Ubicación"
@@ -150,11 +198,15 @@ export default function EditProfile() {
           value={formData.location}
           onChange={handleChange}
           fullWidth
+          error={!!errors.location}
+          helperText={errors.location}
         />
 
         <CustomButton type="submit" variantstyle="primary" variant="contained">
           {loading ? "Guardando..." : "Guardar cambios"}
         </CustomButton>
+
+        {formError && <ErrorMessage message={formError} duration={3000} />}
       </FormContainer>
     </ThemeProvider>
   );

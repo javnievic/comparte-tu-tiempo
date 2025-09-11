@@ -10,6 +10,7 @@ import CustomButton from "../components/CustomButton";
 import FormContainer from "../components/FormContainer";
 import { UserContext } from "../contexts/UserContext";
 import { registerUser } from "../services/authService";
+import { validateUserField } from "../utils/validation"
 
 export default function Register() {
   const navigate = useNavigate();
@@ -75,7 +76,7 @@ export default function Register() {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
 
-    const error = validateRegisterField(name, value, { ...formData, [name]: value });
+    const error = validateUserField(name, value, { ...formData, [name]: value });
     setErrors({ ...errors, [name]: error });
   };
 

@@ -11,6 +11,7 @@ import {
     Tab
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
+import { useNavigate } from "react-router-dom";
 import { MapPin, Mail, Phone } from "lucide-react";
 import { getUserById } from "../services/userService";
 import { getOffersByUser } from "../services/offerService"; // endpoint para ofertas del usuario
@@ -25,6 +26,7 @@ export default function UserProfile() {
     const [loading, setLoading] = useState(true);
     const { currentUser } = useContext(UserContext);
     const [tabValue, setTabValue] = useState(0);
+    const navigate = useNavigate();
 
     // User offers
     const [offers, setOffers] = useState([]);
@@ -102,6 +104,7 @@ export default function UserProfile() {
                         <CustomButton
                             variant="contained"
                             variantstyle="outline"
+                            onClick={() => navigate(`/edit-profile`)}
                         >
                             Editar perfil
                         </CustomButton>

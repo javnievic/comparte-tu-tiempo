@@ -20,3 +20,14 @@ export const getUserById = async (id) => {
     throw error;
   }
 };
+
+export const updateUser = async (id, userData) => {
+  const response = await axios.put(`${API_URL}${id}/`, userData, {
+    headers: {
+      "Authorization": `Bearer ${getAccessToken()}`,
+      "Accept": "application/json",
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+};

@@ -1,6 +1,6 @@
 ---
 name: Feature
-description: Proponer una nueva funcionalidad
+about: Proponer una nueva funcionalidad
 title: "[FEATURE] "
 labels: ["feature"]
 assignees: []

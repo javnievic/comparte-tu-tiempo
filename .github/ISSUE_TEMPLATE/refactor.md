@@ -1,6 +1,6 @@
 ---
 name: Refactor
-description: Proponer un cambio de refactorización de código
+about: Proponer un cambio de refactorización de código
 title: "[REFACTOR] "
 labels: ["refactor"]
 assignees: []

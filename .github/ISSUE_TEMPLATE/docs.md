@@ -1,6 +1,6 @@
 ---
 name: Docs
-description: Proponer cambios o mejoras en la documentación
+about: Proponer cambios o mejoras en la documentación
 title: "[DOCS] "
 labels: ["docs"]
 assignees: []

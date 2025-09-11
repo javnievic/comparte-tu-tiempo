@@ -1,6 +1,6 @@
 ---
 name: Bug
-description: Reporta un error en la aplicación
+about: Reporta un error en la aplicación
 title: "[BUG] "
 labels: ["bug"]
 assignees: []

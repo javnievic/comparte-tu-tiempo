@@ -1,5 +1,6 @@
 // src/services/axiosInstance.js
 import axios from "axios";
+import { logoutUser } from "./authService";
 
 const instance = axios.create();
 
@@ -17,9 +18,13 @@ const refreshAccessToken = async () => {
 
 // Request interceptor: attach access token to every request
 instance.interceptors.request.use((config) => {
-  const token = getAccessToken();
-  if (token) {
-    config.headers["Authorization"] = `Bearer ${token}`;
+  // Only add token if this request is marked as Auth
+  if (config.headers["Auth"]) {
+    const token = getAccessToken();
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    delete config.headers["Auth"]; // clean up the marker
   }
   return config;
 });
@@ -31,11 +36,19 @@ instance.interceptors.response.use(
     const originalRequest = error.config;
 
     // If token is expired, try to refresh it once
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 && !originalRequest._retry  &&
+      originalRequest.headers["Auth"]) {
       originalRequest._retry = true;
-      const newToken = await refreshAccessToken();
-      originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
-      return instance(originalRequest); // retry the original request
+      try {
+        const newToken = await refreshAccessToken();
+        originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
+        return instance(originalRequest);
+      } catch (err) {
+        // If refresh also fails, logout user
+        logoutUser();
+        window.location.href = "/"; // redirect to home
+        return Promise.reject(err);
+      }
     }
 
     return Promise.reject(error);

@@ -21,11 +21,13 @@ export const getUserById = async (id) => {
   }
 };
 
+// Private routes - requires Auth header
 export const updateUser = async (id, userData) => {
   const response = await axiosInstance.put(`${API_URL}${id}/`, userData, {
     headers: {
       "Accept": "application/json",
       "Content-Type": "multipart/form-data",
+      "Auth": true,
     },
   });
   return response.data;

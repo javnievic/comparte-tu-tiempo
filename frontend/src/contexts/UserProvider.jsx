@@ -10,11 +10,12 @@ export const UserProvider = ({ children }) => {
 
   // Load user from localStorage on mount
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user) {
-      setCurrentUser(user);
+    if (currentUser) {
+      localStorage.setItem("user", JSON.stringify(currentUser));
+    } else {
+      localStorage.removeItem("user");
     }
-  }, []);
+  }, [currentUser]);
 
   // Handle logout
   const logout = () => {

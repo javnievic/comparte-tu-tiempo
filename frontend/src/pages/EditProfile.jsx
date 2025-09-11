@@ -9,6 +9,7 @@ import CustomButton from "../components/CustomButton";
 import FormContainer from "../components/FormContainer";
 import { UserContext } from "../contexts/UserContext";
 import { updateUser } from "../services/userService";
+import { UIContext } from "../contexts/UIContext";
 
 export default function EditProfile() {
   const { currentUser, setCurrentUser } = useContext(UserContext);
@@ -23,6 +24,7 @@ export default function EditProfile() {
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { openLoginModal } = useContext(UIContext);
 
   // Prefill with user data
   useEffect(() => {
@@ -38,6 +40,13 @@ export default function EditProfile() {
       });
     }
   }, [currentUser]);
+
+  useEffect(() => {
+    if (!currentUser) {
+      navigate("/");
+      openLoginModal();
+    }
+  }, [currentUser, navigate, openLoginModal]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

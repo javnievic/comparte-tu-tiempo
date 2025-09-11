@@ -1,15 +1,15 @@
 // src/components/OfferCard.jsx
 import {
-  Card,
-  CardContent,
-  Box,
-  Avatar,
-  Typography,
-  Tooltip,
-  Rating,
-  IconButton,
-  Menu,
-  MenuItem
+    Card,
+    CardContent,
+    Box,
+    Avatar,
+    Typography,
+    Tooltip,
+    Rating,
+    IconButton,
+    Menu,
+    MenuItem
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -32,7 +32,7 @@ export default function OfferCard({ offer, onClick, isOwner = false }) {
     const open = Boolean(anchorEl);
 
     const handleMenuOpen = (event) => {
-        event.stopPropagation(); 
+        event.stopPropagation();
         setAnchorEl(event.currentTarget);
     };
 
@@ -68,18 +68,18 @@ export default function OfferCard({ offer, onClick, isOwner = false }) {
         >
             {isOwner && (
                 <Box sx={{ position: "absolute", top: 8, right: 8, zIndex: 2 }}>
-                                                <IconButton size="small" onClick={handleMenuOpen}>
-                                <MoreVert />
-                            </IconButton>
-                            <Menu
-                                anchorEl={anchorEl}
-                                open={open}
-                                onClose={handleMenuClose}
-                                onClick={(e) => e.stopPropagation()} // evitar navegación
-                            >
-                                <MenuItem onClick={handleEdit}>Editar</MenuItem>
-                                <MenuItem onClick={handleDelete}>Eliminar</MenuItem>
-                            </Menu>
+                    <IconButton size="small" onClick={handleMenuOpen}>
+                        <MoreVert />
+                    </IconButton>
+                    <Menu
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleMenuClose}
+                        onClick={(e) => e.stopPropagation()} // evitar navegación
+                    >
+                        <MenuItem onClick={handleEdit}>Editar</MenuItem>
+                        <MenuItem onClick={handleDelete}>Eliminar</MenuItem>
+                    </Menu>
                 </Box>
             )}
             {/* Image */}
@@ -130,7 +130,9 @@ export default function OfferCard({ offer, onClick, isOwner = false }) {
                             if (offer.user?.id) navigate(`/users/${offer.user.id}`);
                         }}
                     >
-                        {(offer.user?.first_name && offer.user?.last_name) || "Usuario desconocido"}
+                        {offer.user
+                            ? `${offer.user.first_name || ""} ${offer.user.last_name || ""}`.trim() || "Usuario desconocido"
+                            : "Usuario desconocido"}
                     </Typography>
                 </Box>
 

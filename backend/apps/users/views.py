@@ -9,15 +9,32 @@ from .serializers import (
 )
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
+from core.permissions import IsOwnerOrReadOnly
 
 
-class RegisterView(viewsets.ModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     """
-    API endpoint to register a new user.
+    API endpoint to manage users.
     Accepts JSON POST requests from React frontend.
     """
+
     queryset = User.objects.all()
     serializer_class = UserRegisterSerializer
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return UserRegisterSerializer
+        elif self.action in ["update", "partial_update"]:
+            return UserSerializer
+        return UserSerializer
+
+    def get_permissions(self):
+        if self.action in ["update", "partial_update", "destroy"]:
+            # modify/delete → authenticated and owner
+            return [IsAuthenticated(), IsOwnerOrReadOnly()]
+        # list, retrieve or create detail → public
+        return []
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

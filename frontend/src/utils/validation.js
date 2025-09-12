@@ -30,3 +30,27 @@ export const validateUserField = (name, value, formData = {}) => {
     return error;
 
 };
+
+export const validateTransactionField = (name, value = {}) => {
+  let error = "";
+
+  if (name === "title") {
+    if (!value.trim()) error = "El título es obligatorio";
+    else if (value.length > 100) error = "Máximo 100 caracteres";
+  }
+
+  if (name === "text") {
+    if (value.length > 500) error = "Máximo 500 caracteres";
+  }
+
+  if (name === "duration") {
+    if (!value.trim()) error = "La duración es obligatoria";
+    else if (!/^\d{2}:\d{2}:\d{2}$/.test(value)) error = "Formato debe ser HH:MM:SS";
+    else {
+      const [hh, mm, ss] = value.split(":").map(Number);
+      if (hh > 24 || mm > 59 || ss > 59) error = "Duración inválida";
+    }
+  }
+
+  return error;
+};

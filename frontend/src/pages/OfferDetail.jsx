@@ -50,7 +50,7 @@ export default function OfferDetail() {
             openLoginModal();
             return;
         }
-        console.log("Enviar tiempo a:", offer.user?.id);
+        navigate('/send-time', { state: { offerId: offer.id, offerTitle: offer.title, offerUserId: offer.user.id } });
     };
 
 

@@ -11,6 +11,7 @@ import LayoutGuide from "./components/LayoutGuide";
 import OfferDetail from "./pages/OfferDetail";
 import UserProfile from "./pages/UserProfile";
 import EditProfile from "./pages/EditProfile";
+import SendTimeForm from "./pages/SendTimeForm";
 
 export default function App() {
   const showguide = false; // Set to true to show the layout guide
@@ -36,6 +37,8 @@ export default function App() {
               <Route path="/offers/:id" element={<OfferDetail />} />
               <Route path="/users/:id" element={<UserProfile />} />
               <Route path="/edit-profile" element={<EditProfile />} />
+              {/* userId mandatory and offerId is passed as a query param */}
+              <Route path="/send-time/users/:userId" element={<SendTimeForm />} />
             </Routes>
           </Box>
           <Box sx={{ height: 96 }} />

@@ -50,6 +50,7 @@ export default function EditProfile() {
     }
   }, [currentUser, setFormData]);
 
+
   // Redirect if no user
   useEffect(() => {
     if (!currentUser) {
@@ -58,6 +59,7 @@ export default function EditProfile() {
     }
   }, [currentUser, navigate, openLoginModal]);
 
+  if (!currentUser) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();

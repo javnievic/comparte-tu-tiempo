@@ -50,7 +50,7 @@ export default function OfferDetail() {
             openLoginModal();
             return;
         }
-        navigate(`/send-time/users/${offer.user.id}` );
+        navigate(`/send-time/offers/${offer.id}` );
     };
 
     return (

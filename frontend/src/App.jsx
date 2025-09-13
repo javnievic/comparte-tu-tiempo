@@ -39,6 +39,7 @@ export default function App() {
               <Route path="/edit-profile" element={<EditProfile />} />
               {/* userId mandatory and offerId is passed as a query param */}
               <Route path="/send-time/users/:userId" element={<SendTimeForm />} />
+              <Route path="/send-time/offers/:offerId" element={<SendTimeForm />} />
             </Routes>
           </Box>
           <Box sx={{ height: 96 }} />

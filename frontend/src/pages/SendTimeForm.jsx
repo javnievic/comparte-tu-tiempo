@@ -11,17 +11,15 @@ import { createTransaction } from "../services/transactionService";
 import { getUserById } from "../services/userService";
 import { getOfferById } from "../services/offerService";
 import { validateTransactionField } from "../utils/validation";
-import { useLocation, useParams, Link as RouterLink } from "react-router-dom";
+import { useParams, useNavigate, Link as RouterLink } from "react-router-dom";
 
-export default function SendTimeForm({ onSuccess }) {
+export default function SendTimeForm() {
     const { currentUser } = useContext(UserContext);
     const [formError, setFormError] = useState("");
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
-    const { userId } = useParams();
-    const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
-    const offerId = searchParams.get("offerId"); // opcional
+    const { userId, offerId } = useParams();
 
     const [receiverUser, setReceiverUser] = useState(null);
     const [offer, setOffer] = useState(null);
@@ -33,34 +31,35 @@ export default function SendTimeForm({ onSuccess }) {
         validateTransactionField
     );
 
-    // Fetch de usuario y oferta
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const user = await getUserById(userId);
-      setReceiverUser(user);
+    // User and offer data fetching
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                if (userId) {
+                    // Case 1: transaction from user profile
+                    const user = await getUserById(userId);
+                    setReceiverUser(user);
+                }
 
-      if (offerId) {
-        const offerData = await getOfferById(offerId);
+                if (offerId) {
+                    // Case 2: transaction from offer
+                    const offerData = await getOfferById(offerId);
+                    setOffer(offerData);
 
-        if (offerData.owner !== user.id) {
-          setFetchError("La oferta no pertenece a este usuario");
-          setLoadingData(false);
-          return;
-        }
+                    // obtain user data of the offer owner
+                    const user = await getUserById(offerData.user.id);
+                    setReceiverUser(user);
+                }
 
-        setOffer(offerData);
-      }
+                setLoadingData(false);
+            } catch (error) {
+                setFetchError("Usuario u oferta no encontrado");
+                setLoadingData(false);
+            }
+        };
 
-      setLoadingData(false);
-    } catch (err) {
-      setFetchError("Usuario u oferta no encontrado");
-      setLoadingData(false);
-    }
-  };
-
-  fetchData();
-}, [userId, offerId]);
+        fetchData();
+    }, [userId, offerId]);
 
 
     const handleSubmit = async (e) => {
@@ -68,7 +67,7 @@ useEffect(() => {
         setFormError("");
         setLoading(true);
 
-        // Validación frontend
+        // Frontend validation
         const newErrors = {};
         Object.keys(formData).forEach((field) => {
             const error = validateTransactionField(field, formData[field], formData);
@@ -87,9 +86,9 @@ useEffect(() => {
                 receiver: receiverUser.id,
                 offer: offer?.id || null,
             };
-            const transaction = await createTransaction(payload);
-            if (onSuccess) onSuccess(transaction);
+            await createTransaction(payload);
             setFormData({ title: "", text: "", duration: "" });
+            navigate(`/my_transactions`);
         } catch (err) {
             if (err.response?.data?.receiver) {
                 setFormError(err.response.data.receiver);
@@ -106,6 +105,14 @@ useEffect(() => {
 
     if (loadingData) return <Typography>Cargando datos...</Typography>;
     if (fetchError) return <Typography color="error">{fetchError}</Typography>;
+
+    if (currentUser.id === receiverUser.id) {
+        return (
+            <Typography color="error">
+                No puedes enviarte tiempo a ti mismo.
+            </Typography>
+        );
+    }
 
     return (
         <ThemeProvider theme={theme}>
@@ -130,7 +137,11 @@ useEffect(() => {
                     <Box sx={{ mb: 2 }}>
                         <Typography>
                             Oferta:{" "}
-                            <Link href={`/offers/${offer.id}`} underline="hover">
+                            <Link
+                                component={RouterLink}
+                                to={`/offers/${offer.id}`}
+                                underline="hover"
+                            >
                                 {offer.title}
                             </Link>
                         </Typography>

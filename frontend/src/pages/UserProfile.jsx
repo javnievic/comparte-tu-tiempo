@@ -93,7 +93,7 @@ export default function UserProfile() {
                     sx={{ width: 200, height: 200 }}
                 />
 
-                {/* Nombre */}
+                {/* Name */}
                 <Typography variant="h4" sx={{ fontWeight: 600, textAlign: "center" }}>
                     {user.first_name} {user.last_name}
                 </Typography>
@@ -113,6 +113,7 @@ export default function UserProfile() {
                             <CustomButton
                                 variant="contained"
                                 variantstyle="primary"
+                                onClick={() => navigate(`/send-time/users/${user.id}`)}
                             >
                                 Enviar tiempo
                             </CustomButton>

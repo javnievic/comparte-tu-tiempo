@@ -1,6 +1,6 @@
 // src/pages/OfferDetail.jsx
 import { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Box, Typography, CircularProgress } from "@mui/material";
 import CustomButton from "../components/CustomButton";
 import { formatDuration } from "../utils/time";
@@ -8,7 +8,7 @@ import { MapPin } from 'lucide-react';
 import { getOfferById } from "../services/offerService";
 import UserCard from "../components/UserCard";
 import { UserContext } from "../contexts/UserContext";
-import { UIContext } from "../contexts/UIContext"; 
+import { UIContext } from "../contexts/UIContext";
 
 
 export default function OfferDetail() {
@@ -17,7 +17,7 @@ export default function OfferDetail() {
     const [loading, setLoading] = useState(true);
     const { currentUser } = useContext(UserContext);
     const { openLoginModal } = useContext(UIContext);
-
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchOffer = async () => {
@@ -50,10 +50,8 @@ export default function OfferDetail() {
             openLoginModal();
             return;
         }
-        console.log("Enviar tiempo a:", offer.user?.id);
+        navigate(`/send-time/offers/${offer.id}` );
     };
-
-
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>

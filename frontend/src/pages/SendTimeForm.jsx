@@ -14,6 +14,7 @@ import { validateTransactionField } from "../utils/validation";
 import { useParams, useNavigate, Link as RouterLink } from "react-router-dom";
 import DurationSlider from "../components/DurationSlider";
 import { minutesToHHMMSS } from "../utils/time";
+import { UIContext } from "../contexts/UIContext";
 
 
 export default function SendTimeForm() {
@@ -21,6 +22,7 @@ export default function SendTimeForm() {
     const [formError, setFormError] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { openLoginModal } = useContext(UIContext);
 
     const { userId, offerId } = useParams();
 
@@ -109,8 +111,15 @@ export default function SendTimeForm() {
         }
     };
 
-    if (!currentUser)
-        return <Typography>Debes iniciar sesión para enviar tiempo</Typography>;
+    // Redirect if no user
+    useEffect(() => {
+        if (!currentUser) {
+        navigate("/");
+        openLoginModal();
+        }
+    }, [currentUser, navigate, openLoginModal]);
+
+    if (!currentUser) return null;
 
     if (loadingData) return <Typography>Cargando datos...</Typography>;
     if (fetchError) return <Typography color="error">{fetchError}</Typography>;

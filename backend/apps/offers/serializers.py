@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Offer
 from apps.users.serializers import UserSerializer
+from datetime import timedelta
 
 
 class OfferSerializer(serializers.ModelSerializer):
@@ -31,3 +32,14 @@ class OfferSerializer(serializers.ModelSerializer):
         if obj.duration:
             return int(obj.duration.total_seconds() // 60)
         return None
+
+    def validate_duration(self, value):
+        """Ensure duration is between 15 minutes and 4 hours."""
+        min_duration = timedelta(minutes=15)
+        max_duration = timedelta(hours=4)
+
+        if value < min_duration or value > max_duration:
+            raise serializers.ValidationError(
+                "La duración debe estar entre 15 minutos y 4 horas."
+            )
+        return value

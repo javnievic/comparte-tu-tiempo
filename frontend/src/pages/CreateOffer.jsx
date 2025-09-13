@@ -9,7 +9,8 @@ import FormContainer from "../components/FormContainer";
 import ErrorMessage from "../components/ErrorMessage";
 import { createOffer } from "../services/offerService";
 import { UIContext } from "../contexts/UIContext";
-
+import DurationSlider from "../components/DurationSlider";
+import { minutesToHHMMSS } from "../utils/time";
 
 export default function CreateOffer() {
   const navigate = useNavigate();
@@ -38,13 +39,8 @@ export default function CreateOffer() {
   const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const [durationMinutesTotal, setDurationMinutesTotal] = useState(15); // mínimo 15
+  const [durationMinutes, setDurationMinutes] = useState(15); // minimum 15
 
-  const formatDuration = (minutes) => {
-    const h = Math.floor(minutes / 60);
-    const m = minutes % 60;
-    return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;
-  };
 
   // Validate a single field
   const validateField = (name, value) => {
@@ -106,11 +102,6 @@ export default function CreateOffer() {
         }
       });
 
-      const h = Math.floor(durationMinutesTotal / 60);
-      const m = durationMinutesTotal % 60;
-      const durationString = `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:00`;
-      data.append("duration", durationString);
-
 
       await createOffer(data);
       navigate("/"); // Redirect to offers list
@@ -131,156 +122,113 @@ export default function CreateOffer() {
   };
 
   return (
-      <FormContainer title="Crear Oferta" handleSubmit={handleSubmit}>
-        <TextField
-          label="Título *"
-          name="title"
-          value={formData.title}
-          onChange={handleChange}
-          fullWidth
-          error={!!errors.title}
-          helperText={errors.title}
-        />
-        <TextField
-          label="Descripción *"
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          multiline
-          rows={4}
-          fullWidth
-          error={!!errors.description}
-          helperText={errors.description}
-        />
-        <Box
-          sx={{
-            mt: 3,
-            mb: 3,
-            p: 2,
-            border: "1px solid #ccc",
-            borderRadius: 2,
-            textAlign: "center",
-            "&:hover": { borderColor: theme.palette.text.primary },
-          }}
-        >
-          <Typography variant="subtitle1" gutterBottom>
-            Duración estimada (mínimo 15 minutos)
-          </Typography>
+    <FormContainer title="Crear Oferta" handleSubmit={handleSubmit}>
+      <TextField
+        label="Título *"
+        name="title"
+        value={formData.title}
+        onChange={handleChange}
+        fullWidth
+        error={!!errors.title}
+        helperText={errors.title}
+      />
+      <TextField
+        label="Descripción *"
+        name="description"
+        value={formData.description}
+        onChange={handleChange}
+        multiline
+        rows={4}
+        fullWidth
+        error={!!errors.description}
+        helperText={errors.description}
+      />
+      <DurationSlider
+        value={durationMinutes}
+        onChange={(e, newValue) => {
+          setDurationMinutes(newValue);
+          setFormData(prev => ({ ...prev, duration: minutesToHHMMSS(newValue) }));
+        }}
+      />
 
-          <Box sx={{ width: "100%", maxWidth: 520, mx: "auto", px: 2 }}>
-            <Slider
-              value={durationMinutesTotal}
-              min={15}
-              max={240}
-              step={15}
-              marks={[
-                { value: 15, label: "00:15" },
-                { value: 60, label: "01:00" },
-                { value: 120, label: "02:00" },
-                { value: 180, label: "03:00" },
-                { value: 240, label: "04:00" },
-              ]}
-              valueLabelDisplay="auto"
-              valueLabelFormat={(val) => formatDuration(val)}
-              onChange={(e, newValue) => setDurationMinutesTotal(newValue)}
-              sx={{
-                color: theme.palette.primary.main,
-                "& .MuiSlider-thumb": {
-                  backgroundColor: "#fff",
-                  border: "2px solid",
-                  borderColor: theme.palette.primary.main,
-                },
-                "& .MuiSlider-markLabel": {
-                  fontSize: "0.75rem",
-                },
-              }}
+      <TextField
+        label="Ubicación"
+        name="location"
+        value={formData.location}
+        onChange={handleChange}
+        fullWidth
+      />
+
+      <Box
+        sx={{
+          mt: 2,
+          mb: 2,
+          p: 2,
+          border: "2px dashed #ccc",
+          borderRadius: 2,
+          textAlign: "center",
+          cursor: "pointer",
+          "&:hover": { borderColor: theme.palette.primary.main },
+        }}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => {
+          e.preventDefault();
+          const file = e.dataTransfer.files[0];
+          if (file) setFormData({ ...formData, image: file });
+        }}
+        onClick={() => document.getElementById("image-input").click()}
+      >
+        {formData.image ? (
+          <Box sx={{ position: "relative", display: "inline-block" }}>
+            <Avatar
+              src={URL.createObjectURL(formData.image)}
+              variant="rounded"
+              sx={{ width: 150, height: 150 }}
             />
+            <IconButton
+              size="small"
+              sx={{
+                position: "absolute",
+                top: 8,
+                right: 8,
+                width: 24,
+                height: 24,
+                borderRadius: "50%",
+                backgroundColor: "rgba(255,255,255,0.8)",
+                "&:hover": { backgroundColor: "rgba(255,255,255,1)" },
+                padding: 0,
+                minWidth: 0,
+              }}
+              onClick={handleRemoveImage}
+            >
+              ✕
+            </IconButton>
           </Box>
-
-          <Typography variant="body1" sx={{ mt: 1, fontWeight: 500 }}>
-            {formatDuration(durationMinutesTotal)} horas
-          </Typography>
-        </Box>
-
-
-        <TextField
-          label="Ubicación"
-          name="location"
-          value={formData.location}
-          onChange={handleChange}
-          fullWidth
+        ) : (
+          <>
+            <Typography variant="subtitle1" gutterBottom>
+              Sube una imagen de tu oferta
+            </Typography>
+            <Typography variant="body2" color="textSecondary">
+              Arrastra la imagen aquí o haz clic para seleccionar
+            </Typography>
+          </>
+        )}
+        <input
+          id="image-input"
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+          ref={fileInputRef}
+          onChange={handleFileChange}
         />
+      </Box>
 
-        <Box
-          sx={{
-            mt: 2,
-            mb: 2,
-            p: 2,
-            border: "2px dashed #ccc",
-            borderRadius: 2,
-            textAlign: "center",
-            cursor: "pointer",
-            "&:hover": { borderColor: theme.palette.primary.main },
-          }}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => {
-            e.preventDefault();
-            const file = e.dataTransfer.files[0];
-            if (file) setFormData({ ...formData, image: file });
-          }}
-          onClick={() => document.getElementById("image-input").click()}
-        >
-          {formData.image ? (
-            <Box sx={{ position: "relative", display: "inline-block" }}>
-              <Avatar
-                src={URL.createObjectURL(formData.image)}
-                variant="rounded"
-                sx={{ width: 150, height: 150 }}
-              />
-              <IconButton
-                size="small"
-                sx={{
-                  position: "absolute",
-                  top: 8,
-                  right: 8,
-                  width: 24,
-                  height: 24,
-                  borderRadius: "50%",
-                  backgroundColor: "rgba(255,255,255,0.8)",
-                  "&:hover": { backgroundColor: "rgba(255,255,255,1)" },
-                  padding: 0,
-                  minWidth: 0,
-                }}
-                onClick={handleRemoveImage}
-              >
-                ✕
-              </IconButton>
-            </Box>
-          ) : (
-            <>
-              <Typography variant="subtitle1" gutterBottom>
-                Sube una imagen de tu oferta
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                Arrastra la imagen aquí o haz clic para seleccionar
-              </Typography>
-            </>
-          )}
-          <input
-            id="image-input"
-            type="file"
-            accept="image/*"
-            style={{ display: "none" }}
-            ref={fileInputRef}
-            onChange={handleFileChange}
-          />
-        </Box>
+      <CustomButton type="submit" variantstyle="primary" variant="contained">
+        {loading ? "Creando oferta..." : "Crear oferta"}
+      </CustomButton>
 
-        <CustomButton type="submit" variantstyle="primary" variant="contained">
-          {loading ? "Creando oferta..." : "Crear oferta"}
-        </CustomButton>
-
-        {formError && <ErrorMessage message={formError} duration={3000} />}
-      </FormContainer>
+      {formError && <ErrorMessage message={formError} duration={3000} />}
+    </FormContainer>
   );
 }

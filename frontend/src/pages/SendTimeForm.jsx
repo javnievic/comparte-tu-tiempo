@@ -12,6 +12,9 @@ import { getUserById } from "../services/userService";
 import { getOfferById } from "../services/offerService";
 import { validateTransactionField } from "../utils/validation";
 import { useParams, useNavigate, Link as RouterLink } from "react-router-dom";
+import DurationSlider from "../components/DurationSlider";
+import { minutesToHHMMSS } from "../utils/time";
+
 
 export default function SendTimeForm() {
     const { currentUser } = useContext(UserContext);
@@ -25,6 +28,7 @@ export default function SendTimeForm() {
     const [offer, setOffer] = useState(null);
     const [loadingData, setLoadingData] = useState(true);
     const [fetchError, setFetchError] = useState("");
+    const [durationMinutes, setDurationMinutes] = useState(15); // minimum 15
 
     const { formData, setFormData, errors, setErrors, handleChange } = useForm(
         { title: "", text: "", duration: "" },
@@ -168,15 +172,12 @@ export default function SendTimeForm() {
                     error={!!errors.text}
                     helperText={errors.text}
                 />
-                <TextField
-                    label="Duración (HH:MM:SS)"
-                    name="duration"
-                    value={formData.duration}
-                    onChange={handleChange}
-                    placeholder="Ej: 02:30:00"
-                    fullWidth
-                    error={!!errors.duration}
-                    helperText={errors.duration}
+                <DurationSlider
+                    value={durationMinutes}
+                    onChange={(e, newValue) => {
+                        setDurationMinutes(newValue);
+                        setFormData(prev => ({ ...prev, duration: minutesToHHMMSS(newValue) }));
+                    }}
                 />
 
                 <CustomButton type="submit" variantstyle="primary" variant="contained">

@@ -54,3 +54,14 @@ export const validateTransactionField = (name, value = {}) => {
 
   return error;
 };
+
+export const validateFormFields = (formData, fields, validateFn) => {
+    const errors = {};
+
+    fields.forEach((field) => {
+        const error = validateFn(field, formData[field], formData);
+        if (error) errors[field] = error;
+    });
+
+    return errors;
+};

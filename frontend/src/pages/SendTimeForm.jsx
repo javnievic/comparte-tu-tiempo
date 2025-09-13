@@ -10,7 +10,7 @@ import { useForm } from "../hooks/useForm";
 import { createTransaction } from "../services/transactionService";
 import { getUserById } from "../services/userService";
 import { getOfferById } from "../services/offerService";
-import { validateTransactionField } from "../utils/validation";
+import { validateTransactionField, validateFormFields } from "../utils/validation";
 import { useParams, useNavigate, Link as RouterLink } from "react-router-dom";
 import DurationSlider from "../components/DurationSlider";
 import { minutesToHHMMSS } from "../utils/time";
@@ -79,11 +79,9 @@ export default function SendTimeForm() {
         setLoading(true);
 
         // Frontend validation
-        const newErrors = {};
-        Object.keys(formData).forEach((field) => {
-            const error = validateTransactionField(field, formData[field], formData);
-            if (error) newErrors[field] = error;
-        });
+        const fieldsToValidate = Object.keys(formData);
+        const newErrors = validateFormFields(formData, fieldsToValidate, validateTransactionField);
+
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);

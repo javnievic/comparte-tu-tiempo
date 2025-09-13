@@ -53,6 +53,10 @@ export default function SendTimeForm() {
                     // obtain user data of the offer owner
                     const user = await getUserById(offerData.user.id);
                     setReceiverUser(user);
+                    if (offerData.duration_minutes) {
+                        setDurationMinutes(offerData.duration_minutes);
+                        setFormData(prev => ({ ...prev, duration: offerData.duration }));
+                    }
                 }
 
                 setLoadingData(false);
@@ -63,7 +67,7 @@ export default function SendTimeForm() {
         };
 
         fetchData();
-    }, [userId, offerId]);
+    }, [userId, offerId, setFormData]);
 
 
     const handleSubmit = async (e) => {

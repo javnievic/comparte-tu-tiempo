@@ -9,6 +9,7 @@ class OfferSerializer(serializers.ModelSerializer):
     """
     image = serializers.ImageField(required=False, allow_null=True)
     user = UserSerializer(read_only=True)
+    duration_minutes = serializers.SerializerMethodField()
 
     class Meta:
         model = Offer
@@ -17,6 +18,7 @@ class OfferSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "duration",
+            "duration_minutes",
             "is_online",
             "location",
             "publish_date",
@@ -24,3 +26,8 @@ class OfferSerializer(serializers.ModelSerializer):
             "user",
         ]
         read_only_fields = ["id", "publish_date", "user", "is_active"]
+
+    def get_duration_minutes(self, obj):
+        if obj.duration:
+            return int(obj.duration.total_seconds() // 60)
+        return None

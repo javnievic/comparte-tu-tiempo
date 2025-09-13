@@ -61,6 +61,7 @@ export default function SendTimeForm() {
 
                 setLoadingData(false);
             } catch (error) {
+                console.error("Error al obtener datos:", error);
                 setFetchError("Usuario u oferta no encontrado");
                 setLoadingData(false);
             }

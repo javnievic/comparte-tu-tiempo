@@ -1,4 +1,13 @@
-import { Box, Typography, AppBar, Toolbar, Avatar, Divider } from "@mui/material";
+import { 
+  Box, 
+  Typography, 
+  AppBar, 
+  Toolbar, 
+  Avatar, 
+  Divider, 
+  IconButton 
+} from "@mui/material";
+import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
 import CustomButton from "./CustomButton";
 import { useNavigate } from "react-router-dom";
 import { useContext, useState, useRef, useEffect } from "react";
@@ -10,8 +19,8 @@ export default function Navbar() {
   const { currentUser, logout } = useContext(UserContext);
   const { openLoginModal } = useContext(UIContext);
 
-  const [menuOpen, setMenuOpen] = useState(false); // state for dropdown menu
-  const menuRef = useRef(null); // ref for detecting clicks outside
+  const [menuOpen, setMenuOpen] = useState(false); 
+  const menuRef = useRef(null); 
 
   const handleLogout = () => {
     logout();
@@ -99,11 +108,16 @@ export default function Navbar() {
 
               {/* User Avatar with Dropdown Menu */}
               <Box sx={{ position: "relative" }}>
-                <Avatar
-                  src={currentUser.profile_picture}
-                  sx={{ width: 52, height: 52, cursor: "pointer" }}
+                <IconButton 
                   onClick={() => setMenuOpen(prev => !prev)}
-                />
+                  sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                >
+                  <Avatar
+                    src={currentUser.profile_picture}
+                    sx={{ width: 52, height: 52 }}
+                  />
+                  {menuOpen ? <ArrowDropUp /> : <ArrowDropDown />}
+                </IconButton>
 
                 {menuOpen && (
                   <Box

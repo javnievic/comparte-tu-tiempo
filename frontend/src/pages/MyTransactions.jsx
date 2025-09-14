@@ -54,9 +54,12 @@ export default function MyTransactions() {
             dateStyle: "short",
             timeStyle: "short",
         }),
-        sender: tx.sender,
+        sender: tx.sender,        // full  object to render
+        senderName: tx.sender ? `${tx.sender.first_name} ${tx.sender.last_name}` : "-", // string para buscar
         receiver: tx.receiver,
+        receiverName: tx.receiver ? `${tx.receiver.first_name} ${tx.receiver.last_name}` : "-",
         offer: tx.offer,
+        offerTitle: tx.offer ? tx.offer.title : "-",
     }));
 
     const columns = [
@@ -92,55 +95,46 @@ export default function MyTransactions() {
         },
         { field: "datetime", headerName: "Fecha", flex: 0.5 },
         {
-            field: "sender",
+            field: "senderName", // to the search works properly
             headerName: "Emisor",
             flex: 1,
             renderCell: (params) => {
-                const user = params.value;
+                const user = params.row.sender; // use the original object
+                if (!user) return "-";
                 return (
-                    <Link
-                        component={RouterLink}
-                        to={`/users/${user.id}`}
-                        underline="hover"
-                    >
+                    <Link component={RouterLink} to={`/users/${user.id}`} underline="hover">
                         {user.id === currentUser?.id ? "Tú" : `${user.first_name} ${user.last_name}`}
                     </Link>
                 );
             },
         },
         {
-            field: "receiver",
+            field: "receiverName",
             headerName: "Receptor",
             flex: 1,
             renderCell: (params) => {
-                const user = params.value;
+                const user = params.row.receiver;
+                if (!user) return "-";
                 return (
-                    <Link
-                        component={RouterLink}
-                        to={`/users/${user.id}`}
-                        underline="hover"
-                    >
+                    <Link component={RouterLink} to={`/users/${user.id}`} underline="hover">
                         {user.id === currentUser?.id ? "Tú" : `${user.first_name} ${user.last_name}`}
                     </Link>
                 );
             },
         },
         {
-            field: "offer",
+            field: "offerTitle",
             headerName: "Oferta",
             flex: 1,
-            renderCell: (params) =>
-                params.value ? (
-                    <Link
-                        component={RouterLink}
-                        to={`/offers/${params.value.id}`}
-                        underline="hover"
-                    >
-                        {params.value.title}
+            renderCell: (params) => {
+                const offer = params.row.offer;
+                if (!offer) return "-";
+                return (
+                    <Link component={RouterLink} to={`/offers/${offer.id}`} underline="hover">
+                        {offer.title}
                     </Link>
-                ) : (
-                    "-"
-                ),
+                );
+            },
         },
     ];
 
@@ -151,7 +145,7 @@ export default function MyTransactions() {
             </Typography>
 
             <Box sx={{ width: "100%", overflowX: "auto" }}>
-                <Box sx={{  height: 600 }}>
+                <Box sx={{ height: 600 }}>
                     <DataGrid
                         rows={rows}
                         columns={columns.map((col) => ({
@@ -172,7 +166,7 @@ export default function MyTransactions() {
                         }}
                         disableRowSelectionOnClick
                         localeText={esES.components.MuiDataGrid.defaultProps.localeText}
-                        
+
                         // Toolbar
                         showToolbar
                         slotProps={{

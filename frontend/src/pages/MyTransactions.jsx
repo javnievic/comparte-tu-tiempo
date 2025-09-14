@@ -72,7 +72,7 @@ export default function MyTransactions() {
           </TableHead>
           <TableBody>
             {transactions.map((tx) => {
-              const isSender = tx.sender === currentUser?.id;
+              const isSender = tx.sender.id === currentUser?.id;
 
               return (
                 <TableRow key={tx.id}>
@@ -106,7 +106,7 @@ export default function MyTransactions() {
                     })}
                   </TableCell>
                   <TableCell>{isSender ? "Emisor" : "Receptor"}</TableCell>
-                  <TableCell>{tx.offer || "-"}</TableCell>
+                  <TableCell>{tx.offer? tx.offer.title : "-"}</TableCell>
                 </TableRow>
               );
             })}

@@ -92,8 +92,8 @@ export default function SendTimeForm() {
         try {
             const payload = {
                 ...formData,
-                receiver: receiverUser.id,
-                offer: offer?.id || null,
+                receiver_id: receiverUser.id,
+                offer_id: offer?.id || null,
             };
             await createTransaction(payload);
             setFormData({ title: "", text: "", duration: "" });

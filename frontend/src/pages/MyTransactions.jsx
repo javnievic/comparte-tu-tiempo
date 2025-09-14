@@ -12,6 +12,7 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
+import { ArrowUpward, ArrowDownward } from "@mui/icons-material";
 import { getMyTransactions } from "../services/transactionService";
 import { formatDuration } from "../utils/time";
 import { UserContext } from "../contexts/UserContext";
@@ -19,7 +20,7 @@ import { UserContext } from "../contexts/UserContext";
 export default function MyTransactions() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { currentUser } = useContext(UserContext); // Para saber si soy emisor o receptor
+  const { currentUser } = useContext(UserContext);
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -72,6 +73,7 @@ export default function MyTransactions() {
           <TableBody>
             {transactions.map((tx) => {
               const isSender = tx.sender === currentUser?.id;
+
               return (
                 <TableRow key={tx.id}>
                   <TableCell>{tx.title || "Sin título"}</TableCell>
@@ -80,9 +82,22 @@ export default function MyTransactions() {
                     sx={{
                       color: isSender ? "red" : "green",
                       fontWeight: "bold",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
                     }}
                   >
-                    {formatDuration(tx.duration)}
+                    {isSender ? (
+                      <>
+                        <ArrowUpward fontSize="small" />
+                        -{formatDuration(tx.duration)}
+                      </>
+                    ) : (
+                      <>
+                        <ArrowDownward fontSize="small" />
+                        +{formatDuration(tx.duration)}
+                      </>
+                    )}
                   </TableCell>
                   <TableCell>
                     {new Date(tx.datetime).toLocaleString("es-ES", {

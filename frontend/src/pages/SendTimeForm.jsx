@@ -97,7 +97,7 @@ export default function SendTimeForm() {
             };
             await createTransaction(payload);
             setFormData({ title: "", text: "", duration: "" });
-            navigate(`/my_transactions`);
+            navigate(`/my-transactions`);
         } catch (err) {
             if (err.response?.data?.receiver) {
                 setFormError(err.response.data.receiver);
@@ -165,7 +165,7 @@ export default function SendTimeForm() {
                 )}
 
                 <TextField
-                    label="Título"
+                    label="Título *"
                     name="title"
                     value={formData.title}
                     onChange={handleChange}
@@ -174,7 +174,7 @@ export default function SendTimeForm() {
                     helperText={errors.title}
                 />
                 <TextField
-                    label="Descripción"
+                    label="Comentarios"
                     name="text"
                     value={formData.text}
                     onChange={handleChange}

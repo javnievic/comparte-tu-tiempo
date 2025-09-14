@@ -10,3 +10,10 @@ export const createTransaction = async (data) => {
   return response.data;
 };
 
+export const getMyTransactions = async () => {
+    const response = await axiosInstance.get(`${API_URL}my-transactions/`, {
+      headers: { "Auth": true, "Accept": "application/json" },
+    });
+    return response.data;
+};
+

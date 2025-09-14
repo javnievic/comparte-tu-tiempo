@@ -22,13 +22,13 @@ export default function App() {
       <UserProvider>
         <UIProvider>
           <Navbar />
-          <Box sx={{ height: 96 }} />
           <LayoutGuide show={showguide} />
           <Box
             sx={{
               px: "100px", // lateral margins
               maxWidth: "1440px", // optional, to not exceed a certain width
               mx: "auto", // center horizontally
+              mt: 5,
             }}
           >
             <Routes>

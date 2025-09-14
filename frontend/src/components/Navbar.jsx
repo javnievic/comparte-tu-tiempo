@@ -16,10 +16,10 @@ export default function Navbar() {
 
   return (
     <AppBar
-  position="static"
+  position="sticky"
   elevation={0}
   sx={{
-    backgroundColor: "transparent",
+    backgroundColor: "white",
     borderBottom: theme => `1px solid ${theme.palette.border.default}`,
   }}
 >
@@ -30,9 +30,9 @@ export default function Navbar() {
       justifyContent: "space-between",
       alignItems: "center",
       width: "100%",
-      maxWidth: "1440px",   // igual que tu Box de contenido
-      mx: "auto",           // centra horizontalmente
-      px: "100px",          // márgenes laterales iguales que tu layout
+      maxWidth: "1440px",   
+      mx: "auto",
+      px: "100px",          
     }}
   >
         {/* Logo Section */}

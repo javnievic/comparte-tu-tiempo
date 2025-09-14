@@ -1,22 +1,12 @@
 import { useEffect, useState, useContext } from "react";
-import {
-  Box,
-  Typography,
-  CircularProgress,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Link,
-} from "@mui/material";
+import { Box, CircularProgress, Link, Typography } from "@mui/material";
 import { ArrowUpward, ArrowDownward } from "@mui/icons-material";
+import { DataGrid } from "@mui/x-data-grid";
 import { getMyTransactions } from "../services/transactionService";
 import { formatDuration } from "../utils/time";
 import { UserContext } from "../contexts/UserContext";
 import { Link as RouterLink } from "react-router-dom";
+import { esES } from "@mui/x-data-grid/locales";
 
 export default function MyTransactions() {
   const [transactions, setTransactions] = useState([]);
@@ -53,88 +43,123 @@ export default function MyTransactions() {
     );
   }
 
-  return (
-    <Box>
-      <Typography variant="h1" sx={{ mb: 3, fontWeight: "bold" }}>
-        Mis Transacciones
-      </Typography>
+  // Preparing rows
+  const rows = transactions.map((tx) => {
+    const isSender = tx.sender.id === currentUser?.id;
+    const otherUser = isSender ? tx.receiver : tx.sender;
+    return {
+      id: tx.id,
+      title: tx.title || "Sin título",
+      text: tx.text || "-",
+      duration: formatDuration(tx.duration),
+      isSender,
+      datetime: new Date(tx.datetime).toLocaleString("es-ES", {
+        dateStyle: "short",
+        timeStyle: "short",
+      }),
+      otherUser,
+      offer: tx.offer,
+    };
+  });
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell><strong>Título</strong></TableCell>
-              <TableCell><strong>Descripción</strong></TableCell>
-              <TableCell><strong>Duración</strong></TableCell>
-              <TableCell><strong>Fecha</strong></TableCell>
-              <TableCell><strong>Usuario</strong></TableCell>
-              <TableCell><strong>Oferta</strong></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {transactions.map((tx) => {
-              const isSender = tx.sender.id === currentUser?.id;
-              const otherUser = isSender ? tx.receiver : tx.sender;
+  const columns = [
+    { field: "title", headerName: "Título", flex: 1 },
+    { field: "text", headerName: "Descripción", flex: 1 },
+    {
+      field: "duration",
+      headerName: "Duración",
+      flex: 0.5,
+      renderCell: (params) => (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            color: params.row.isSender ? "red" : "green",
+            fontWeight: "bold",
+          }}
+        >
+          {params.row.isSender ? (
+            <>
+              <ArrowUpward fontSize="small" />
+              -{params.value}
+            </>
+          ) : (
+            <>
+              <ArrowDownward fontSize="small" />
+              +{params.value}
+            </>
+          )}
+        </Box>
+      ),
+    },
+    { field: "datetime", headerName: "Fecha", flex: 1 },
+    {
+      field: "otherUser",
+      headerName: "Usuario",
+      flex: 1,
+      renderCell: (params) => (
+        <Link
+          component={RouterLink}
+          to={`/users/${params.value.id}`}
+          underline="hover"
+        >
+          {params.value.first_name} {params.value.last_name}
+        </Link>
+      ),
+    },
+    {
+      field: "offer",
+      headerName: "Oferta",
+      flex: 1,
+      renderCell: (params) =>
+        params.value ? (
+          <Link
+            component={RouterLink}
+            to={`/offers/${params.value.id}`}
+            underline="hover"
+          >
+            {params.value.title}
+          </Link>
+        ) : (
+          "-"
+        ),
+    },
+  ];
 
-              return (
-                <TableRow key={tx.id}>
-                  <TableCell>{tx.title || "Sin título"}</TableCell>
-                  <TableCell>{tx.text || "-"}</TableCell>
-                  <TableCell
-                    sx={{
-                      color: isSender ? "red" : "green",
-                      fontWeight: "bold",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1,
-                    }}
-                  >
-                    {isSender ? (
-                      <>
-                        <ArrowUpward fontSize="small" />
-                        -{formatDuration(tx.duration)}
-                      </>
-                    ) : (
-                      <>
-                        <ArrowDownward fontSize="small" />
-                        +{formatDuration(tx.duration)}
-                      </>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {new Date(tx.datetime).toLocaleString("es-ES", {
-                      dateStyle: "short",
-                      timeStyle: "short",
-                    })}
-                  </TableCell>
-                  <TableCell>
-                    <Link
-                      component={RouterLink}
-                      to={`/users/${otherUser.id}`}
-                      underline="hover"
-                    >
-                      {otherUser.first_name} {otherUser.last_name}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    {tx.offer ? (
-                      <Link
-                        component={RouterLink}
-                        to={`/offers/${tx.offer.id}`}
-                        underline="hover"
-                      >
-                        {tx.offer.title}
-                      </Link>
-                    ) : (
-                      "-"
-                    )}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+return (
+  <Box>
+    <Typography variant="h3" sx={{ mb: 3, fontWeight: "bold" }}>
+      Mis Transacciones
+    </Typography>
+
+    {/* Horizontal scroll */}
+  <Box sx={{ width: "100%", overflowX: "auto" }}>
+    <Box sx={{ minWidth: 1200, height: 600 }}>
+      <DataGrid
+        rows={rows}
+        columns={columns.map((col) => ({
+          ...col,
+          minWidth:
+            col.field === "title" ? 150 :
+            col.field === "text" ? 250 :
+            col.field === "duration" ? 100 :
+            col.field === "datetime" ? 150 :
+            col.field === "otherUser" ? 200 :
+            col.field === "offer" ? 200 :
+            100,
+          flex: col.flex ?? 1,
+        }))}
+        pageSizeOptions={[5, 10, 20]}
+        initialState={{
+          pagination: { paginationModel: { pageSize: 10 } },
+        }}
+        disableRowSelectionOnClick
+        localeText={esES.components.MuiDataGrid.defaultProps.localeText}
+      />
     </Box>
-  );
+  </Box>
+  </Box>
+);
+
 }

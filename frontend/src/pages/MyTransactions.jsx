@@ -176,6 +176,15 @@ export default function MyTransactions() {
                                 showExport: true,
                             },
                         }}
+                        sx={{
+                            "& .MuiDataGrid-columnHeaders": {
+                                backgroundColor: "#f5f5f5",
+                            },
+                            "& .MuiDataGrid-columnHeaderTitle": {
+                                fontWeight: "bold",
+                                color: "#333",
+                            },
+                        }}
                     />
                 </Box>
             </Box>

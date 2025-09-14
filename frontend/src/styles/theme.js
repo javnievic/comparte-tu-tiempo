@@ -39,7 +39,15 @@ const theme = createTheme({
   shape: {
     borderRadius: 8,
   },
-  //spacing: 4,
+  components: {
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          fontSize: "16px", 
+        },
+      },
+    },
+  },
 });
 
 export default theme;

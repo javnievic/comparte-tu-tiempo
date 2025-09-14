@@ -1,8 +1,10 @@
 # views.py
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from .models import Transaction
 from .serializers import TransactionSerializer
+from django.db.models import Q
 
 
 class TransactionViewSet(viewsets.ModelViewSet):
@@ -25,3 +27,16 @@ class TransactionViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED,
                         headers=headers)
+
+    @action(detail=False, methods=["get"], url_path="my-transactions")
+    def my_transactions(self, request):
+        """
+        Retorna todas las transacciones donde el usuario es
+        sender o receiver.
+        """
+        user = request.user
+        transactions = Transaction.objects.filter(
+            Q(sender=user) | Q(receiver=user)
+        ).order_by("-datetime")
+        serializer = self.get_serializer(transactions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

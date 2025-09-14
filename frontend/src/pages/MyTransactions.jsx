@@ -1,4 +1,3 @@
-// src/pages/MyTransactions.jsx
 import { useEffect, useState, useContext } from "react";
 import {
   Box,
@@ -11,11 +10,13 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Link,
 } from "@mui/material";
 import { ArrowUpward, ArrowDownward } from "@mui/icons-material";
 import { getMyTransactions } from "../services/transactionService";
 import { formatDuration } from "../utils/time";
 import { UserContext } from "../contexts/UserContext";
+import { Link as RouterLink } from "react-router-dom";
 
 export default function MyTransactions() {
   const [transactions, setTransactions] = useState([]);
@@ -66,13 +67,14 @@ export default function MyTransactions() {
               <TableCell><strong>Descripción</strong></TableCell>
               <TableCell><strong>Duración</strong></TableCell>
               <TableCell><strong>Fecha</strong></TableCell>
-              <TableCell><strong>Rol</strong></TableCell>
+              <TableCell><strong>Usuario</strong></TableCell>
               <TableCell><strong>Oferta</strong></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {transactions.map((tx) => {
               const isSender = tx.sender.id === currentUser?.id;
+              const otherUser = isSender ? tx.receiver : tx.sender;
 
               return (
                 <TableRow key={tx.id}>
@@ -105,8 +107,28 @@ export default function MyTransactions() {
                       timeStyle: "short",
                     })}
                   </TableCell>
-                  <TableCell>{isSender ? "Emisor" : "Receptor"}</TableCell>
-                  <TableCell>{tx.offer? tx.offer.title : "-"}</TableCell>
+                  <TableCell>
+                    <Link
+                      component={RouterLink}
+                      to={`/users/${otherUser.id}`}
+                      underline="hover"
+                    >
+                      {otherUser.first_name} {otherUser.last_name}
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    {tx.offer ? (
+                      <Link
+                        component={RouterLink}
+                        to={`/offers/${tx.offer.id}`}
+                        underline="hover"
+                      >
+                        {tx.offer.title}
+                      </Link>
+                    ) : (
+                      "-"
+                    )}
+                  </TableCell>
                 </TableRow>
               );
             })}

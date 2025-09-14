@@ -44,23 +44,20 @@ export default function MyTransactions() {
     }
 
     // Preparing rows
-    const rows = transactions.map((tx) => {
-        const isSender = tx.sender.id === currentUser?.id;
-        const otherUser = isSender ? tx.receiver : tx.sender;
-        return {
-            id: tx.id,
-            title: tx.title || "Sin título",
-            text: tx.text || "-",
-            duration: formatDuration(tx.duration),
-            isSender,
-            datetime: new Date(tx.datetime).toLocaleString("es-ES", {
-                dateStyle: "short",
-                timeStyle: "short",
-            }),
-            otherUser,
-            offer: tx.offer,
-        };
-    });
+    const rows = transactions.map((tx) => ({
+        id: tx.id,
+        title: tx.title || "Sin título",
+        text: tx.text || "-",
+        duration: formatDuration(tx.duration),
+        isSender: tx.sender.id === currentUser?.id,
+        datetime: new Date(tx.datetime).toLocaleString("es-ES", {
+            dateStyle: "short",
+            timeStyle: "short",
+        }),
+        sender: tx.sender,
+        receiver: tx.receiver,
+        offer: tx.offer,
+    }));
 
     const columns = [
         { field: "title", headerName: "Título", flex: 1 },
@@ -93,20 +90,40 @@ export default function MyTransactions() {
                 </Box>
             ),
         },
-        { field: "datetime", headerName: "Fecha", flex: 1 },
+        { field: "datetime", headerName: "Fecha", flex: 0.5 },
         {
-            field: "otherUser",
-            headerName: "Usuario",
+            field: "sender",
+            headerName: "Emisor",
             flex: 1,
-            renderCell: (params) => (
-                <Link
-                    component={RouterLink}
-                    to={`/users/${params.value.id}`}
-                    underline="hover"
-                >
-                    {params.value.first_name} {params.value.last_name}
-                </Link>
-            ),
+            renderCell: (params) => {
+                const user = params.value;
+                return (
+                    <Link
+                        component={RouterLink}
+                        to={`/users/${user.id}`}
+                        underline="hover"
+                    >
+                        {user.id === currentUser?.id ? "Tú" : `${user.first_name} ${user.last_name}`}
+                    </Link>
+                );
+            },
+        },
+        {
+            field: "receiver",
+            headerName: "Receptor",
+            flex: 1,
+            renderCell: (params) => {
+                const user = params.value;
+                return (
+                    <Link
+                        component={RouterLink}
+                        to={`/users/${user.id}`}
+                        underline="hover"
+                    >
+                        {user.id === currentUser?.id ? "Tú" : `${user.first_name} ${user.last_name}`}
+                    </Link>
+                );
+            },
         },
         {
             field: "offer",
@@ -133,21 +150,20 @@ export default function MyTransactions() {
                 Mis Transacciones
             </Typography>
 
-            {/* Horizontal scroll */}
             <Box sx={{ width: "100%", overflowX: "auto" }}>
-                <Box sx={{ minWidth: 1200, height: 600 }}>
+                <Box sx={{  height: 600 }}>
                     <DataGrid
                         rows={rows}
                         columns={columns.map((col) => ({
                             ...col,
                             minWidth:
                                 col.field === "title" ? 150 :
-                                    col.field === "text" ? 250 :
-                                        col.field === "duration" ? 100 :
-                                            col.field === "datetime" ? 150 :
-                                                col.field === "otherUser" ? 200 :
-                                                    col.field === "offer" ? 200 :
-                                                        100,
+                                col.field === "text" ? 250 :
+                                col.field === "duration" ? 100 :
+                                col.field === "datetime" ? 100 :
+                                col.field === "sender" ? 200 :
+                                col.field === "receiver" ? 200 :
+                                col.field === "offer" ? 200 : 100,
                             flex: col.flex ?? 1,
                         }))}
                         pageSizeOptions={[5, 10, 20]}
@@ -159,9 +175,6 @@ export default function MyTransactions() {
                         
                         // Toolbar
                         showToolbar
-                        slots={{
-                            toolbar: undefined,
-                        }}
                         slotProps={{
                             toolbar: {
                                 showQuickFilter: true,
@@ -174,5 +187,4 @@ export default function MyTransactions() {
             </Box>
         </Box>
     );
-
 }

@@ -9,157 +9,170 @@ import { Link as RouterLink } from "react-router-dom";
 import { esES } from "@mui/x-data-grid/locales";
 
 export default function MyTransactions() {
-  const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { currentUser } = useContext(UserContext);
+    const [transactions, setTransactions] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const { currentUser } = useContext(UserContext);
 
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const data = await getMyTransactions();
-        setTransactions(data);
-      } catch (error) {
-        console.error("Error al obtener transacciones:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchTransactions();
-  }, []);
+    useEffect(() => {
+        const fetchTransactions = async () => {
+            try {
+                const data = await getMyTransactions();
+                setTransactions(data);
+            } catch (error) {
+                console.error("Error al obtener transacciones:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchTransactions();
+    }, []);
 
-  if (loading) {
+    if (loading) {
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    if (transactions.length === 0) {
+        return (
+            <Box sx={{ textAlign: "center", mt: 5 }}>
+                <Typography variant="h5">No tienes transacciones todavía.</Typography>
+            </Box>
+        );
+    }
+
+    // Preparing rows
+    const rows = transactions.map((tx) => {
+        const isSender = tx.sender.id === currentUser?.id;
+        const otherUser = isSender ? tx.receiver : tx.sender;
+        return {
+            id: tx.id,
+            title: tx.title || "Sin título",
+            text: tx.text || "-",
+            duration: formatDuration(tx.duration),
+            isSender,
+            datetime: new Date(tx.datetime).toLocaleString("es-ES", {
+                dateStyle: "short",
+                timeStyle: "short",
+            }),
+            otherUser,
+            offer: tx.offer,
+        };
+    });
+
+    const columns = [
+        { field: "title", headerName: "Título", flex: 1 },
+        { field: "text", headerName: "Descripción", flex: 1 },
+        {
+            field: "duration",
+            headerName: "Duración",
+            flex: 0.5,
+            renderCell: (params) => (
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        color: params.row.isSender ? "red" : "green",
+                        fontWeight: "bold",
+                    }}
+                >
+                    {params.row.isSender ? (
+                        <>
+                            <ArrowUpward fontSize="small" />
+                            -{params.value}
+                        </>
+                    ) : (
+                        <>
+                            <ArrowDownward fontSize="small" />
+                            +{params.value}
+                        </>
+                    )}
+                </Box>
+            ),
+        },
+        { field: "datetime", headerName: "Fecha", flex: 1 },
+        {
+            field: "otherUser",
+            headerName: "Usuario",
+            flex: 1,
+            renderCell: (params) => (
+                <Link
+                    component={RouterLink}
+                    to={`/users/${params.value.id}`}
+                    underline="hover"
+                >
+                    {params.value.first_name} {params.value.last_name}
+                </Link>
+            ),
+        },
+        {
+            field: "offer",
+            headerName: "Oferta",
+            flex: 1,
+            renderCell: (params) =>
+                params.value ? (
+                    <Link
+                        component={RouterLink}
+                        to={`/offers/${params.value.id}`}
+                        underline="hover"
+                    >
+                        {params.value.title}
+                    </Link>
+                ) : (
+                    "-"
+                ),
+        },
+    ];
+
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
+        <Box>
+            <Typography variant="h3" sx={{ mb: 3, fontWeight: "bold" }}>
+                Mis Transacciones
+            </Typography>
 
-  if (transactions.length === 0) {
-    return (
-      <Box sx={{ textAlign: "center", mt: 5 }}>
-        <Typography variant="h5">No tienes transacciones todavía.</Typography>
-      </Box>
-    );
-  }
-
-  // Preparing rows
-  const rows = transactions.map((tx) => {
-    const isSender = tx.sender.id === currentUser?.id;
-    const otherUser = isSender ? tx.receiver : tx.sender;
-    return {
-      id: tx.id,
-      title: tx.title || "Sin título",
-      text: tx.text || "-",
-      duration: formatDuration(tx.duration),
-      isSender,
-      datetime: new Date(tx.datetime).toLocaleString("es-ES", {
-        dateStyle: "short",
-        timeStyle: "short",
-      }),
-      otherUser,
-      offer: tx.offer,
-    };
-  });
-
-  const columns = [
-    { field: "title", headerName: "Título", flex: 1 },
-    { field: "text", headerName: "Descripción", flex: 1 },
-    {
-      field: "duration",
-      headerName: "Duración",
-      flex: 0.5,
-      renderCell: (params) => (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-            color: params.row.isSender ? "red" : "green",
-            fontWeight: "bold",
-          }}
-        >
-          {params.row.isSender ? (
-            <>
-              <ArrowUpward fontSize="small" />
-              -{params.value}
-            </>
-          ) : (
-            <>
-              <ArrowDownward fontSize="small" />
-              +{params.value}
-            </>
-          )}
+            {/* Horizontal scroll */}
+            <Box sx={{ width: "100%", overflowX: "auto" }}>
+                <Box sx={{ minWidth: 1200, height: 600 }}>
+                    <DataGrid
+                        rows={rows}
+                        columns={columns.map((col) => ({
+                            ...col,
+                            minWidth:
+                                col.field === "title" ? 150 :
+                                    col.field === "text" ? 250 :
+                                        col.field === "duration" ? 100 :
+                                            col.field === "datetime" ? 150 :
+                                                col.field === "otherUser" ? 200 :
+                                                    col.field === "offer" ? 200 :
+                                                        100,
+                            flex: col.flex ?? 1,
+                        }))}
+                        pageSizeOptions={[5, 10, 20]}
+                        initialState={{
+                            pagination: { paginationModel: { pageSize: 10 } },
+                        }}
+                        disableRowSelectionOnClick
+                        localeText={esES.components.MuiDataGrid.defaultProps.localeText}
+                        
+                        // Toolbar
+                        showToolbar
+                        slots={{
+                            toolbar: undefined,
+                        }}
+                        slotProps={{
+                            toolbar: {
+                                showQuickFilter: true,
+                                quickFilterProps: { debounceMs: 500 },
+                                showExport: true,
+                            },
+                        }}
+                    />
+                </Box>
+            </Box>
         </Box>
-      ),
-    },
-    { field: "datetime", headerName: "Fecha", flex: 1 },
-    {
-      field: "otherUser",
-      headerName: "Usuario",
-      flex: 1,
-      renderCell: (params) => (
-        <Link
-          component={RouterLink}
-          to={`/users/${params.value.id}`}
-          underline="hover"
-        >
-          {params.value.first_name} {params.value.last_name}
-        </Link>
-      ),
-    },
-    {
-      field: "offer",
-      headerName: "Oferta",
-      flex: 1,
-      renderCell: (params) =>
-        params.value ? (
-          <Link
-            component={RouterLink}
-            to={`/offers/${params.value.id}`}
-            underline="hover"
-          >
-            {params.value.title}
-          </Link>
-        ) : (
-          "-"
-        ),
-    },
-  ];
-
-return (
-  <Box>
-    <Typography variant="h3" sx={{ mb: 3, fontWeight: "bold" }}>
-      Mis Transacciones
-    </Typography>
-
-    {/* Horizontal scroll */}
-  <Box sx={{ width: "100%", overflowX: "auto" }}>
-    <Box sx={{ minWidth: 1200, height: 600 }}>
-      <DataGrid
-        rows={rows}
-        columns={columns.map((col) => ({
-          ...col,
-          minWidth:
-            col.field === "title" ? 150 :
-            col.field === "text" ? 250 :
-            col.field === "duration" ? 100 :
-            col.field === "datetime" ? 150 :
-            col.field === "otherUser" ? 200 :
-            col.field === "offer" ? 200 :
-            100,
-          flex: col.flex ?? 1,
-        }))}
-        pageSizeOptions={[5, 10, 20]}
-        initialState={{
-          pagination: { paginationModel: { pageSize: 10 } },
-        }}
-        disableRowSelectionOnClick
-        localeText={esES.components.MuiDataGrid.defaultProps.localeText}
-      />
-    </Box>
-  </Box>
-  </Box>
-);
+    );
 
 }

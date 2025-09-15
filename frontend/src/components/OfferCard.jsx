@@ -68,14 +68,19 @@ export default function OfferCard({ offer, onClick, isOwner = false }) {
         >
             {isOwner && (
                 <Box sx={{ position: "absolute", top: 8, right: 8, zIndex: 2 }}>
-                    <IconButton size="small" onClick={handleMenuOpen}>
-                        <MoreVert />
+                    <IconButton size="small" onClick={handleMenuOpen}
+                        sx={{
+                            backgroundColor: "rgba(0, 0, 0, 0.23)",
+                            "&:hover": { backgroundColor: "rgba(0,0,0,0.7)" },
+                            color: "#fff"
+                        }}>
+                        <MoreVert  />
                     </IconButton>
                     <Menu
                         anchorEl={anchorEl}
                         open={open}
                         onClose={handleMenuClose}
-                        onClick={(e) => e.stopPropagation()} // evitar navegación
+                        onClick={(e) => e.stopPropagation()}
                     >
                         <MenuItem onClick={handleEdit}>Editar</MenuItem>
                         <MenuItem onClick={handleDelete}>Eliminar</MenuItem>

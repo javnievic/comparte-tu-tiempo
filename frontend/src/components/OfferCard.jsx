@@ -16,7 +16,7 @@ import { useState } from "react";
 import { MoreVert } from "@mui/icons-material";
 import { formatDuration } from "../utils/time";
 
-export default function OfferCard({ offer, onClick, isOwner = false }) {
+export default function OfferCard({ offer, onClick, isOwner = false, onDelete = false }) {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -45,12 +45,6 @@ export default function OfferCard({ offer, onClick, isOwner = false }) {
         navigate(`/offers/${offer.id}/edit`);
     };
 
-    const handleDelete = () => {
-        handleMenuClose();
-        //TODO: Call api
-        console.log("Eliminar oferta", offer.id);
-    };
-
     return (
         <Card
             sx={{
@@ -74,7 +68,7 @@ export default function OfferCard({ offer, onClick, isOwner = false }) {
                             "&:hover": { backgroundColor: "rgba(0,0,0,0.7)" },
                             color: "#fff"
                         }}>
-                        <MoreVert  />
+                        <MoreVert />
                     </IconButton>
                     <Menu
                         anchorEl={anchorEl}
@@ -83,7 +77,12 @@ export default function OfferCard({ offer, onClick, isOwner = false }) {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <MenuItem onClick={handleEdit}>Editar</MenuItem>
-                        <MenuItem onClick={handleDelete}>Eliminar</MenuItem>
+                        <MenuItem onClick={() => {
+                            handleMenuClose();
+                            if (onDelete) onDelete();
+                        }}>
+                            Eliminar
+                        </MenuItem>
                     </Menu>
                 </Box>
             )}

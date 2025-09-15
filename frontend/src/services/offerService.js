@@ -55,3 +55,12 @@ export const updateOffer = async (id, offerData) => {
   });
   return response.data;
 };
+
+export const deleteOffer = async (offerId) => {
+  const response = await axiosInstance.delete(`${API_URL}${offerId}/`, {
+    headers: {
+      "Auth": true,
+    },
+  });
+  return response.data;
+};

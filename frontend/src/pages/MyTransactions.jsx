@@ -55,7 +55,7 @@ export default function MyTransactions() {
             timeStyle: "short",
         }),
         sender: tx.sender,        // full  object to render
-        senderName: tx.sender ? `${tx.sender.first_name} ${tx.sender.last_name}` : "-", // string para buscar
+        senderName: tx.sender ? `${tx.sender.get_full_name}` : "-", // string para buscar
         receiver: tx.receiver,
         receiverName: tx.receiver ? `${tx.receiver.first_name} ${tx.receiver.last_name}` : "-",
         offer: tx.offer,
@@ -103,7 +103,7 @@ export default function MyTransactions() {
                 if (!user) return "-";
                 return (
                     <Link component={RouterLink} to={`/users/${user.id}`} underline="hover">
-                        {user.id === currentUser?.id ? "Tú" : `${user.first_name} ${user.last_name}`}
+                        {user.id === currentUser?.id ? "Tú" : `${user.full_name}`}
                     </Link>
                 );
             },

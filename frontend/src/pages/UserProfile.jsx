@@ -18,7 +18,7 @@ import { getOffersByUser } from "../services/offerService"; // endpoint para ofe
 import CustomButton from "../components/CustomButton";
 import { UserContext } from "../contexts/UserContext";
 import OfferCard from "../components/OfferCard";
-
+import { deleteOffer } from "../services/offerService";
 
 export default function UserProfile() {
     const { id } = useParams();
@@ -67,6 +67,17 @@ export default function UserProfile() {
     if (!user) return <Typography sx={{ textAlign: "center", mt: 5 }}>Usuario no encontrado</Typography>;
 
     const isOwner = currentUser && currentUser.id === user.id;
+
+    const handleDeleteOffer = async (offerId) => {
+        if (!window.confirm("¿Seguro que quieres eliminar esta oferta?")) return;
+
+        try {
+            await deleteOffer(offerId);
+            setOffers((prev) => prev.filter((o) => o.id !== offerId));
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     return (
         <Box sx={{ display: "flex", gap: 2.5 }}>
@@ -204,7 +215,11 @@ export default function UserProfile() {
                                 <Grid container spacing={2.5}>
                                     {offers.slice(0, visibleCount).map((offer) => (
                                         <Grid size={{ xs: 12, sm: 10, md: 6, lg: 4 }} key={offer.id}>
-                                            <OfferCard offer={offer} isOwner={isOwner} />
+                                            <OfferCard
+                                                offer={offer}
+                                                isOwner={isOwner}
+                                                onDelete={() => handleDeleteOffer(offer.id)}
+                                            />
                                         </Grid>
                                     ))}
                                 </Grid>

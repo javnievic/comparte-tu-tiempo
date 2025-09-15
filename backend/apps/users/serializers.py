@@ -23,9 +23,10 @@ class UserSerializer(serializers.ModelSerializer):
             "date_joined",
             "time_sent",
             "time_received",
+            "full_name"
         ]
         read_only_fields = ["id", "date_joined", "email", "time_sent",
-                            "time_received"]
+                            "time_received", "full_name"]
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):

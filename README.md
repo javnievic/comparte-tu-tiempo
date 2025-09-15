@@ -1,3 +1,19 @@
+![License](https://img.shields.io/github/license/javnievic/comparte-tu-tiempo) 
+![Last Commit](https://img.shields.io/github/last-commit/javnievic/comparte-tu-tiempo) 
+![Version](https://img.shields.io/badge/version-1.0.0-blue) 
+![Stars](https://img.shields.io/github/stars/javnievic/comparte-tu-tiempo?style=social) 
+![Forks](https://img.shields.io/github/forks/javnievic/comparte-tu-tiempo?style=social) 
+![Watchers](https://img.shields.io/github/watchers/javnievic/comparte-tu-tiempo?style=social) 
+![Open Issues](https://img.shields.io/github/issues/javnievic/comparte-tu-tiempo) 
+![Closed Issues](https://img.shields.io/github/issues-closed/javnievic/comparte-tu-tiempo) 
+![PRs](https://img.shields.io/github/issues-pr/javnievic/comparte-tu-tiempo) 
+![Python](https://img.shields.io/badge/python-3.11-blue) 
+![React](https://img.shields.io/badge/react-18.2.0-blue?logo=react) 
+![Django](https://img.shields.io/badge/django-4.3-green?logo=django) 
+![MySQL](https://img.shields.io/badge/mysql-8.0-blue?logo=mysql) 
+![Coverage](https://img.shields.io/codecov/c/github/javnievic/comparte-tu-tiempo) 
+![Code Style](https://img.shields.io/badge/code%20style-prettier-ff69b4)
+
 # 🕒 ComparteTuTiempo
 
 **ComparteTuTiempo** es una aplicación de **banco de tiempo** que permite a los usuarios intercambiar servicios y habilidades utilizando horas como moneda.  
@@ -145,15 +161,16 @@ El frontend estará disponible en `http://localhost:5173/` y el backend en `http
   ```
 
 
-## Créditos y autores
+## 👥 Créditos y autores
 
 Proyecto desarrollado como parte de un **Trabajo de Fin de Grado (TFG)**.
 
-Autores:
+**Autores:**
 
--   Javier Nieto
-    
--   \[Colaboradores del equipo de desarrollo, si aplica\]
-    
+| Nombre | GitHub |
+|--------|--------|
+| Javier Nieto | [![Javier Nieto](https://img.shields.io/badge/-Javier%20Nieto-000?style=flat&logo=github&logoColor=white)](https://github.com/javnievic) |
 
-`¿Quieres que te lo prepare también con **badges de GitHub** (ej. build, licencia, versión de Node/Pyt`
+
+
+

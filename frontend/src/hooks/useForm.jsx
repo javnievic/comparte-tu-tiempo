@@ -16,8 +16,9 @@ export const useForm = (initialData, validateField) => {
   };
 
   const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setFormData(prev => ({ ...prev, profile_picture: e.target.files[0] }));
+    const { name, files } = e.target;
+    if (files && files[0]) {
+      setFormData(prev => ({ ...prev, [name]: files[0] }));
     }
   };
 

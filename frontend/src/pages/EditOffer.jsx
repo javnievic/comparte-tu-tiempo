@@ -26,7 +26,7 @@ export default function EditOffer() {
     const [loading, setLoading] = useState(false);
     const [loadingOffer, setLoadingOffer] = useState(true);
 
-    const { formData, setFormData, errors, setErrors, handleChange, handleFileChange } =
+    const { formData, setFormData, errors, setErrors, handleChange, handleFileChange} =
         useForm(
             {
                 title: "",
@@ -216,6 +216,7 @@ export default function EditOffer() {
                 <input
                     id="image-input"
                     type="file"
+                    name="image"
                     accept="image/*"
                     style={{ display: "none" }}
                     ref={fileInputRef}

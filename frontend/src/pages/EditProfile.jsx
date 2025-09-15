@@ -123,6 +123,7 @@ export default function EditProfile() {
               accept="image/*"
               id="upload-photo"
               type="file"
+              name="profile_picture"
               style={{ display: "none" }}
               onChange={handleFileChange}
             />

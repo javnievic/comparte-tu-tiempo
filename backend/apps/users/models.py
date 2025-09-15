@@ -47,6 +47,12 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
+    @property
+    def full_name(self):
+        if not getattr(self, "is_active", True):
+            return "Usuario eliminado"
+        return f"{self.first_name} {self.last_name}" or self.email
+
     class Meta:
         db_table = "users"
         verbose_name = "User"

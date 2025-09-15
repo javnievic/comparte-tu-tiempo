@@ -104,7 +104,7 @@ export default function CreateOffer() {
 
 
       await createOffer(data);
-      navigate("/"); // Redirect to offers list
+      navigate(`/users/${currentUser.id}?tab=2`);
     } catch (error) {
       if (error.response && error.response.data) {
         const backendErrors = error.response.data;
@@ -217,6 +217,7 @@ export default function CreateOffer() {
         <input
           id="image-input"
           type="file"
+          name="image"
           accept="image/*"
           style={{ display: "none" }}
           ref={fileInputRef}

@@ -13,6 +13,7 @@ import UserProfile from "./pages/UserProfile";
 import EditProfile from "./pages/EditProfile";
 import SendTimeForm from "./pages/SendTimeForm";
 import MyTransactions from "./pages/MyTransactions";
+import EditOffer from "./pages/EditOffer";
 
 export default function App() {
   const showguide = false; // Set to true to show the layout guide
@@ -36,6 +37,7 @@ export default function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/create-offer" element={<CreateOffer />} />
               <Route path="/offers/:id" element={<OfferDetail />} />
+              <Route path="offers/:id/edit" element={<EditOffer/>}/>
               <Route path="/users/:id" element={<UserProfile />} />
               <Route path="/edit-profile" element={<EditProfile />} />
               {/* userId mandatory and offerId is passed as a query param */}

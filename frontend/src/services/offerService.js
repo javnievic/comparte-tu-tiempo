@@ -44,3 +44,23 @@ export const createOffer = async (offerData) => {
   });
   return response.data;
 };
+
+export const updateOffer = async (id, offerData) => {
+  const response = await axiosInstance.put(`${API_URL}${id}/`, offerData, {
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "multipart/form-data",
+      "Auth": true,
+    },
+  });
+  return response.data;
+};
+
+export const deleteOffer = async (offerId) => {
+  const response = await axiosInstance.delete(`${API_URL}${offerId}/`, {
+    headers: {
+      "Auth": true,
+    },
+  });
+  return response.data;
+};

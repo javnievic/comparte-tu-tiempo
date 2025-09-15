@@ -12,19 +12,19 @@ class Transaction(models.Model):
     id = models.AutoField(primary_key=True)
     sender = models.ForeignKey(
         User,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="sent_transactions",
         verbose_name="Emisor"
     )
     receiver = models.ForeignKey(
         User,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="received_transactions",
         verbose_name="Receptor"
     )
     offer = models.ForeignKey(
         Offer,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="transactions",
         verbose_name="Oferta",
         blank=True,

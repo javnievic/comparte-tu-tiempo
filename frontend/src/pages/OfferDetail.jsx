@@ -45,14 +45,6 @@ export default function OfferDetail() {
         return <Typography>Oferta no encontrada</Typography>;
     }
 
-    const handleSendTime = () => {
-        if (!currentUser) {
-            openLoginModal();
-            return;
-        }
-        navigate(`/send-time/offers/${offer.id}` );
-    };
-
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
             <Box sx={{ display: "flex", gap: 2.5 }}>
@@ -120,9 +112,19 @@ export default function OfferDetail() {
                             variant="contained"
                             variantstyle="primary"
                             sx={{ width: "fit-content" }}
-                            onClick={handleSendTime}
+                            onClick={() => {
+                                if (!currentUser) {
+                                    openLoginModal();
+                                    return;
+                                }
+                                if (currentUser.id === offer.user.id) {
+                                    navigate(`/offers/${offer.id}/edit`);
+                                } else {
+                                    navigate(`/send-time/offers/${offer.id}`);
+                                }
+                            }}
                         >
-                            Enviar tiempo
+                            {currentUser?.id === offer.user.id ? "Editar oferta" : "Enviar tiempo"}
                         </CustomButton>
                     </Box>
 
@@ -131,7 +133,7 @@ export default function OfferDetail() {
                 </Box>
             </Box>
             <Box
-            sx={{ maxWidth: 610, alignSelf: "flex-start", }}
+                sx={{ maxWidth: 610, alignSelf: "flex-start", }}
             >
                 <Typography variant="h5" sx={{ mb: 1 }}>
                     Detalles del servicio

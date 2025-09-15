@@ -16,11 +16,16 @@ export default function UserCard({ user }) {
         if (!user?.id) return;
         navigate(`/users/${user.id}`);
     };
-        const handleMessageClick = () => {
+
+    const handleMessageClick = () => {
         if (!currentUser) {
             openLoginModal();
+            return;
+        }
+        if (currentUser.id === user.id) {
+            navigate(`/edit-profile`);
         } else {
-            navigate(`/chat/${user.id}`); 
+            navigate(`/chat/${user.id}`);
         }
     };
 
@@ -41,16 +46,22 @@ export default function UserCard({ user }) {
         >
             {/* Avatar and message */}
           
-                <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, width: "200px" }}>
-                    <Avatar
-                        src={user.profile_picture}
-                        sx={{ width: 80, height: 80, cursor: "pointer" }} onClick={goToProfile}
-                    />
-                    <Typography variant="body1" sx={{ cursor: "pointer" }} onClick={goToProfile}>
-                    {user?.first_name || "Usuario desconocido"}
+            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, width: "200px" }}>
+                <Avatar
+                    src={user.profile_picture}
+                    sx={{ width: 80, height: 80, cursor: "pointer" }}
+                    onClick={goToProfile}
+                />
+                <Typography variant="body1" sx={{ cursor: "pointer",textAlign: "center" }} onClick={goToProfile}>
+                    {user?.full_name || "Usuario desconocido"}
                 </Typography>
-                <CustomButton variantstyle="outline" variant="contained" sx={{ width: "fit-content" }} onClick={handleMessageClick}>
-                    Mensaje
+                <CustomButton
+                    variantstyle="outline"
+                    variant="contained"
+                    sx={{ width: "fit-content" }}
+                    onClick={handleMessageClick}
+                >
+                    {currentUser?.id === user.id ? "Editar perfil" : "Mensaje"}
                 </CustomButton>
             </Box>
             

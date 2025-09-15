@@ -108,6 +108,7 @@ export default function Register() {
             <input
               accept="image/*"
               id="upload-photo"
+              name="profile_picture"
               type="file"
               style={{ display: "none" }}
               onChange={handleFileChange}

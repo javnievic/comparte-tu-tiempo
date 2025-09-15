@@ -47,6 +47,13 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED,
                         headers=headers)
 
+    def destroy(self, request, *args, **kwargs):
+        user = self.get_object()
+        user.is_active = False
+        user.save()
+        return Response({"detail": "Usuario desactivado correctamente."},
+                        status=status.HTTP_200_OK)
+
 
 class LoginView(APIView):
     """

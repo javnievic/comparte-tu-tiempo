@@ -55,6 +55,28 @@ export const validateTransactionField = (name, value = {}) => {
   return error;
 };
 
+export const validateOfferFields = (name, value = {}) => {
+  let error = "";
+
+  if (name === "title") {
+    if (!value.trim()) error = "El título es obligatorio";
+    else if (value.length > 100) error = "Máximo 100 caracteres";
+  }
+
+  if (name === "description") {
+    if (!value.trim()) error = "La descripción es obligatoria";
+    else if (value.length > 500) error = "Máximo 500 caracteres";
+  }
+
+  if (name === "location") {
+    if (value.length > 100) error = "Máximo 100 caracteres";
+  }
+
+
+  return error;
+};
+
+
 export const validateFormFields = (formData, fields, validateFn) => {
   const errors = {};
 

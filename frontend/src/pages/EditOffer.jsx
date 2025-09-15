@@ -1,16 +1,9 @@
 // src/pages/EditOffer.jsx
-import { useState, useEffect, useContext, useRef } from "react";
+import { useEffect, useContext, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { UIContext } from "../contexts/UIContext";
-import {
-    Box,
-    TextField,
-    Typography,
-    Avatar,
-    IconButton,
-    CircularProgress,
-} from "@mui/material";
+import { Box, TextField, Typography, Avatar, IconButton, CircularProgress } from "@mui/material";
 import theme from "../styles/theme";
 import CustomButton from "../components/CustomButton";
 import FormContainer from "../components/FormContainer";
@@ -18,6 +11,8 @@ import ErrorMessage from "../components/ErrorMessage";
 import DurationSlider from "../components/DurationSlider";
 import { minutesToHHMMSS } from "../utils/time";
 import { getOfferById, updateOffer } from "../services/offerService";
+import { useForm } from "../hooks/useForm";
+import { validateOfferFields, validateFormFields } from "../utils/validation";
 
 export default function EditOffer() {
     const { id } = useParams();
@@ -26,18 +21,22 @@ export default function EditOffer() {
     const { openLoginModal } = useContext(UIContext);
     const fileInputRef = useRef(null);
 
-    const [formData, setFormData] = useState({
-        title: "",
-        description: "",
-        duration: "",
-        location: "",
-        image: null,
-    });
     const [durationMinutes, setDurationMinutes] = useState(15);
-    const [errors, setErrors] = useState({});
     const [formError, setFormError] = useState("");
     const [loading, setLoading] = useState(false);
     const [loadingOffer, setLoadingOffer] = useState(true);
+
+    const { formData, setFormData, errors, setErrors, handleChange, handleFileChange } =
+        useForm(
+            {
+                title: "",
+                description: "",
+                duration: "",
+                location: "",
+                image: null,
+            },
+            validateOfferFields
+        );
 
     // Redirect if no user
     useEffect(() => {
@@ -52,8 +51,6 @@ export default function EditOffer() {
         const fetchOffer = async () => {
             try {
                 const data = await getOfferById(id);
-
-                // Only owner can edit
                 if (data.user.id !== currentUser.id) {
                     navigate(`/offers/${id}`);
                     return;
@@ -64,12 +61,10 @@ export default function EditOffer() {
                     description: data.description || "",
                     duration: data.duration || "",
                     location: data.location || "",
-                    image: data.image || "",
+                    image: data.image || null,
                 });
 
-                if (data.duration_minutes) {
-                    setDurationMinutes(data.duration_minutes);
-                }
+                if (data.duration_minutes) setDurationMinutes(data.duration_minutes);
             } catch (error) {
                 console.error("Error cargando oferta", error);
                 navigate("/");
@@ -78,27 +73,7 @@ export default function EditOffer() {
             }
         };
         if (currentUser) fetchOffer();
-    }, [id, currentUser, navigate]);
-
-    const validateField = (name, value) => {
-        let error = "";
-        if (!value && (name === "title" || name === "description" || name === "duration")) {
-            error = "Este campo es obligatorio";
-        }
-        return error;
-    };
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-        setErrors({ ...errors, [name]: validateField(name, value) });
-    };
-
-    const handleFileChange = (e) => {
-        if (e.target.files && e.target.files[0]) {
-            setFormData({ ...formData, image: e.target.files[0] });
-        }
-    };
+    }, [id, currentUser, navigate, setFormData]);
 
     const handleRemoveImage = (e) => {
         e.stopPropagation();
@@ -111,11 +86,8 @@ export default function EditOffer() {
         setFormError("");
         setLoading(true);
 
-        const newErrors = {};
-        ["title", "description"].forEach((field) => {
-            const error = validateField(field, formData[field]);
-            if (error) newErrors[field] = error;
-        });
+        const fieldsToValidate = Object.keys(formData);
+        const newErrors = validateFormFields(formData, fieldsToValidate, validateOfferFields);
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
@@ -127,27 +99,22 @@ export default function EditOffer() {
             const data = new FormData();
             Object.keys(formData).forEach((key) => {
                 if (key === "image") {
-                    if (formData.image instanceof File ) {
-                        data.append("image", formData.image);
-                    }
+                    if (formData.image instanceof File) data.append("image", formData.image);
                 } else {
                     data.append(key, formData[key]);
                 }
             });
 
             await updateOffer(id, data);
-            navigate(`/offers/${id}`); // Redirect to offer detail
+            navigate(`/offers/${id}`);
         } catch (error) {
             console.error("Error actualizando oferta", error);
-            if (error.response && error.response.data) {
-                const backendErrors = error.response.data;
-                const messages = Object.values(backendErrors)
+            if (error.response?.data) {
+                const messages = Object.values(error.response.data)
                     .map((val) => (Array.isArray(val) ? val.join(", ") : val))
                     .join(" | ");
                 setFormError(messages);
-            } else {
-                setFormError("Error de conexión con el servidor");
-            }
+            } else setFormError("Error de conexión con el servidor");
         } finally {
             setLoading(false);
         }
@@ -177,23 +144,22 @@ export default function EditOffer() {
                 error={!!errors.description}
                 helperText={errors.description}
             />
-
             <DurationSlider
                 value={durationMinutes}
                 onChange={(e, newValue) => {
                     setDurationMinutes(newValue);
-                    setFormData((prev) => ({ ...prev, duration: minutesToHHMMSS(newValue) }));
+                    setFormData(prev => ({ ...prev, duration: minutesToHHMMSS(newValue) }));
                 }}
             />
-
             <TextField
                 label="Ubicación"
                 name="location"
                 value={formData.location}
                 onChange={handleChange}
                 fullWidth
+                error={!!errors.location}
+                helperText={errors.location}
             />
-
             <Box
                 sx={{
                     mt: 2,

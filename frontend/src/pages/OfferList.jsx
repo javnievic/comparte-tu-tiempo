@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"; 
 import { getAllOffers } from "../services/offerService";
+import { getAllUsers } from "../services/userService";
 import {
     Box,
     Typography,
@@ -11,18 +12,21 @@ import {
     Checkbox,
     Button,
     InputAdornment,
-    Slider
+    Slider,
+    MenuItem
 } from "@mui/material";
 import CustomButton from "../components/CustomButton";
 import OfferCard from "../components/OfferCard";
 import SearchIcon from '@mui/icons-material/Search';
 import { formatMinutesToHHMM } from "../utils/time";
 
-
 export default function OfferList() {
     const [offers, setOffers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [visibleCount, setVisibleCount] = useState(9);
+
+    // Users list for filter
+    const [users, setUsers] = useState([]);
 
     // Applied filters state
     const [filters, setFilters] = useState({
@@ -30,7 +34,8 @@ export default function OfferList() {
         is_online: null,
         location: "",
         min_duration: "",
-        max_duration: ""
+        max_duration: "",
+        user: ""
     });
 
     // Temporary state for input values
@@ -59,6 +64,19 @@ export default function OfferList() {
         fetchOffers();
     }, [filters]);
 
+    // Fetch users for filter
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const data = await  getAllUsers();
+                setUsers(data);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        };
+        fetchUsers();
+    }, []);
+
     // Handler for temporary input changes
     const handleTempFilterChange = (field, value) => {
         setTempFilters(prev => ({ ...prev, [field]: value }));
@@ -71,7 +89,7 @@ export default function OfferList() {
 
     // Reset all filters
     const resetFilters = () => {
-        const empty = { q: "", is_online: null, location: "", min_duration: "", max_duration: "" };
+        const empty = { q: "", is_online: null, location: "", min_duration: "", max_duration: "", user: "" };
         setTempFilters(empty);
         setFilters(empty);
     };
@@ -142,6 +160,22 @@ export default function OfferList() {
                         onChange={e => handleTempFilterChange("location", e.target.value)}
                     />
 
+                    {/* User selector */}
+                    <TextField
+                        select
+                        label="Usuario"
+                        size="small"
+                        value={tempFilters.user || ""}
+                        onChange={e => handleTempFilterChange("user", e.target.value)}
+                    >
+                        <MenuItem value="">Todos</MenuItem>
+                        {users.map(user => (
+                            <MenuItem key={user.id} value={user.id}>
+                                {user.full_name}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+
                     {/* Online mode */}
                     <FormControlLabel
                         control={
@@ -155,15 +189,16 @@ export default function OfferList() {
                         label="Solo online"
                     />
 
+                    {/* Duration slider */}
                     <Box>
                         <Typography gutterBottom>Duración</Typography>
                         <Slider
                             value={[
-                                tempFilters.min_duration ? tempFilters.min_duration * 60 : 15, // minutes
+                                tempFilters.min_duration ? tempFilters.min_duration * 60 : 15, // convert hours to minutes
                                 tempFilters.max_duration ? tempFilters.max_duration * 60 : 240
                             ]}
                             onChange={(e, newValue) => {
-                                handleTempFilterChange("min_duration", newValue[0] / 60); // hours to decimals
+                                handleTempFilterChange("min_duration", newValue[0] / 60); // to decimals
                                 handleTempFilterChange("max_duration", newValue[1] / 60);
                             }}
                             valueLabelDisplay="auto"
@@ -185,6 +220,7 @@ export default function OfferList() {
                             }}
                         />
                     </Box>
+
                     {/* Action buttons */}
                     <CustomButton variant="contained" onClick={applyFilters}>
                         Aplicar filtros

@@ -21,6 +21,15 @@ export const getUserById = async (id) => {
   }
 };
 
+export const getAllUsers = async () => {
+    const response = await axiosInstance.get(`${API_URL}`, {
+      headers: {
+        Accept: "application/json",
+      },
+    });
+    return response.data;
+};
+
 // Private routes - requires Auth header
 export const updateUser = async (id, userData) => {
   const response = await axiosInstance.put(`${API_URL}${id}/`, userData, {

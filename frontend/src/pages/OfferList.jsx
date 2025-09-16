@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"; 
+import { useEffect, useState } from "react";
 import { getAllOffers } from "../services/offerService";
 import { getAllUsers } from "../services/userService";
 import {
@@ -41,6 +41,8 @@ export default function OfferList() {
 
     // Temporary state for input values
     const [tempFilters, setTempFilters] = useState(filters);
+    const [filtersApplied, setFiltersApplied] = useState(false);
+
 
     // Fetch offers with applied filters
     useEffect(() => {
@@ -86,6 +88,7 @@ export default function OfferList() {
     // Apply filters to the main state
     const applyFilters = () => {
         setFilters(tempFilters);
+        setFiltersApplied(true);
     };
 
     // Reset all filters
@@ -93,7 +96,15 @@ export default function OfferList() {
         const empty = { q: "", is_online: null, location: "", min_duration: "", max_duration: "", user: "" };
         setTempFilters(empty);
         setFilters(empty);
+        setFiltersApplied(true);
     };
+    
+    useEffect(() => {
+        if (filtersApplied) {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            setFiltersApplied(false);
+        }
+    }, [offers, filtersApplied]);
 
     return (
         <Box>
@@ -243,20 +254,20 @@ export default function OfferList() {
                         </Typography>
                     ) : (
                         <>
-                    <Grid container spacing={2.5}>
-                        {offers.slice(0, visibleCount).map((offer) => (
-                            <Grid size={{ xs: 12, sm: 10, md: 6, lg: 4 }} key={offer.id}>
-                                <OfferCard offer={offer} />
+                            <Grid container spacing={2.5}>
+                                {offers.slice(0, visibleCount).map((offer) => (
+                                    <Grid size={{ xs: 12, sm: 10, md: 6, lg: 4 }} key={offer.id}>
+                                        <OfferCard offer={offer} />
+                                    </Grid>
+                                ))}
                             </Grid>
-                        ))}
-                    </Grid>
-                    {visibleCount < offers.length && (
-                        <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
-                            <CustomButton variant="contained" onClick={() => setVisibleCount(prev => prev + 9)}>
-                                Cargar más
-                            </CustomButton>
-                        </Box>
-                    )}
+                            {visibleCount < offers.length && (
+                                <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+                                    <CustomButton variant="contained" onClick={() => setVisibleCount(prev => prev + 9)}>
+                                        Cargar más
+                                    </CustomButton>
+                                </Box>
+                            )}
                         </>
                     )}
                 </Box>

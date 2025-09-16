@@ -26,7 +26,7 @@ export default function Footer() {
           maxWidth: "1240px",
           display: "flex",
           flexWrap: "wrap",
-          justifyContent: "space-between",
+          justifyContent: { xs: "center", sm: "space-between" },
           gap: 6,
           mb: 4,
         }}
@@ -37,7 +37,9 @@ export default function Footer() {
             ComparteTuTiempo
           </Typography>
           <Typography variant="body2" sx={{ color: "#CFD3D7" }}>
-            ComparteTuTiempo es un banco de tiempo que incentiva la economía colaborativa.
+            ComparteTuTiempo es un banco de tiempo que incentiva la economía colaborativa, 
+            permitiendo a los usuarios intercambiar habilidades y servicios de manera sencilla y segura,
+            fomentando la cooperación y el aprendizaje entre la comunidad.
           </Typography>
         </Box>
 
@@ -102,7 +104,7 @@ export default function Footer() {
               input: { color: "black" },
             }}
           />
-          <CustomButton>
+          <CustomButton sx={{ width: "fit-content" }}>
             Suscribirse
           </CustomButton>
         </Box>

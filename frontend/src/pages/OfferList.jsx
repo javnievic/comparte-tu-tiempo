@@ -10,11 +10,14 @@ import {
     FormControlLabel,
     Checkbox,
     Button,
-    InputAdornment
+    InputAdornment,
+    Slider
 } from "@mui/material";
 import CustomButton from "../components/CustomButton";
 import OfferCard from "../components/OfferCard";
 import SearchIcon from '@mui/icons-material/Search';
+import { formatMinutesToHHMM } from "../utils/time";
+
 
 export default function OfferList() {
     const [offers, setOffers] = useState([]);
@@ -90,7 +93,7 @@ export default function OfferList() {
             <Box
                 sx={{
                     display: "flex",
-                    flexDirection: { xs: "column", md: "row" },
+                    flexDirection: { xs: "column", sm: "row" },
                     gap: 2.5
                 }}
             >
@@ -152,22 +155,36 @@ export default function OfferList() {
                         label="Solo online"
                     />
 
-                    {/* Minimum and maximum duration */}
-                    <TextField
-                        label="Duración mínima (horas)"
-                        type="number"
-                        size="small"
-                        value={tempFilters.min_duration}
-                        onChange={e => handleTempFilterChange("min_duration", e.target.value)}
-                    />
-                    <TextField
-                        label="Duración máxima (horas)"
-                        type="number"
-                        size="small"
-                        value={tempFilters.max_duration}
-                        onChange={e => handleTempFilterChange("max_duration", e.target.value)}
-                    />
-
+                    <Box>
+                        <Typography gutterBottom>Duración</Typography>
+                        <Slider
+                            value={[
+                                tempFilters.min_duration ? tempFilters.min_duration * 60 : 15, // minutes
+                                tempFilters.max_duration ? tempFilters.max_duration * 60 : 240
+                            ]}
+                            onChange={(e, newValue) => {
+                                handleTempFilterChange("min_duration", newValue[0] / 60); // hours to decimals
+                                handleTempFilterChange("max_duration", newValue[1] / 60);
+                            }}
+                            valueLabelDisplay="auto"
+                            valueLabelFormat={(val) => formatMinutesToHHMM(val)}
+                            min={15}   // 15 minutes
+                            max={240}  // 4 hours
+                            step={15}  // 15 minutes
+                            marks={[
+                                { value: 15, label: formatMinutesToHHMM(15) },
+                                { value: 60, label: "01:00" },
+                                { value: 120, label: "02:00" },
+                                { value: 180, label: "03:00" },
+                                { value: 240, label: formatMinutesToHHMM(240) },
+                            ]}
+                            sx={{
+                                color: "primary.main",
+                                "& .MuiSlider-thumb": { backgroundColor: "#fff", border: "2px solid", borderColor: "primary.main" },
+                                "& .MuiSlider-markLabel": { fontSize: "0.75rem" },
+                            }}
+                        />
+                    </Box>
                     {/* Action buttons */}
                     <CustomButton variant="contained" onClick={applyFilters}>
                         Aplicar filtros

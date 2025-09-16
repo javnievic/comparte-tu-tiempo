@@ -40,7 +40,7 @@ class OfferViewSet(viewsets.ModelViewSet):
         if min_duration:
             try:
                 queryset = queryset.filter(duration__gte=timedelta
-                                           (hours=int(min_duration)))
+                                           (hours=float(min_duration)))
             except ValueError:
                 pass  # ignore if is not a valid number
 
@@ -48,7 +48,7 @@ class OfferViewSet(viewsets.ModelViewSet):
         if max_duration:
             try:
                 queryset = queryset.filter(duration__lte=timedelta
-                                           (hours=int(max_duration)))
+                                           (hours=float(max_duration)))
             except ValueError:
                 pass
 

@@ -13,7 +13,8 @@ import {
     Button,
     InputAdornment,
     Slider,
-    MenuItem
+    MenuItem,
+    Avatar
 } from "@mui/material";
 import CustomButton from "../components/CustomButton";
 import OfferCard from "../components/OfferCard";
@@ -55,7 +56,7 @@ export default function OfferList() {
                 setOffers(data);
                 setVisibleCount(9);
             } catch (error) {
-                console.error("Error al obtener ofertas:", error);
+                console.error("Error fetching offers:", error);
             } finally {
                 setLoading(false);
             }
@@ -68,7 +69,7 @@ export default function OfferList() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const data = await  getAllUsers();
+                const data = await getAllUsers(); // call the service to get users
                 setUsers(data);
             } catch (error) {
                 console.error("Error fetching users:", error);
@@ -160,7 +161,7 @@ export default function OfferList() {
                         onChange={e => handleTempFilterChange("location", e.target.value)}
                     />
 
-                    {/* User selector */}
+                    {/* User selector with avatar */}
                     <TextField
                         select
                         label="Usuario"
@@ -171,7 +172,15 @@ export default function OfferList() {
                         <MenuItem value="">Todos</MenuItem>
                         {users.map(user => (
                             <MenuItem key={user.id} value={user.id}>
-                                {user.full_name}
+                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                    <Avatar
+                                        src={user.profile_picture || "/images/default_user.webp"}
+                                        sx={{ width: 28, height: 28 }}
+                                    />
+                                    <Typography variant="body2">
+                                        {user.full_name}
+                                    </Typography>
+                                </Box>
                             </MenuItem>
                         ))}
                     </TextField>

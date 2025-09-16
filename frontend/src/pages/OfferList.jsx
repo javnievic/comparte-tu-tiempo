@@ -95,14 +95,6 @@ export default function OfferList() {
         setFilters(empty);
     };
 
-    if (loading) {
-        return (
-            <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
-                <CircularProgress />
-            </Box>
-        );
-    }
-
     return (
         <Box>
             <Typography variant="h1" sx={{ mb: 3, fontWeight: "bold" }}>
@@ -241,6 +233,16 @@ export default function OfferList() {
 
                 {/* Offers list */}
                 <Box sx={{ flexGrow: 1 }}>
+                    {loading ? (
+                        <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
+                            <CircularProgress />
+                        </Box>
+                    ) : offers.length === 0 ? (
+                        <Typography sx={{ mt: 5, textAlign: "center" }}>
+                            No hay ofertas para los filtros seleccionados.
+                        </Typography>
+                    ) : (
+                        <>
                     <Grid container spacing={2.5}>
                         {offers.slice(0, visibleCount).map((offer) => (
                             <Grid size={{ xs: 12, sm: 10, md: 6, lg: 4 }} key={offer.id}>
@@ -254,6 +256,8 @@ export default function OfferList() {
                                 Cargar más
                             </CustomButton>
                         </Box>
+                    )}
+                        </>
                     )}
                 </Box>
             </Box>

@@ -14,6 +14,7 @@ import EditProfile from "./pages/EditProfile";
 import SendTimeForm from "./pages/SendTimeForm";
 import MyTransactions from "./pages/MyTransactions";
 import EditOffer from "./pages/EditOffer";
+import Footer from "./components/Footer"
 
 export default function App() {
   const showguide = false; // Set to true to show the layout guide
@@ -47,6 +48,7 @@ export default function App() {
             </Routes>
           </Box>
           <Box sx={{ height: 96 }} />
+          <Footer />
           {/*<footer>
             <Box sx={{ height: 96 }} />
           </footer>*/}

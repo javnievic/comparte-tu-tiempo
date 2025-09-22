@@ -2,6 +2,8 @@ from rest_framework import status, viewsets, permissions
 from rest_framework.response import Response
 from .models import Offer
 from .serializers import OfferSerializer
+from django.db.models import Q
+from datetime import timedelta
 
 
 class OfferViewSet(viewsets.ModelViewSet):
@@ -16,9 +18,58 @@ class OfferViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = Offer.objects.all().order_by("-publish_date")
+
+        # Query params filters (TODO connect with frontend in a future)
         user_id = self.request.query_params.get("user")
         if user_id:
             queryset = queryset.filter(user_id=user_id)
+
+        is_online = self.request.query_params.get("is_online")
+        if is_online is not None:
+            queryset = queryset.filter(is_online=is_online.lower() == "true")
+
+        is_active = self.request.query_params.get("is_active")
+        if is_active is not None:
+            queryset = queryset.filter(is_active=is_active.lower() == "true")
+
+        location = self.request.query_params.get("location")
+        if location:
+            queryset = queryset.filter(location__icontains=location)
+
+        min_duration = self.request.query_params.get("min_duration")
+        if min_duration:
+            try:
+                queryset = queryset.filter(duration__gte=timedelta
+                                           (hours=float(min_duration)))
+            except ValueError:
+                pass  # ignore if is not a valid number
+
+        max_duration = self.request.query_params.get("max_duration")
+        if max_duration:
+            try:
+                queryset = queryset.filter(duration__lte=timedelta
+                                           (hours=float(max_duration)))
+            except ValueError:
+                pass
+
+        from_date = self.request.query_params.get("from_date")
+        if from_date:
+            queryset = queryset.filter(publish_date__gte=from_date)
+
+        to_date = self.request.query_params.get("to_date")
+        if to_date:
+            queryset = queryset.filter(publish_date__lte=to_date)
+
+        search = self.request.query_params.get("q")
+        if search:
+            queryset = queryset.filter(
+                Q(title__icontains=search) |
+                Q(description__icontains=search)
+            )
+        user_id = self.request.query_params.get("user")
+        if user_id:
+            queryset = queryset.filter(user_id=user_id)
+
         return queryset
 
     def create(self, request, *args, **kwargs):

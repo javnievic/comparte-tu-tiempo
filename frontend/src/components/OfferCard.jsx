@@ -48,8 +48,9 @@ export default function OfferCard({ offer, onClick, isOwner = false, onDelete = 
     return (
         <Card
             sx={{
-                width: "100%",
+                width: { xs: "295px", md: "100%" },
                 maxWidth: 295,
+                minWidth: 205,
                 height: 384,
                 overflow: "hidden",
                 boxShadow: "0px 2px 8px rgba(0,0,0,0.1)",

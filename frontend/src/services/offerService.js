@@ -8,14 +8,15 @@ export const getAccessToken = () => localStorage.getItem("access_token");
 
 // Public routes 
 
-export const getAllOffers = async () => {
-  const response = await axiosInstance.get(API_URL, {
+export const getAllOffers = async (query = "") => {
+  const response = await axiosInstance.get(`${API_URL}${query}`, {
     headers: {
       "Accept": "application/json",
     },
   });
   return response.data;
 };
+
 
 export const getOfferById = async (id) => {
   const response = await axiosInstance.get(`${API_URL}${id}`, {

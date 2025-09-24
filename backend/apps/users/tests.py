@@ -24,6 +24,10 @@ class TestUserEndpoints:
             last_name="User"
         )
 
+    # ------------------------
+    #  USER REGISTRATION
+    # ------------------------
+
     def test_register_user(self, api_client):
         url = reverse("user-list")  # → api/users/
         payload = {
@@ -50,6 +54,38 @@ class TestUserEndpoints:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert "email" in response.data
 
+    def test_register_with_invalid_email(self, api_client):
+        """Register with invalid email format should fail"""
+        url = reverse("user-list")
+        payload = {
+            "email": "not-an-email",
+            "password": "StrongPass123",
+            "first_name": "Bad",
+            "last_name": "Email",
+        }
+        response = api_client.post(url, payload, format="json")
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert "email" in response.data
+
+    def test_register_with_weak_password(self, api_client):
+        """Register with weak password should fail"""
+        url = reverse("user-list")
+        payload = {
+            "email": "weak@example.com",
+            "password": "123",
+            "first_name": "Weak",
+            "last_name": "Password",
+        }
+        response = api_client.post(url, payload, format="json")
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert "password" in response.data
+
+    # ------------------------
+    #  USER LOGIN AND AUTHENTICATION
+    # ------------------------
+
     def test_login_user_success(self, api_client, user):
         url = reverse("login")  # → api/login/
         payload = {
@@ -73,6 +109,41 @@ class TestUserEndpoints:
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
         assert "error" in response.data
+
+    def test_login_with_nonexistent_email(self, api_client):
+        """Login with non-existing email should fail"""
+        url = reverse("login")
+        payload = {"email": "ghost@example.com", "password": "whatever"}
+        response = api_client.post(url, payload, format="json")
+
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+        assert "error" in response.data
+
+    def test_login_without_fields(self, api_client):
+        """Login without required fields should fail"""
+        url = reverse("login")
+        payload = {}
+        response = api_client.post(url, payload, format="json")
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    def test_access_user_detail_without_token(self, api_client, user):
+        """Accessing another user's detail without token should succeed"""
+        url = reverse("user-detail", kwargs={"pk": user.pk})
+        response = api_client.get(url)
+
+        assert response.status_code == status.HTTP_200_OK
+
+    def test_login_deleted_user(self, api_client, user):
+        """Deleted users should not be able to log in"""
+        user.is_active = False
+        user.save()
+
+        url = reverse("login")
+        payload = {"email": user.email, "password": "strongpassword"}
+        response = api_client.post(url, payload, format="json")
+
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
     def test_update_user_profile(self, api_client, user):
         api_client.force_authenticate(user=user)

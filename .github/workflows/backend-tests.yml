@@ -11,6 +11,17 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
+  env:
+    SECRET_KEY: django-insecure-ci-test-key
+    DEBUG: False
+    DB_ENGINE: django.db.backends.sqlite3
+    DB_NAME: ":memory:"
+    DB_USER: ""
+    DB_PASSWORD: ""
+    DB_HOST: ""
+    DB_PORT: ""
+    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4

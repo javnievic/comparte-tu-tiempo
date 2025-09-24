@@ -145,6 +145,10 @@ class TestUserEndpoints:
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
+    # ------------------------
+    #  USER UPDATE AND DELETE
+    # ------------------------
+
     def test_update_user_profile(self, api_client, user):
         api_client.force_authenticate(user=user)
         url = reverse(
@@ -173,3 +177,49 @@ class TestUserEndpoints:
         user.refresh_from_db()
         assert user.is_active is False
         assert user.full_name == "Usuario eliminado"
+
+    def test_delete_twice(self, api_client, user):
+        """Deleting the same user twice should remain inactive"""
+        api_client.force_authenticate(user=user)
+        url = reverse("user-detail", kwargs={"pk": user.pk})
+
+        response1 = api_client.delete(url)
+        assert response1.status_code == status.HTTP_200_OK
+        user.refresh_from_db()
+        assert user.is_active is False
+
+        response2 = api_client.delete(url)
+        assert response2.status_code == status.HTTP_200_OK
+        user.refresh_from_db()
+        assert user.is_active is False
+        assert user.full_name == "Usuario eliminado"
+
+    # ------------------------
+    #  USER LIST & DETAIL
+    # ------------------------
+
+    def test_list_users_authenticated(self, api_client, user):
+        """Authenticated user should be able to list users"""
+        api_client.force_authenticate(user=user)
+        url = reverse("user-list")
+        response = api_client.get(url)
+
+        assert response.status_code == status.HTTP_200_OK
+        assert any(u["email"] == user.email for u in response.data)
+
+    def test_list_users_unauthenticated(self, api_client):
+        """Unauthenticated user trying to list users"""
+        url = reverse("user-list")
+        response = api_client.get(url)
+
+        # Depending on your config this may be 200 or 401
+        assert response.status_code == status.HTTP_200_OK
+
+    # ------------------------
+    #  SPECIAL FIELDS
+    # ------------------------
+
+    def test_default_time_fields(self, user):
+        """New users should have default time_sent and time_received = 0"""
+        assert str(user.time_sent) == "0:00:00"
+        assert str(user.time_received) == "0:00:00"

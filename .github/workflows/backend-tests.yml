@@ -55,11 +55,6 @@ jobs:
     - name: Run migrations
       working-directory: backend
       run: |
-        until mysql -h 127.0.0.1 -u root -proot -e "SELECT 1;" ; do
-          echo "Waiting for MySQL..."
-          sleep 2
-        done
-        python manage.py makemigrations
         python manage.py migrate --noinput
 
     - name: Run tests

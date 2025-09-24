@@ -17,9 +17,7 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: test_banco_tiempo
-          MYSQL_USER: banco_user_test
-          MYSQL_PASSWORD: usertest1234
+          MYSQL_DATABASE: banco_tiempo
         ports:
           - 3306:3306
         options: >-
@@ -33,8 +31,8 @@ jobs:
       DEBUG: False
       DB_ENGINE: django.db.backends.mysql
       DB_NAME: banco_tiempo
-      DB_USER: banco_user_test
-      DB_PASSWORD: usertest1234
+      DB_USER: root
+      DB_PASSWORD: root
       DB_HOST: 127.0.0.1
       DB_PORT: 3306
 

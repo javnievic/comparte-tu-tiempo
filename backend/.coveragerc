@@ -1,4 +1,10 @@
 [run]
+source = apps
 omit =
     */tests.py
     */tests/*
+    */__init__.py
+    */admin.py
+    */apps.py
+    */urls.py
+    */migrations/*

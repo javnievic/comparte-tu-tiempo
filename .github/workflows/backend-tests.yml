@@ -14,7 +14,7 @@ jobs:
 
     services:
       mysql:
-        image: ghcr.io/library/mysql:8.0
+        image: docker.io/library/mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: banco_tiempo

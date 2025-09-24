@@ -32,7 +32,7 @@ jobs:
       SECRET_KEY: django-insecure-ci-test-key
       DEBUG: False
       DB_ENGINE: django.db.backends.mysql
-      DB_NAME: test_banco_tiempo
+      DB_NAME: banco_tiempo
       DB_USER: banco_user_test
       DB_PASSWORD: usertest1234
       DB_HOST: 127.0.0.1

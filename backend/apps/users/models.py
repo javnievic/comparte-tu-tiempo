@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .validators import phone_validator
 from datetime import timedelta
+from .managers import UserManager
 
 
 class User(AbstractUser):
@@ -46,6 +47,8 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+
+    objects = UserManager()
 
     @property
     def full_name(self):

@@ -23,7 +23,14 @@ class TransactionViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        serializer.save(sender=request.user)
+        transaction = serializer.save(sender=request.user)
+
+        # Update time totals for sender and receiver
+        transaction.sender.time_sent += transaction.duration
+        transaction.sender.save(update_fields=["time_sent"])
+
+        transaction.receiver.time_received += transaction.duration
+        transaction.receiver.save(update_fields=["time_received"])
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED,
                         headers=headers)

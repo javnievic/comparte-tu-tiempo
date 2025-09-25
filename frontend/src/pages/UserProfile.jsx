@@ -142,36 +142,57 @@ export default function UserProfile() {
 
                 <Divider sx={{ width: "100%", borderColor: "rgba(0,0,0,0.1)" }} />
 
-            {/* Hour statistics */}
-            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
-                {/* Top row: time sent & received */}
-                <Box sx={{ display: "flex", justifyContent: "center", gap: 6 }}>
-                    <Box sx={{ textAlign: "center" }}>
-                        <Typography>{formatDuration(user.time_sent)}</Typography>
-                        <Typography variant="body2">tiempo enviado</Typography>
+                {/* Hour statistics */}
+                <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+                    {/* Top row: time sent & received */}
+                    <Box sx={{ display: "flex", justifyContent: "center", gap: 6 }}>
+                        <Box sx={{ textAlign: "center" }}>
+                            <Typography sx={{ color: "red", fontWeight: 600 }}>
+                                ⬆ -{formatDuration(user.time_sent)}
+                            </Typography>
+                            <Typography variant="body2">Tiempo enviado</Typography>
+                        </Box>
+                        <Box sx={{ textAlign: "center" }}>
+                            <Typography sx={{ color: "green", fontWeight: 600 }}>
+                                ⬇ +{formatDuration(user.time_received)}
+                            </Typography>
+                            <Typography variant="body2">Tiempo recibido</Typography>
+                        </Box>
                     </Box>
-                    <Box sx={{ textAlign: "center" }}>
-                        <Typography>{formatDuration(user.time_received)}</Typography>
-                        <Typography variant="body2">tiempo recibido</Typography>
+
+                    {/* Balance */}
+                    <Box
+                        sx={{
+                            textAlign: "center",
+                            mt: 2,
+                            p: 2,
+                            borderRadius: 2,
+                            backgroundColor:
+                                user.balance.startsWith("-") ? "rgba(255,0,0,0.1)" :
+                                    user.balance === "0h 0min" ? "rgba(0,0,0,0.05)" :
+                                        "rgba(0,128,0,0.1)",
+                            minWidth: 150,
+                        }}
+                    >
+                        <Typography
+                            sx={{
+                                fontWeight: 800,
+                                fontSize: "1.6rem",
+                                color:
+                                    user.balance.startsWith("-") ? "red" :
+                                        user.balance === "0h 0min" ? "black" :
+                                            "green",
+                            }}
+                            title="Balance = Tiempo recibido - Tiempo enviado"
+                        >
+                            ⚖ {user.balance.startsWith("-") ? "" : "+"}{user.balance}
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 600, mt: 0.5 }}>
+                            Balance total
+                        </Typography>
                     </Box>
                 </Box>
 
-                {/* Bottom row: balance */}
-                <Box sx={{ textAlign: "center", mt: 1 }}>
-                    <Typography
-                        sx={{
-                            fontWeight: 600,
-                            color:
-                                user.balance.startsWith("-") ? "red" :
-                                user.balance === "0h 0min" ? "black" :
-                                "green"
-                        }}
-                    >
-                        {user.balance}
-                    </Typography>
-                    <Typography variant="body2">balance total</Typography>
-                </Box>
-            </Box>
 
                 <Divider sx={{ width: "100%", borderColor: "rgba(0,0,0,0.1)" }} />
 

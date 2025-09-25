@@ -19,7 +19,7 @@ import {
 import CustomButton from "../components/CustomButton";
 import OfferCard from "../components/OfferCard";
 import SearchIcon from '@mui/icons-material/Search';
-import { formatMinutesToHHMM } from "../utils/time";
+import { formatMinutesToXhYmin } from "../utils/time";
 
 export default function OfferList() {
     const [offers, setOffers] = useState([]);
@@ -214,16 +214,16 @@ export default function OfferList() {
                                 handleTempFilterChange("max_duration", newValue[1] / 60);
                             }}
                             valueLabelDisplay="auto"
-                            valueLabelFormat={(val) => formatMinutesToHHMM(val)}
+                            valueLabelFormat={(val) => formatMinutesToXhYmin(val)}
                             min={15}   // 15 minutes
                             max={240}  // 4 hours
                             step={15}  // 15 minutes
                             marks={[
-                                { value: 15, label: formatMinutesToHHMM(15) },
-                                { value: 60, label: "01:00" },
-                                { value: 120, label: "02:00" },
-                                { value: 180, label: "03:00" },
-                                { value: 240, label: formatMinutesToHHMM(240) },
+                                { value: 15, label: formatMinutesToXhYmin(15) },
+                                { value: 60, label: "1h" },
+                                { value: 120, label: "2h" },
+                                { value: 180, label: "3h" },
+                                { value: 240, label: formatMinutesToXhYmin(240) },
                             ]}
                             sx={{
                                 color: "primary.main",

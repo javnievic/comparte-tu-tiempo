@@ -1,7 +1,7 @@
 // src/components/DurationSlider.jsx
 import { Box, Typography, Slider } from "@mui/material";
 import theme from "../styles/theme";
-import { formatMinutesToHHMM } from "../utils/time";
+import { formatMinutesToXhYmin } from "../utils/time";
 
 export default function DurationSlider({
     value,
@@ -11,11 +11,11 @@ export default function DurationSlider({
     step = 15,
 }) {
     const marks = [
-        { value: min, label: formatMinutesToHHMM(min) },
-        { value: 60, label: "01:00" },
-        { value: 120, label: "02:00" },
-        { value: 180, label: "03:00" },
-        { value: max, label: formatMinutesToHHMM(max) },
+        { value: min, label: formatMinutesToXhYmin(min) },
+        { value: 60, label: "1h" },
+        { value: 120, label: "2h" },
+        { value: 180, label: "3h" },
+        { value: max, label: formatMinutesToXhYmin(max) },
     ];
 
     return (
@@ -42,7 +42,7 @@ export default function DurationSlider({
                     step={step}
                     marks={marks}
                     valueLabelDisplay="auto"
-                    valueLabelFormat={(val) => formatMinutesToHHMM(val)}
+                    valueLabelFormat={(val) => formatMinutesToXhYmin(val)}
                     onChange={onChange}
                     sx={{
                         color: theme.palette.primary.main,
@@ -59,7 +59,7 @@ export default function DurationSlider({
             </Box>
 
             <Typography variant="body1" sx={{ mt: 1, fontWeight: 500 }}>
-                {formatMinutesToHHMM(value)} horas
+                {formatMinutesToXhYmin(value)}
             </Typography>
         </Box>
     );

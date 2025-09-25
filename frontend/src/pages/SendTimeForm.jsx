@@ -98,12 +98,17 @@ export default function SendTimeForm() {
             await createTransaction(payload);
             setFormData({ title: "", text: "", duration: "" });
             navigate(`/my-transactions`);
-        } catch (err) {
-            if (err.response?.data?.receiver) {
-                setFormError(err.response.data.receiver);
-            } else {
-                setFormError("Ocurrió un error al enviar el tiempo");
-            }
+        } catch (error) {
+      if (error.response && error.response.data) {
+        const backendErrors = error.response.data;
+        const messages = Object.values(backendErrors)
+          .map((val) => (Array.isArray(val) ? val.join(", ") : val))
+          .join(" | ");
+
+        setFormError(messages);
+      } else {
+        setFormError("Error de conexión con el servidor");
+      }
         } finally {
             setLoading(false);
         }

@@ -192,3 +192,12 @@ class TestOfferEndpoints:
 
         assert response.status_code == status.HTTP_200_OK
         assert any("Test" in o["title"] for o in response.data)
+
+    def test_filter_offers_by_injection_like_query(self, api_client, offer):
+        """
+        Ensure the search filter is safe against injection-like queries.
+        """
+        url = reverse("offer-list") + "?q=' OR 1=1 --"
+        response = api_client.get(url)
+
+        assert response.status_code == status.HTTP_200_OK

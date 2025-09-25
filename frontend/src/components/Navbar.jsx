@@ -72,9 +72,9 @@ export default function Navbar() {
         {/* Logo Section */}
         <Box
           component="img"
-          src="https://placehold.co/68x68"
+          src="public/images/logo.png"
           alt="Logo"
-          sx={{ width: 68, height: 68, cursor: "pointer" }}
+          sx={{ width: 72, height: 72, cursor: "pointer" }}
           onClick={() => navigate("/")}
         />
 

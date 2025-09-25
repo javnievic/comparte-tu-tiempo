@@ -144,12 +144,12 @@ export default function UserProfile() {
                 {/* Estadísticas de horas */}
                 <Box sx={{ display: "flex", justifyContent: "center", gap: 6 }}>
                     <Box sx={{ textAlign: "center" }}>
-                        <Typography>{user.time_sent?.hours || 0}</Typography>
-                        <Typography variant="body2">horas ofrecidas</Typography>
+                        <Typography>{user.time_sent}</Typography>
+                        <Typography variant="body2">tiempo ofrecido</Typography>
                     </Box>
                     <Box sx={{ textAlign: "center" }}>
-                        <Typography>{user.time_received?.hours || 0}</Typography>
-                        <Typography variant="body2">horas recibidas</Typography>
+                        <Typography>{user.time_received}</Typography>
+                        <Typography variant="body2">tiempo recibido</Typography>
                     </Box>
                 </Box>
 

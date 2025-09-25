@@ -2,7 +2,7 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
-from datetime import timedelta
+from datetime import date, timedelta
 from apps.users.models import User
 from apps.offers.models import Offer
 
@@ -150,11 +150,11 @@ class TestOfferEndpoints:
         assert all(o["user"]["email"] == user.email for o in response.data)
 
     def test_filter_offers_by_location(self, api_client, offer):
-        url = reverse("offer-list") + "?location=Madrid"
+        url = reverse("offer-list") + "?location=Triana"
         response = api_client.get(url)
 
         assert response.status_code == status.HTTP_200_OK
-        assert all("Madrid" in o["location"] for o in response.data)
+        assert all("Triana" in o["location"] for o in response.data)
 
     def test_filter_offers_by_is_online(self, api_client, offer):
         url = reverse("offer-list") + "?is_online=true"
@@ -162,3 +162,33 @@ class TestOfferEndpoints:
 
         assert response.status_code == status.HTTP_200_OK
         assert all(o["is_online"] for o in response.data)
+
+    def test_filter_offers_by_min_max_duration(self, api_client, offer):
+        url = reverse("offer-list") + "?min_duration=0.5&max_duration=2"
+        response = api_client.get(url)
+
+        assert response.status_code == status.HTTP_200_OK
+        assert any(o["id"] == offer.id for o in response.data)
+
+    def test_filter_offers_invalid_min_duration(self, api_client, offer):
+        url = reverse("offer-list") + "?min_duration=abc"
+        response = api_client.get(url)
+
+        assert response.status_code == status.HTTP_200_OK
+        assert any(o["id"] == offer.id for o in response.data)
+
+    def test_filter_offers_by_date_range(self, api_client, offer):
+        today = date.today().isoformat()
+        tomorrow = (date.today() + timedelta(days=1)).isoformat()
+        url = reverse("offer-list") + f"?from_date={today}&to_date={tomorrow}"
+        response = api_client.get(url)
+
+        assert response.status_code == status.HTTP_200_OK
+        assert any(o["id"] == offer.id for o in response.data)
+
+    def test_filter_offers_by_search(self, api_client, offer):
+        url = reverse("offer-list") + "?q=Test"
+        response = api_client.get(url)
+
+        assert response.status_code == status.HTTP_200_OK
+        assert any("Test" in o["title"] for o in response.data)

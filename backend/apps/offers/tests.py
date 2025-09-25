@@ -80,6 +80,31 @@ class TestOfferEndpoints:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert "duration" in response.data
 
+    def test_create_offer_with_user_field_ignored(self, api_client, user):
+        """
+        Attempt to create an offer assigning it to another user (malicious
+        attempt). The backend should ignore the 'user' field sent in the
+        payload and always assign the authenticated request.user as the owner.
+        """
+        other_user = User.objects.create_user(
+            email="other@example.com", password="password"
+        )
+        api_client.force_authenticate(user=user)
+        url = reverse("offer-list")
+        payload = {
+            "title": "Fake Owner Offer",
+            "description": "Trying to hijack",
+            "duration": "01:00:00",
+            "is_online": False,
+            "user": other_user.id,  # attempt to assign to another user
+        }
+
+        response = api_client.post(url, payload, format="json")
+
+        assert response.status_code == status.HTTP_201_CREATED
+        assert response.data["user"]["email"] == user.email  # should ignore
+        # the provided user id
+
     # ------------------------
     #  OFFER UPDATE
     # ------------------------

@@ -14,11 +14,12 @@ import Grid from "@mui/material/Grid";
 import { useNavigate } from "react-router-dom";
 import { MapPin, Mail, Phone } from "lucide-react";
 import { getUserById } from "../services/userService";
-import { getOffersByUser } from "../services/offerService"; // endpoint para ofertas del usuario
+import { getOffersByUser } from "../services/offerService"; // endpoint for user offers
 import CustomButton from "../components/CustomButton";
 import { UserContext } from "../contexts/UserContext";
 import OfferCard from "../components/OfferCard";
 import { deleteOffer } from "../services/offerService";
+import { formatDuration } from "../utils/time";
 
 export default function UserProfile() {
     const { id } = useParams();
@@ -141,17 +142,36 @@ export default function UserProfile() {
 
                 <Divider sx={{ width: "100%", borderColor: "rgba(0,0,0,0.1)" }} />
 
-                {/* Estadísticas de horas */}
+            {/* Hour statistics */}
+            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
+                {/* Top row: time sent & received */}
                 <Box sx={{ display: "flex", justifyContent: "center", gap: 6 }}>
                     <Box sx={{ textAlign: "center" }}>
-                        <Typography>{user.time_sent}</Typography>
-                        <Typography variant="body2">tiempo ofrecido</Typography>
+                        <Typography>{formatDuration(user.time_sent)}</Typography>
+                        <Typography variant="body2">tiempo enviado</Typography>
                     </Box>
                     <Box sx={{ textAlign: "center" }}>
-                        <Typography>{user.time_received}</Typography>
+                        <Typography>{formatDuration(user.time_received)}</Typography>
                         <Typography variant="body2">tiempo recibido</Typography>
                     </Box>
                 </Box>
+
+                {/* Bottom row: balance */}
+                <Box sx={{ textAlign: "center", mt: 1 }}>
+                    <Typography
+                        sx={{
+                            fontWeight: 600,
+                            color:
+                                user.balance.startsWith("-") ? "red" :
+                                user.balance === "0h 0min" ? "black" :
+                                "green"
+                        }}
+                    >
+                        {user.balance}
+                    </Typography>
+                    <Typography variant="body2">balance total</Typography>
+                </Box>
+            </Box>
 
                 <Divider sx={{ width: "100%", borderColor: "rgba(0,0,0,0.1)" }} />
 

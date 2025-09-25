@@ -6,7 +6,7 @@
  * @returns {string} Formatted duration
  */
 export function formatDuration(duration) {
-  if (!duration) return "Sin duración";
+  if (!duration) return "0h";
 
   const [hours, minutes] = duration.split(":").map(Number);
 

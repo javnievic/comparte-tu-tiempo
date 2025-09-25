@@ -8,6 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
     Serializer genérico para representar al usuario en responses.
     No expone la contraseña.
     """
+    balance = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -23,10 +24,19 @@ class UserSerializer(serializers.ModelSerializer):
             "date_joined",
             "time_sent",
             "time_received",
-            "full_name"
+            "full_name",
+            "balance",
         ]
         read_only_fields = ["id", "date_joined", "email", "time_sent",
-                            "time_received", "full_name"]
+                            "time_received", "full_name", "balance"]
+
+    def get_balance(self, obj):
+        total_seconds = obj.balance.total_seconds()
+        sign = "-" if total_seconds < 0 else ""
+        total_seconds = abs(total_seconds)
+        hours = int(total_seconds // 3600)
+        minutes = int((total_seconds % 3600) // 60)
+        return f"{sign}{hours}h {minutes}min"
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):

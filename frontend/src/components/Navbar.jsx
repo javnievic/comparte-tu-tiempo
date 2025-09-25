@@ -72,7 +72,7 @@ export default function Navbar() {
         {/* Logo Section */}
         <Box
           component="img"
-          src="public/images/logo.png"
+          src="/public/images/logo.png"
           alt="Logo"
           sx={{ width: 72, height: 72, cursor: "pointer" }}
           onClick={() => navigate("/")}

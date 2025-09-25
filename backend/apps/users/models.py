@@ -56,6 +56,13 @@ class User(AbstractUser):
             return "Usuario eliminado"
         return f"{self.first_name} {self.last_name}" or self.email
 
+    @property
+    def balance(self) -> timedelta:
+        """
+        Returns the difference between time received and sent.
+        """
+        return self.time_received - self.time_sent
+
     class Meta:
         db_table = "users"
         verbose_name = "User"

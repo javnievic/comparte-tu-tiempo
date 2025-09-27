@@ -82,9 +82,36 @@ class TestTransactionEndpoints:
         assert response.status_code == status.HTTP_201_CREATED
         sender.refresh_from_db()
         receiver.refresh_from_db()
-        # Verificamos que los totales de tiempo se actualizan
+        # Verify time adjustments
         assert sender.time_sent == timedelta(hours=1)
         assert receiver.time_received == timedelta(hours=1)
+
+    def test_create_transaction_without_offer(
+            self, api_client, sender, receiver
+    ):
+        api_client.force_authenticate(user=sender)
+        url = reverse("transaction-list")
+        payload = {
+            "receiver_id": receiver.id,
+            "title": "Transaction without Offer",
+            "duration": "01:00:00"
+        }
+        response = api_client.post(url, payload, format="json")
+        assert response.status_code == status.HTTP_201_CREATED
+        assert response.data["offer"] is None
+
+    def test_create_transaction_invalid_receiver(self, api_client, sender):
+        api_client.force_authenticate(user=sender)
+        url = reverse("transaction-list")
+        payload = {
+            "receiver_id": 9999,  # unexisting user ID
+            "title": "Invalid Receiver Transaction",
+            "duration": "01:00:00"
+        }
+
+        response = api_client.post(url, payload, format="json")
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert "receiver_id" in response.data
 
     def test_create_transaction_to_self_fails(self, api_client, sender):
         api_client.force_authenticate(user=sender)
@@ -99,6 +126,17 @@ class TestTransactionEndpoints:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert "receiver" in response.data
 
+    def test_create_transaction_unauthenticated(self, api_client, receiver):
+        url = reverse("transaction-list")
+        payload = {
+            "receiver_id": receiver.id,
+            "title": "No Auth Transaction",
+            "duration": "01:00:00"
+        }
+
+        response = api_client.post(url, payload, format="json")
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
     def test_create_transaction_invalid_duration(
         self, api_client, sender, receiver
     ):
@@ -107,7 +145,7 @@ class TestTransactionEndpoints:
         payload = {
             "receiver_id": receiver.id,
             "title": "Too Long Transaction",
-            "duration": "05:00:00"  # más de 4 horas
+            "duration": "05:00:00"  # more than 4 hours
         }
 
         response = api_client.post(url, payload, format="json")
@@ -125,7 +163,7 @@ class TestTransactionEndpoints:
         url = reverse("transaction-my-transactions")
         response = api_client.get(url)
         assert response.status_code == status.HTTP_200_OK
-        # Aseguramos que la transacción del fixture está en los resultados
+        # Ensure the transaction appears in the list
         assert any(t["id"] == transaction.id for t in response.data)
 
     def test_list_my_transactions_receiver(
@@ -136,3 +174,8 @@ class TestTransactionEndpoints:
         response = api_client.get(url)
         assert response.status_code == status.HTTP_200_OK
         assert any(t["id"] == transaction.id for t in response.data)
+
+    def test_list_my_transactions_unauthenticated(self, api_client):
+        url = reverse("transaction-my-transactions")
+        response = api_client.get(url)
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED

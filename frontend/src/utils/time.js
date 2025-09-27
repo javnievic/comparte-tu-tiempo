@@ -6,7 +6,7 @@
  * @returns {string} Formatted duration
  */
 export function formatDuration(duration) {
-  if (!duration) return "Sin duración";
+  if (!duration) return "0h";
 
   const [hours, minutes] = duration.split(":").map(Number);
 
@@ -17,14 +17,18 @@ export function formatDuration(duration) {
 }
 
 /**
- * Converts minutes (number) to "HH:MM" format
+ * Converts minutes (number) to "Xh Ymin" format
  * @param {number} minutes
- * @returns {string} Formatted duration "HH:MM"
+ * @returns {string} Formatted duration "Xh Ymin"
  */
-export function formatMinutesToHHMM(minutes) {
+export function formatMinutesToXhYmin(minutes) {
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;
-  return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;
+
+  if (h && m) return `${h}h ${m}min`;
+  if (h) return `${h}h`;
+  if (m) return `${m}min`;
+  return "0h";
 }
 
 /**

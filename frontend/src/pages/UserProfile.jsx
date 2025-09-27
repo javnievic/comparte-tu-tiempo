@@ -1,6 +1,6 @@
 // src/pages/UserProfile.jsx
 import { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams  } from "react-router-dom";
 import {
     Box,
     Typography,
@@ -14,18 +14,21 @@ import Grid from "@mui/material/Grid";
 import { useNavigate } from "react-router-dom";
 import { MapPin, Mail, Phone } from "lucide-react";
 import { getUserById } from "../services/userService";
-import { getOffersByUser } from "../services/offerService"; // endpoint para ofertas del usuario
+import { getOffersByUser } from "../services/offerService"; // endpoint for user offers
 import CustomButton from "../components/CustomButton";
 import { UserContext } from "../contexts/UserContext";
 import OfferCard from "../components/OfferCard";
 import { deleteOffer } from "../services/offerService";
+import { formatDuration } from "../utils/time";
 
 export default function UserProfile() {
     const { id } = useParams();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const { currentUser } = useContext(UserContext);
-    const [tabValue, setTabValue] = useState(0);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const initialTab = parseInt(searchParams.get("tab")) || 0;
+    const [tabValue, setTabValue] = useState(initialTab);
     const navigate = useNavigate();
 
     // User offers
@@ -46,6 +49,18 @@ export default function UserProfile() {
         };
         fetchUser();
     }, [id]);
+    
+    useEffect(() => {
+        const tabFromUrl = parseInt(searchParams.get("tab"));
+        if (!isNaN(tabFromUrl) && tabFromUrl !== tabValue) {
+            setTabValue(tabFromUrl);
+        }
+    }, [searchParams, tabValue]);
+
+    const handleTabChange = (e, newValue) => {
+        setTabValue(newValue);
+        setSearchParams({ tab: newValue }); // actualiza la URL
+    };
 
     useEffect(() => {
         if (tabValue === 1) { // Only fetch offers when the tab is selected
@@ -141,17 +156,57 @@ export default function UserProfile() {
 
                 <Divider sx={{ width: "100%", borderColor: "rgba(0,0,0,0.1)" }} />
 
-                {/* Estadísticas de horas */}
-                <Box sx={{ display: "flex", justifyContent: "center", gap: 6 }}>
-                    <Box sx={{ textAlign: "center" }}>
-                        <Typography>{user.time_sent}</Typography>
-                        <Typography variant="body2">tiempo ofrecido</Typography>
+                {/* Hour statistics */}
+                <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+                    {/* Top row: time sent & received */}
+                    <Box sx={{ display: "flex", justifyContent: "center", gap: 6 }}>
+                        <Box sx={{ textAlign: "center" }}>
+                            <Typography sx={{ color: "red", fontWeight: 600 }}>
+                                ⬆ -{formatDuration(user.time_sent)}
+                            </Typography>
+                            <Typography variant="body2">Tiempo enviado</Typography>
+                        </Box>
+                        <Box sx={{ textAlign: "center" }}>
+                            <Typography sx={{ color: "green", fontWeight: 600 }}>
+                                ⬇ +{formatDuration(user.time_received)}
+                            </Typography>
+                            <Typography variant="body2">Tiempo recibido</Typography>
+                        </Box>
                     </Box>
-                    <Box sx={{ textAlign: "center" }}>
-                        <Typography>{user.time_received}</Typography>
-                        <Typography variant="body2">tiempo recibido</Typography>
+
+                    {/* Balance */}
+                    <Box
+                        sx={{
+                            textAlign: "center",
+                            mt: 2,
+                            p: 2,
+                            borderRadius: 2,
+                            backgroundColor:
+                                user.balance.startsWith("-") ? "rgba(255,0,0,0.1)" :
+                                    user.balance === "0h 0min" ? "rgba(0,0,0,0.05)" :
+                                        "rgba(0,128,0,0.1)",
+                            minWidth: 150,
+                        }}
+                    >
+                        <Typography
+                            sx={{
+                                fontWeight: 800,
+                                fontSize: "1.6rem",
+                                color:
+                                    user.balance.startsWith("-") ? "red" :
+                                        user.balance === "0h 0min" ? "black" :
+                                            "green",
+                            }}
+                            title="Balance = Tiempo recibido - Tiempo enviado"
+                        >
+                            ⚖ {user.balance.startsWith("-") ? "" : "+"}{user.balance}
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 600, mt: 0.5 }}>
+                            Balance total
+                        </Typography>
                     </Box>
                 </Box>
+
 
                 <Divider sx={{ width: "100%", borderColor: "rgba(0,0,0,0.1)" }} />
 
@@ -188,7 +243,7 @@ export default function UserProfile() {
                     minWidth: 0,
                 }}
             >
-                <Tabs value={tabValue} onChange={(e, val) => setTabValue(val)} sx={{ mb: 2 }}>
+                <Tabs value={tabValue} onChange={handleTabChange}>
                     <Tab label="Sobre mí" />
                     <Tab label="Ofertas" />
                     <Tab label="Demandas" />

@@ -31,6 +31,7 @@ export default function App() {
               maxWidth: "1440px", // optional, to not exceed a certain width
               mx: "auto", // center horizontally
               mt: 5,
+              mb: 5,
             }}
           >
             <Routes>
@@ -47,11 +48,7 @@ export default function App() {
               <Route path="/my-transactions" element={<MyTransactions />} />
             </Routes>
           </Box>
-          <Box sx={{ height: 96 }} />
           <Footer />
-          {/*<footer>
-            <Box sx={{ height: 96 }} />
-          </footer>*/}
           <LoginModal />
         </UIProvider>
       </UserProvider>

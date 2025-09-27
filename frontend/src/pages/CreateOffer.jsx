@@ -104,7 +104,7 @@ export default function CreateOffer() {
 
 
       await createOffer(data);
-      navigate(`/users/${currentUser.id}?tab=2`);
+      navigate(`/users/${currentUser.id}?tab=1`);
     } catch (error) {
       if (error.response && error.response.data) {
         const backendErrors = error.response.data;

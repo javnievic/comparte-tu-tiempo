@@ -1,6 +1,6 @@
 // src/pages/UserProfile.jsx
 import { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams  } from "react-router-dom";
 import {
     Box,
     Typography,
@@ -26,7 +26,9 @@ export default function UserProfile() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const { currentUser } = useContext(UserContext);
-    const [tabValue, setTabValue] = useState(0);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const initialTab = parseInt(searchParams.get("tab")) || 0;
+    const [tabValue, setTabValue] = useState(initialTab);
     const navigate = useNavigate();
 
     // User offers
@@ -47,6 +49,18 @@ export default function UserProfile() {
         };
         fetchUser();
     }, [id]);
+    
+    useEffect(() => {
+        const tabFromUrl = parseInt(searchParams.get("tab"));
+        if (!isNaN(tabFromUrl) && tabFromUrl !== tabValue) {
+            setTabValue(tabFromUrl);
+        }
+    }, [searchParams, tabValue]);
+
+    const handleTabChange = (e, newValue) => {
+        setTabValue(newValue);
+        setSearchParams({ tab: newValue }); // actualiza la URL
+    };
 
     useEffect(() => {
         if (tabValue === 1) { // Only fetch offers when the tab is selected
@@ -229,7 +243,7 @@ export default function UserProfile() {
                     minWidth: 0,
                 }}
             >
-                <Tabs value={tabValue} onChange={(e, val) => setTabValue(val)} sx={{ mb: 2 }}>
+                <Tabs value={tabValue} onChange={handleTabChange}>
                     <Tab label="Sobre mí" />
                     <Tab label="Ofertas" />
                     <Tab label="Demandas" />

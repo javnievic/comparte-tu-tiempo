@@ -86,11 +86,11 @@ export default function OfferDetail() {
                             {offer.title}
                         </Typography>
 
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        {/*TODO <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                             <Typography variant="body1">{offer.rating || 0}/</Typography>
                             <Typography variant="body1" sx={{ color: "rgba(0,0,0,0.6)" }}>5</Typography>
                         </Box>
-
+                        */}
                         <Typography variant="h3">{formatDuration(offer.duration) || "Sin duración"}</Typography>
 
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

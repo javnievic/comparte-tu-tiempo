@@ -162,17 +162,18 @@ export default function OfferCard({ offer, onClick, isOwner = false, onDelete = 
                 {/* Rating and Duration */}
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <Typography variant="body2">{formatDuration(offer.duration) || "Sin duración"}</Typography>
-                    <Typography variant="body2">·</Typography>
+                    {/*TODO <Typography variant="body2">·</Typography>
                     <Rating
                         name={`rating-${offer.id}`}
                         value={offer.rating || 0}
                         readOnly
                         precision={0.5} // For half
                         size="small"
-                    />
+                    /> 
                     <Typography variant="body2">
                         {offer.rating ? `${offer.rating}/5` : "Sin rating"}
                     </Typography>
+                    */}
                 </Box>
 
                 {/* Online / Local */}

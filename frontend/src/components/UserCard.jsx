@@ -68,10 +68,12 @@ export default function UserCard({ user }) {
 
             {/* Statistics */}
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2, flexGrow: 1, justifyContent: "center", position: "sticky", }}>
-                <Typography variant="body1">
+                {/*TODO <Typography variant="body1">
                     {user?.rating || 0}/5
                 </Typography>
                 <Divider />
+                 */}
+                
                 <Box>
                     <Typography variant="body1">
                         {user?.time_sent ? formatDuration(user.time_sent) : "0h"}

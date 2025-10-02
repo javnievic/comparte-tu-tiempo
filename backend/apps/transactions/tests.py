@@ -152,6 +152,38 @@ class TestTransactionEndpoints:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert "duration" in response.data
 
+    def test_create_transaction_without_duration(
+            self, api_client, sender, receiver
+    ):
+        api_client.force_authenticate(user=sender)
+        url = reverse("transaction-list")
+        payload = {
+            "receiver_id": receiver.id,
+            "title": "No Duration Transaction"
+        }
+        response = api_client.post(url, payload, format="json")
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert "duration" in response.data
+
+    def test_multiple_transactions_update_time(
+            self, api_client, sender, receiver
+    ):
+        api_client.force_authenticate(user=sender)
+        url = reverse("transaction-list")
+        payload = {
+            "receiver_id": receiver.id,
+            "title": "Transaction 1",
+            "duration": "01:00:00"
+        }
+        api_client.post(url, payload, format="json")
+        api_client.post(url, {**payload, "title": "Transaction 2"},
+                        format="json")
+
+        sender.refresh_from_db()
+        receiver.refresh_from_db()
+        assert sender.time_sent == timedelta(hours=2)
+        assert receiver.time_received == timedelta(hours=2)
+
     # ------------------------
     #  List Transactions
     # ------------------------
@@ -175,7 +207,52 @@ class TestTransactionEndpoints:
         assert response.status_code == status.HTTP_200_OK
         assert any(t["id"] == transaction.id for t in response.data)
 
+    def test_transactions_ordered_by_datetime(
+            self, api_client, sender, receiver, offer
+    ):
+        api_client.force_authenticate(user=sender)
+        url = reverse("transaction-list")
+        api_client.post(url, {
+            "receiver_id": receiver.id,
+            "offer_id": offer.id,
+            "title": "First Transaction",
+            "duration": "01:00:00"
+        }, format="json")
+        api_client.post(url, {
+            "receiver_id": receiver.id,
+            "offer_id": offer.id,
+            "title": "Second Transaction",
+            "duration": "01:00:00"
+        }, format="json")
+
+        response = api_client.get(reverse("transaction-my-transactions"))
+        assert response.status_code == status.HTTP_200_OK
+        results = response.data
+        assert results[0]["datetime"] >= results[1]["datetime"]
+
     def test_list_my_transactions_unauthenticated(self, api_client):
         url = reverse("transaction-my-transactions")
         response = api_client.get(url)
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+    def test_update_transaction_admin(self, api_client, transaction):
+        admin = User.objects.create_superuser(
+            email="admin@example.com",
+            password="adminpass"
+        )
+        api_client.force_authenticate(user=admin)
+        url = reverse("transaction-detail", args=[transaction.id])
+        payload = {"title": "Updated by admin"}
+        response = api_client.patch(url, payload, format="json")
+        assert response.status_code == status.HTTP_200_OK
+        transaction.refresh_from_db()
+        assert transaction.title == "Updated by admin"
+
+    def test_update_transaction_non_admin_fails(
+            self, api_client, transaction, sender
+    ):
+        api_client.force_authenticate(user=sender)
+        url = reverse("transaction-detail", args=[transaction.id])
+        payload = {"title": "Trying to update"}
+        response = api_client.patch(url, payload, format="json")
+        assert response.status_code == status.HTTP_403_FORBIDDEN

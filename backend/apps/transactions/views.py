@@ -7,10 +7,20 @@ from .serializers import TransactionSerializer
 from django.db.models import Q
 
 
+class IsAdminOrReadOnly(permissions.BasePermission):
+    """
+    Allows access only to admin users for unsafe methods.
+    """
+    def has_permission(self, request, view):
+        if view.action in ['update', 'partial_update', 'destroy']:
+            return request.user.is_staff
+        return True
+
+
 class TransactionViewSet(viewsets.ModelViewSet):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsAdminOrReadOnly]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

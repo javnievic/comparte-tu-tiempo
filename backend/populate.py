@@ -26,8 +26,12 @@ def populate_users():
     """Create demo users."""
     print("👤 Creating demo users...")
     users_data = [
-        {"email": "juan@example.com", "first_name": "Juan", "last_name": "Pérez", "location": "Madrid"},
-        {"email": "maria@example.com", "first_name": "María", "last_name": "López", "location": "Barcelona"},
+        {"email": "juan@example.com", "first_name": "Juan", "last_name": "López", "location": "Triana, Sevilla"},
+        {"email": "marta@example.com", "first_name": "Marta", "last_name": "Soler Ríos", "location": "Nervión, Sevilla"},
+        {"email": "emma@example.com", "first_name": "Emma", "last_name": "Torres Vidal", "location": "Los Remedios, Sevilla"},
+        {"email": "luis@example.com", "first_name": "Luis", "last_name": "Fernández Peña", "location": "Macarena, Sevilla"},
+        {"email": "paco@example.com", "first_name": "Paco", "last_name": "Fernández", "location": "Alameda, Sevilla"},
+        {"email": "juancarlos@example.com", "first_name": "Juan Carlos", "last_name": "Ortega", "location": "Santa Cruz, Sevilla"},  # flake8: noqa
     ]
 
     users = []
@@ -38,7 +42,7 @@ def populate_users():
             last_name=data["last_name"],
             location=data["location"]
         )
-        user.set_password("12345678")
+        user.set_password("12345678Ma")
         user.save()
         users.append(user)
     print(f"✅ {len(users)} users created.")
@@ -49,16 +53,33 @@ def populate_offers(users):
     """Create demo offers linked to users."""
     print("📦 Creating demo offers...")
     offers_data = [
-        {"title": "Clases de matemáticas",
-         "description": "Apoyo escolar en matemáticas de secundaria",
+        {"title": "Diseño gráfico",
+         "description": "Servicios de diseño gráfico profesional",
          "duration": timedelta(hours=2),
          "is_online": True,
          "user": users[0]},
-        {"title": "Cuidado de mascotas",
-         "description": "Paseo de perros por las tardes",
-         "duration": timedelta(hours=1),
-         "location": "Barcelona",
+        {"title": "Mantenimiento de jardines",
+         "description": "Cuidado y mantenimiento de jardines",
+         "duration": timedelta(hours=3),
+         "location": "Nervión, Sevilla",
          "user": users[1]},
+        {"title": "Clases de inglés",
+         "description": "Clases particulares de inglés para todos los niveles",
+         "duration": timedelta(hours=1, minutes=30),
+         "is_online": True,
+         "user": users[2]},
+        {"title": "Configuración de móviles",
+         "description": "Ayuda en configuración y optimización de smartphones",
+         "duration": timedelta(hours=1),
+         "user": users[3]},
+        {"title": "Clases básicas de guitarra",
+         "description": "Aprende guitarra desde cero",
+         "duration": timedelta(hours=1, minutes=45),
+         "user": users[4]},
+        {"title": "Reparación de bicicletas",
+         "description": "Servicio de reparación y mantenimiento de bicicletas",
+         "duration": timedelta(hours=2),
+         "user": users[5]},
     ]
 
     offers = []

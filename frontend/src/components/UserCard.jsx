@@ -45,26 +45,28 @@ export default function UserCard({ user }) {
             }}
         >
             {/* Avatar and message */}
-          
+
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, width: "200px" }}>
                 <Avatar
                     src={user.profile_picture}
                     sx={{ width: 80, height: 80, cursor: "pointer" }}
                     onClick={goToProfile}
                 />
-                <Typography variant="body1" sx={{ cursor: "pointer",textAlign: "center" }} onClick={goToProfile}>
+                <Typography variant="body1" sx={{ cursor: "pointer", textAlign: "center" }} onClick={goToProfile}>
                     {user?.full_name || "Usuario desconocido"}
                 </Typography>
-                <CustomButton
-                    variantstyle="outline"
-                    variant="contained"
-                    sx={{ width: "fit-content" }}
-                    onClick={handleMessageClick}
-                >
-                    {currentUser?.id === user.id ? "Editar perfil" : "Mensaje"}
-                </CustomButton>
+                {currentUser?.id === user.id && (
+                    <CustomButton
+                        variantstyle="outline"
+                        variant="contained"
+                        sx={{ width: "fit-content" }}
+                        onClick={handleMessageClick}
+                    >
+                        Editar perfil
+                    </CustomButton>
+                )}
             </Box>
-            
+
 
             {/* Statistics */}
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2, flexGrow: 1, justifyContent: "center", position: "sticky", }}>
@@ -73,7 +75,7 @@ export default function UserCard({ user }) {
                 </Typography>
                 <Divider />
                  */}
-                
+
                 <Box>
                     <Typography variant="body1">
                         {user?.time_sent ? formatDuration(user.time_sent) : "0h"}

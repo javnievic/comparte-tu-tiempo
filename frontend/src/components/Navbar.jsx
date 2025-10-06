@@ -1,11 +1,11 @@
-import { 
-  Box, 
-  Typography, 
-  AppBar, 
-  Toolbar, 
-  Avatar, 
-  Divider, 
-  IconButton 
+import {
+  Box,
+  Typography,
+  AppBar,
+  Toolbar,
+  Avatar,
+  Divider,
+  IconButton
 } from "@mui/material";
 import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
 import CustomButton from "./CustomButton";
@@ -19,8 +19,8 @@ export default function Navbar() {
   const { currentUser, logout } = useContext(UserContext);
   const { openLoginModal } = useContext(UIContext);
 
-  const [menuOpen, setMenuOpen] = useState(false); 
-  const menuRef = useRef(null); 
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
 
   const handleLogout = () => {
     logout();
@@ -72,7 +72,7 @@ export default function Navbar() {
         {/* Logo Section */}
         <Box
           component="img"
-          src="/public/images/logo.png"
+          src="/images/logo.png"
           alt="Logo"
           sx={{ width: 72, height: 72, cursor: "pointer" }}
           onClick={() => navigate("/")}
@@ -108,7 +108,7 @@ export default function Navbar() {
 
               {/* User Avatar with Dropdown Menu */}
               <Box sx={{ position: "relative" }}>
-                <IconButton 
+                <IconButton
                   onClick={() => setMenuOpen(prev => !prev)}
                   sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
                 >
@@ -136,6 +136,19 @@ export default function Navbar() {
                       zIndex: 1000
                     }}
                   >
+                    <Typography
+                      sx={{
+                        padding: "12px 16px",
+                        textAlign: "center",
+                        fontSize: 16,
+                        fontWeight: 600,
+                        color: "text.primary",
+                        cursor: "default"
+                      }}
+                    >
+                      {currentUser.full_name}
+                    </Typography>
+                    <Divider sx={{ borderBottomWidth: 2 }} />
                     <Typography sx={menuItemStyle} onClick={() => { navigate(`/users/${currentUser.id}`); setMenuOpen(false); }}>
                       Ver perfil
                     </Typography>

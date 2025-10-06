@@ -33,7 +33,7 @@ export default function SendTimeForm() {
     const [durationMinutes, setDurationMinutes] = useState(15); // minimum 15
 
     const { formData, setFormData, errors, setErrors, handleChange } = useForm(
-        { title: "", text: "", duration: "" },
+        { title: "", text: "", duration: minutesToHHMMSS(15) },
         validateTransactionField
     );
 

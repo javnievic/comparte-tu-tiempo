@@ -143,12 +143,13 @@ export default function UserProfile() {
                             >
                                 Enviar tiempo
                             </CustomButton>
+                            {/*TODO
                             <CustomButton
                                 variant="contained"
                                 variantstyle="outline"
                             >
                                 Mensaje
-                            </CustomButton>
+                            </CustomButton>*/}
 
                         </Box>
                     )

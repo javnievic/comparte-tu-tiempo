@@ -101,7 +101,7 @@ export default function Register() {
 
         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
           <Avatar
-            src={formData.profile_picture ? URL.createObjectURL(formData.profile_picture) : "https://placehold.co/80x80"}
+            src={formData.profile_picture ? URL.createObjectURL(formData.profile_picture) : "/images/default_user.webp"}
             sx={{ width: 80, height: 80 }}
           />
           <label htmlFor="upload-photo">

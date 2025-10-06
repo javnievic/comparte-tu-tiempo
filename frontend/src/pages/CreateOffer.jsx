@@ -30,7 +30,7 @@ export default function CreateOffer() {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    duration: "",
+    duration: minutesToHHMMSS(15),
     location: "",
     image: null,
   });

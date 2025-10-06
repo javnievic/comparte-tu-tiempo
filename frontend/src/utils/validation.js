@@ -2,7 +2,7 @@ export const validateUserField = (name, value, formData = {}) => {
   let error = "";
   if (["first_name", "last_name"].includes(name)) {
     if (!value.trim()) error = "Este campo es obligatorio";
-    else if (!/^[a-zA-Z\s]+$/.test(value)) error = "Solo letras y espacios";
+    else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) error = "Solo letras y espacios";
   }
   if (name === "email") {
     if (!value.trim()) error = "Este campo es obligatorio";

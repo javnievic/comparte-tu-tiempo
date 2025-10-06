@@ -2,6 +2,7 @@
 import os
 import django
 from datetime import timedelta
+from django.core.files import File
 
 # Setup Django environment
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
@@ -11,6 +12,7 @@ django.setup()
 from apps.users.models import User
 from apps.offers.models import Offer
 from apps.transactions.models import Transaction
+MEDIA_PATH = os.path.join(os.path.dirname(__file__), "media_demo")
 
 
 def clear_data():
@@ -23,15 +25,15 @@ def clear_data():
 
 
 def populate_users():
-    """Create demo users."""
+    """Create demo users with profile pictures."""
     print("👤 Creating demo users...")
     users_data = [
-        {"email": "juan@example.com", "first_name": "Juan", "last_name": "López", "location": "Triana, Sevilla"},
-        {"email": "marta@example.com", "first_name": "Marta", "last_name": "Soler Ríos", "location": "Nervión, Sevilla"},
-        {"email": "emma@example.com", "first_name": "Emma", "last_name": "Torres Vidal", "location": "Los Remedios, Sevilla"},
-        {"email": "luis@example.com", "first_name": "Luis", "last_name": "Fernández Peña", "location": "Macarena, Sevilla"},
-        {"email": "paco@example.com", "first_name": "Paco", "last_name": "Fernández", "location": "Alameda, Sevilla"},
-        {"email": "juancarlos@example.com", "first_name": "Juan Carlos", "last_name": "Ortega", "location": "Santa Cruz, Sevilla"},  # flake8: noqa
+        {"email": "juan@example.com", "first_name": "Juan", "last_name": "López", "location": "Triana, Sevilla", "profile": "profiles/juanLopez.jpg"},
+        {"email": "marta@example.com", "first_name": "Marta", "last_name": "Soler Ríos", "location": "Nervión, Sevilla", "profile": "profiles/martaSoler.jpg"},
+        {"email": "emma@example.com", "first_name": "Emma", "last_name": "Torres Vidal", "location": "Los Remedios, Sevilla", "profile": "profiles/emmaTorres.jpg"},
+        {"email": "luis@example.com", "first_name": "Luis", "last_name": "Fernández Peña", "location": "Macarena, Sevilla", "profile": "profiles/luisFernandez.jpg"},
+        {"email": "paco@example.com", "first_name": "Paco", "last_name": "Fernández", "location": "Alameda, Sevilla", "profile": "profiles/pacoFernandez.jpg"},
+        {"email": "juancarlos@example.com", "first_name": "Juan Carlos", "last_name": "Ortega", "location": "Santa Cruz, Sevilla", "profile": "profiles/juanCarlos.jpg"},
     ]
 
     users = []
@@ -43,8 +45,14 @@ def populate_users():
             location=data["location"]
         )
         user.set_password("12345678Ma")
+        # Asignar imagen de perfil si existe
+        profile_path = os.path.join(MEDIA_PATH, data["profile"])
+        if os.path.exists(profile_path):
+            with open(profile_path, "rb") as f:
+                user.profile_picture.save(os.path.basename(profile_path), File(f), save=True)
         user.save()
         users.append(user)
+
     print(f"✅ {len(users)} users created.")
     return users
 

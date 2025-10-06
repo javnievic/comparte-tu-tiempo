@@ -58,42 +58,53 @@ def populate_users():
 
 
 def populate_offers(users):
-    """Create demo offers linked to users."""
+    """Create demo offers linked to users with images."""
     print("📦 Creating demo offers...")
     offers_data = [
         {"title": "Diseño gráfico",
          "description": "Servicios de diseño gráfico profesional",
          "duration": timedelta(hours=2),
          "is_online": True,
-         "user": users[0]},
+         "user": users[0],
+         "image": "offers/disenoGrafico.jpg"},
         {"title": "Mantenimiento de jardines",
          "description": "Cuidado y mantenimiento de jardines",
          "duration": timedelta(hours=3),
          "location": "Nervión, Sevilla",
-         "user": users[1]},
+         "user": users[1],
+         "image": "offers/mantenimientoJardines.jpg"},
         {"title": "Clases de inglés",
          "description": "Clases particulares de inglés para todos los niveles",
          "duration": timedelta(hours=1, minutes=30),
          "is_online": True,
-         "user": users[2]},
+         "user": users[2],
+         "image": "offers/clasesIngles.jpg"},
         {"title": "Configuración de móviles",
          "description": "Ayuda en configuración y optimización de smartphones",
          "duration": timedelta(hours=1),
-         "user": users[3]},
+         "user": users[3],
+         "image": "offers/configuracionMoviles.jpg"},
         {"title": "Clases básicas de guitarra",
          "description": "Aprende guitarra desde cero",
          "duration": timedelta(hours=1, minutes=45),
-         "user": users[4]},
+         "user": users[4],
+         "image": "offers/clasesGuitarra.jpg"},
         {"title": "Reparación de bicicletas",
          "description": "Servicio de reparación y mantenimiento de bicicletas",
          "duration": timedelta(hours=2),
-         "user": users[5]},
+         "user": users[5],
+         "image": "offers/reparacionBicicletas.jpg"},
     ]
 
     offers = []
     for data in offers_data:
+        image_path = os.path.join(MEDIA_PATH, data.pop("image"))
         offer = Offer.objects.create(**data)
+        if os.path.exists(image_path):
+            with open(image_path, "rb") as f:
+                offer.image.save(os.path.basename(image_path), File(f), save=True)
         offers.append(offer)
+
     print(f"✅ {len(offers)} offers created.")
 
 

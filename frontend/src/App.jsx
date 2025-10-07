@@ -17,42 +17,54 @@ import EditOffer from "./pages/EditOffer";
 import Footer from "./components/Footer"
 
 export default function App() {
-  const showguide = false; // Set to true to show the layout guide
-  return (
+  const showguide = false;
 
+  return (
     <Router>
       <UserProvider>
         <UIProvider>
-          <Navbar />
-          <LayoutGuide show={showguide} />
           <Box
             sx={{
-              px: "100px", // lateral margins
-              maxWidth: "1440px", // optional, to not exceed a certain width
-              mx: "auto", // center horizontally
-              mt: 5,
-              mb: 5,
+              display: "flex",
+              flexDirection: "column",
+              minHeight: "100vh", // <-- ocupa toda la pantalla
             }}
           >
-            <Routes>
-              <Route path="/" element={<OfferList />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/create-offer" element={<CreateOffer />} />
-              <Route path="/offers/:id" element={<OfferDetail />} />
-              <Route path="offers/:id/edit" element={<EditOffer/>}/>
-              <Route path="/users/:id" element={<UserProfile />} />
-              <Route path="/edit-profile" element={<EditProfile />} />
-              {/* userId mandatory and offerId is passed as a query param */}
-              <Route path="/send-time/users/:userId" element={<SendTimeForm />} />
-              <Route path="/send-time/offers/:offerId" element={<SendTimeForm />} />
-              <Route path="/my-transactions" element={<MyTransactions />} />
-            </Routes>
+            <Navbar />
+            <LayoutGuide show={showguide} />
+
+            {/* Contenido principal */}
+            <Box
+              sx={{
+                flex: 1, // <-- empuja el footer hacia abajo
+                px: "100px",
+                maxWidth: "1440px",
+                mx: "auto",
+                mt: 5,
+                mb: 5,
+                width: "100%",
+              }}
+            >
+              <Routes>
+                <Route path="/" element={<OfferList />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/create-offer" element={<CreateOffer />} />
+                <Route path="/offers/:id" element={<OfferDetail />} />
+                <Route path="offers/:id/edit" element={<EditOffer />} />
+                <Route path="/users/:id" element={<UserProfile />} />
+                <Route path="/edit-profile" element={<EditProfile />} />
+                <Route path="/send-time/users/:userId" element={<SendTimeForm />} />
+                <Route path="/send-time/offers/:offerId" element={<SendTimeForm />} />
+                <Route path="/my-transactions" element={<MyTransactions />} />
+              </Routes>
+            </Box>
+
+            <Footer /> 
+            <LoginModal />
           </Box>
-          <Footer />
-          <LoginModal />
         </UIProvider>
       </UserProvider>
     </Router>
-
   );
 }
+

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import { Box, TextField, Typography, Avatar, IconButton } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
@@ -18,7 +18,7 @@ export default function Register() {
 
   const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { setCurrentUser } = useContext(UserContext);
+  const { currentUser,setCurrentUser } = useContext(UserContext);
   
   const { formData, errors, handleChange, handleFileChange, setErrors } = useForm({
     first_name: "",
@@ -91,6 +91,11 @@ export default function Register() {
     }
   };
 
+  useEffect(() => {
+  if (currentUser) {
+    navigate("/"); // menú principal
+  }
+}, [currentUser, navigate]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -101,7 +106,7 @@ export default function Register() {
 
         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
           <Avatar
-            src={formData.profile_picture ? URL.createObjectURL(formData.profile_picture) : "https://placehold.co/80x80"}
+            src={formData.profile_picture ? URL.createObjectURL(formData.profile_picture) : "/images/default_user.webp"}
             sx={{ width: 80, height: 80 }}
           />
           <label htmlFor="upload-photo">

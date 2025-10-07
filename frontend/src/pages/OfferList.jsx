@@ -198,7 +198,7 @@ export default function OfferList() {
                                 }
                             />
                         }
-                        label="Solo online"
+                        label="Online"
                     />
 
                     {/* Duration slider */}

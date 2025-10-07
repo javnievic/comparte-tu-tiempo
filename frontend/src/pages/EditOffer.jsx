@@ -3,7 +3,7 @@ import { useEffect, useContext, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { UIContext } from "../contexts/UIContext";
-import { Box, TextField, Typography, Avatar, IconButton, CircularProgress } from "@mui/material";
+import { Box, TextField, Typography, Avatar, IconButton, Checkbox, FormControlLabel, CircularProgress } from "@mui/material";
 import theme from "../styles/theme";
 import CustomButton from "../components/CustomButton";
 import FormContainer from "../components/FormContainer";
@@ -26,13 +26,14 @@ export default function EditOffer() {
     const [loading, setLoading] = useState(false);
     const [loadingOffer, setLoadingOffer] = useState(true);
 
-    const { formData, setFormData, errors, setErrors, handleChange, handleFileChange} =
+    const { formData, setFormData, errors, setErrors, handleChange, handleFileChange } =
         useForm(
             {
                 title: "",
                 description: "",
                 duration: "",
                 location: "",
+                is_online: false,
                 image: null,
             },
             validateOfferFields
@@ -61,6 +62,7 @@ export default function EditOffer() {
                     description: data.description || "",
                     duration: data.duration || "",
                     location: data.location || "",
+                    is_online: data.is_online || false,
                     image: data.image || null,
                 });
 
@@ -151,15 +153,27 @@ export default function EditOffer() {
                     setFormData(prev => ({ ...prev, duration: minutesToHHMMSS(newValue) }));
                 }}
             />
+
+            <FormControlLabel
+                control={
+                    <Checkbox
+                        checked={formData.is_online}
+                        onChange={(e) => setFormData({ ...formData, is_online: e.target.checked })}
+                    />
+                }
+                label="Esta oferta es online"
+            />
             <TextField
                 label="Ubicación"
                 name="location"
                 value={formData.location}
                 onChange={handleChange}
                 fullWidth
+                placeholder={formData.is_online ? "Opcional si es online" : ""}
                 error={!!errors.location}
                 helperText={errors.location}
             />
+
             <Box
                 sx={{
                     mt: 2,

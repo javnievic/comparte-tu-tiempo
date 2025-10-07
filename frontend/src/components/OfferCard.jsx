@@ -178,7 +178,11 @@ export default function OfferCard({ offer, onClick, isOwner = false, onDelete = 
 
                 {/* Online / Local */}
                 <Typography variant="body2" sx={{ mt: 1 }}>
-                    {offer.is_online ? "Online" : offer.location || "Presencial"}
+                    {offer.is_online && offer.location
+                        ? `Online o ${offer.location}`
+                        : offer.is_online
+                        ? "Online"
+                        : offer.location || "Presencial"}
                 </Typography>
             </CardContent>
         </Card>

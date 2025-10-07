@@ -104,7 +104,11 @@ export default function OfferDetail() {
                                     minWidth: 0,
                                 }}
                             >
-                                {offer.is_online ? "Online" : offer.location || "Presencial"}
+                                {offer.is_online && offer.location
+                                    ? `Online o ${offer.location}`
+                                    : offer.is_online
+                                    ? "Online"
+                                    : offer.location || "Presencial"}
                             </Typography>
                         </Box>
 

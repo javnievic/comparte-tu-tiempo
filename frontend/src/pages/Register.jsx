@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import { Box, TextField, Typography, Avatar, IconButton } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
@@ -18,7 +18,7 @@ export default function Register() {
 
   const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { setCurrentUser } = useContext(UserContext);
+  const { currentUser,setCurrentUser } = useContext(UserContext);
   
   const { formData, errors, handleChange, handleFileChange, setErrors } = useForm({
     first_name: "",
@@ -91,6 +91,11 @@ export default function Register() {
     }
   };
 
+  useEffect(() => {
+  if (currentUser) {
+    navigate("/"); // menú principal
+  }
+}, [currentUser, navigate]);
 
   return (
     <ThemeProvider theme={theme}>

@@ -2,7 +2,7 @@
 import { useState, useContext, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
-import { Box, TextField, Typography, IconButton, Avatar, Slider } from "@mui/material";
+import { Box, TextField, Typography, IconButton, Avatar, Checkbox, FormControlLabel } from "@mui/material";
 import theme from "../styles/theme";
 import CustomButton from "../components/CustomButton";
 import FormContainer from "../components/FormContainer";
@@ -26,27 +26,25 @@ export default function CreateOffer() {
     }
   }, [currentUser, navigate, openLoginModal]);
 
-  // State for the form data
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     duration: minutesToHHMMSS(15),
     location: "",
+    is_online: false,
     image: null,
   });
 
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
-
   const [durationMinutes, setDurationMinutes] = useState(15); // minimum 15
-
 
   // Validate a single field
   const validateField = (name, value) => {
     let error = "";
     if (!value && (name === "title" || name === "description" || name === "duration")) {
-      error = "Este campo es obligatorio"; // UI in Spanish
+      error = "Este campo es obligatorio";
     }
     return error;
   };
@@ -151,12 +149,25 @@ export default function CreateOffer() {
         }}
       />
 
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={formData.is_online}
+            onChange={(e) => setFormData({ ...formData, is_online: e.target.checked })}
+          />
+        }
+        label="Esta oferta permite ser online"
+      />
+
       <TextField
         label="Ubicación"
         name="location"
         value={formData.location}
         onChange={handleChange}
         fullWidth
+        placeholder={formData.is_online ? "Opcional si es online" : ""}
+        error={!!errors.location}
+        helperText={errors.location}
       />
 
       <Box

@@ -247,7 +247,6 @@ export default function UserProfile() {
                 <Tabs value={tabValue} onChange={handleTabChange}>
                     <Tab label="Sobre mí" />
                     <Tab label="Ofertas" />
-                    <Tab label="Demandas" />
                 </Tabs>
 
                 {tabValue === 0 && (
@@ -291,10 +290,6 @@ export default function UserProfile() {
                             </>
                         )}
                     </Box>
-                )}
-
-                {tabValue === 2 && (
-                    <Typography sx={{ mt: 2 }}>Aquí se mostrarán las demandas del usuario cuando estén disponibles.</Typography>
                 )}
             </Box>
         </Box>

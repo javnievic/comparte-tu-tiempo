@@ -6,6 +6,8 @@ import { formatDuration } from "../utils/time";
 import { UserContext } from "../contexts/UserContext";
 import { UIContext } from "../contexts/UIContext";
 import { useContext } from "react";
+import { Mail, Phone } from "lucide-react";
+
 
 export default function UserCard({ user }) {
     const navigate = useNavigate();
@@ -55,6 +57,20 @@ export default function UserCard({ user }) {
                 <Typography variant="body1" sx={{ cursor: "pointer", textAlign: "center" }} onClick={goToProfile}>
                     {user?.full_name || "Usuario desconocido"}
                 </Typography>
+                {!(currentUser?.id === user.id) && (
+                    <Box sx={{ display: "flex", flexDirection: "column", gap: 1, mt: 1, textAlign: "center" }}>
+                        {user.email && (
+                            <Typography variant="body2" sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}>
+                                <Mail size={16} /> {user.email}
+                            </Typography>
+                        )}
+                        {user.phone_number && (
+                            <Typography variant="body2" sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}>
+                                <Phone size={16} /> {user.phone_number}
+                            </Typography>
+                        )}
+                    </Box>
+                )}
                 {currentUser?.id === user.id && (
                     <CustomButton
                         variantstyle="outline"
